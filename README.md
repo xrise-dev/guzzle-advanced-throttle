@@ -7,7 +7,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Fetch data for different league of legends entities like champions and ongoing games.
+A Guzzle middleware that can throttle requests according to (multiple) defined rules.
 
 ## Install
 

@@ -26,7 +26,6 @@ class ThrottleMiddleware
         $this->_requestLimitGroup = $requestLimitRuleset->getRequestLimitGroup();
     }
 
-
     /**
      * @param callable $handler
      * @return callable
