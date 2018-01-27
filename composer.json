@@ -1,0 +1,40 @@
+{
+  "name": "hamburgscleanest/guzzle-advanced-throttle",
+  "description": "A Guzzle middleware that can throttle requests according to (multiple) defined rules.",
+  "keywords": [
+    "hamburgscleanest",
+    "api",
+    "ratelimit",
+    "rate limiting",
+    "throttle",
+    "request",
+    "guzzle"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Timo",
+      "email": "chroma91@gmail.com",
+      "homepage": "https://www.timo-pruesse.de/",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^6.0",
+    "illuminate/cache": "5.5.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "hamburgscleanest\\GuzzleAdvancedThrottle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "hamburgscleanest\\GuzzleAdvancedThrottle\\Tests\\": "tests"
+    }
+  }
+}
