@@ -13,11 +13,13 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 class ThrottleMiddleware
 {
 
+    /** @var \hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitGroup */
     private $_requestLimitGroup;
 
     /**
      * ThrottleMiddleware constructor.
      * @param RequestLimitRuleset $requestLimitRuleset
+     * @throws \Exception
      */
     public function __construct(RequestLimitRuleset $requestLimitRuleset)
     {
