@@ -2,7 +2,6 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
-use DateInterval;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
@@ -56,7 +55,7 @@ class RequestLimiter
      */
     private function _restoreState(int $requestIntervalSeconds) : void
     {
-        $this->_timekeeper = new TimeKeeper(new DateInterval('P' . $requestIntervalSeconds . 's'));
+        $this->_timekeeper = new TimeKeeper($requestIntervalSeconds);
 
         $requestInfo = $this->_storage->get($this->_host, $this->_storageKey);
         if ($requestInfo !== null)
@@ -98,6 +97,7 @@ class RequestLimiter
 
     /**
      * @return bool
+     * @throws \Exception
      */
     public function canRequest() : bool
     {
@@ -114,6 +114,7 @@ class RequestLimiter
 
     /**
      * Increment the request counter.
+     * @throws \Exception
      */
     private function _increment() : void
     {
@@ -124,6 +125,9 @@ class RequestLimiter
         }
     }
 
+    /**
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
+     */
     private function _save() : void
     {
         $this->_storage->save(
@@ -137,20 +141,16 @@ class RequestLimiter
 
     /**
      * @return int
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
      */
     public function getRemainingSeconds() : int
     {
-        $dateDiff = $this->_timekeeper->getRemainingTime();
-        if ($dateDiff === null)
-        {
-            return 0;
-        }
-
-        return $dateDiff->s;
+        return $this->_timekeeper->getRemainingSeconds();
     }
 
     /**
      * @return int
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
      */
     public function getCurrentRequestCount() : int
     {
