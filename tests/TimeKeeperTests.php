@@ -4,7 +4,6 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use DateInterval;
 use DateTime;
-use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException;
 use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use PHPUnit\Framework\TestCase;
 
@@ -52,18 +51,6 @@ class TimeKeeperTests extends TestCase
         $timeKeeper->setExpiration($myExpiration);
 
         $this->assertEquals($myExpiration, $timeKeeper->getExpiration());
-    }
-
-    /** @test
-     * @throws \Exception
-     */
-    public function throws_exception_when_timer_is_not_started()
-    {
-        $interval = 60;
-        $timeKeeper = new TimeKeeper($interval);
-
-        $this->expectException(TimerNotStartedException::class);
-        $timeKeeper->getRemainingSeconds();
     }
 
     /** @test

@@ -5,7 +5,6 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
 use DateInterval;
 use DateTime;
-use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException;
 
 
 /**
@@ -62,7 +61,7 @@ class TimeKeeper
      * @return int
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
      */
-    public function getRemainingSeconds() : int
+    public function getRemainingSeconds() : ? int
     {
         if ($this->isExpired())
         {
@@ -71,7 +70,7 @@ class TimeKeeper
             return $this->_expirationIntervalSeconds;
         }
 
-        return $this->_expiresAt->getTimestamp() - \time();
+        return $this->_expiresAt === null ? null : $this->_expiresAt->getTimestamp() - \time();
     }
 
     /**
@@ -82,7 +81,7 @@ class TimeKeeper
     {
         if ($this->_expiresAt === null)
         {
-            throw new TimerNotStartedException();
+            return false;
         }
 
         return $this->_expiresAt <= new DateTime();
