@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
  * Class RequestLimiterTests
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
  */
-class RequestLimiterTests extends TestCase
+class RequestLimiterTest extends TestCase
 {
 
     /** @test

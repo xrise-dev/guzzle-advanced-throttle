@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * Class TimeKeeperTests
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
  */
-class TimeKeeperTests extends TestCase
+class TimeKeeperTest extends TestCase
 {
 
     /** @test

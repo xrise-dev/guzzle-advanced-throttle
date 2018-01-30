@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  * Class RequestInfoTests
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
  */
-class RequestInfoTests extends TestCase
+class RequestInfoTest extends TestCase
 {
 
     /** @test
