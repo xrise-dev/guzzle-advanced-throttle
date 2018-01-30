@@ -5,7 +5,9 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 use DateTime;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Cache\CacheManager;
+use Illuminate\Container\Container;
+use Illuminate\Filesystem\Filesystem;
 
 /**
  * Class LaravelAdapter
@@ -14,8 +16,25 @@ use Illuminate\Support\Facades\Cache;
 class LaravelAdapter implements StorageInterface
 {
 
-    /** @var array */
-    private $_storage = [];
+    /** @var CacheManager */
+    private $_cacheManager;
+
+    public function __construct()
+    {
+        $container = new Container();
+
+        // TODO: Set from outside..
+        $container['config'] = [
+            'cache.default'     => 'file',
+            'cache.stores.file' => [
+                'driver' => 'file',
+                'path'   => __DIR__ . '/cache'
+            ]
+        ];
+        $container['files'] = new Filesystem(); // TODO: Remove when config extracted..
+
+        $this->_cacheManager = new CacheManager($container);
+    }
 
     /**
      * @param string $host
@@ -26,9 +45,11 @@ class LaravelAdapter implements StorageInterface
      */
     public function save(string $host, string $key, int $requestCount, DateTime $expiresAt, int $remainingSeconds) : void
     {
-        Cache::put($this->_buildKey($host, $key), 'value', $expiresAt);
-
-        $this->_storage[$host][$key] = RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds);
+        $this->_cacheManager->put(
+            $this->_buildKey($host, $key),
+            RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds),
+            $remainingSeconds
+        );
     }
 
     /**
@@ -48,6 +69,7 @@ class LaravelAdapter implements StorageInterface
      */
     public function get(string $host, string $key) : ? RequestInfo
     {
-        return Cache::get($this->_buildKey($host, $key));
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->_cacheManager->get($this->_buildKey($host, $key));
     }
 }
