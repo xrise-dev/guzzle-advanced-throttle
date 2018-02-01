@@ -61,16 +61,9 @@ class TimeKeeper
      * @return int
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
      */
-    public function getRemainingSeconds() : ? int
+    public function getRemainingSeconds() : int
     {
-        if ($this->isExpired())
-        {
-            $this->reset();
-
-            return $this->_expirationIntervalSeconds;
-        }
-
-        return $this->_expiresAt === null ? null : $this->_expiresAt->getTimestamp() - \time();
+        return $this->isExpired() ? $this->_expirationIntervalSeconds : $this->_expiresAt->getTimestamp() - \time();
     }
 
     /**

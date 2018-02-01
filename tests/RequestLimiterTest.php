@@ -62,7 +62,6 @@ class RequestLimiterTest extends TestCase
     {
         $requestLimiter = RequestLimiter::create('www.test.com', 20, 30);
 
-        $this->assertNull($requestLimiter->getRemainingSeconds());
         $requestLimiter->canRequest();
         $this->assertEquals(30, $requestLimiter->getRemainingSeconds());
     }
@@ -79,6 +78,17 @@ class RequestLimiterTest extends TestCase
         $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
         $requestLimiter->canRequest();
         $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function current_request_count_is_correct_when_expired()
+    {
+        $requestLimiter = RequestLimiter::create('www.test.com', 1, 0);
+        $requestLimiter->canRequest();
+
+        $this->assertEquals(0, $requestLimiter->getCurrentRequestCount());
     }
 
     /** @test

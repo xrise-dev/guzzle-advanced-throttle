@@ -143,7 +143,7 @@ class RequestLimiter
      * @return int
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
      */
-    public function getRemainingSeconds() : ? int
+    public function getRemainingSeconds() : int
     {
         return $this->_timekeeper->getRemainingSeconds();
     }
