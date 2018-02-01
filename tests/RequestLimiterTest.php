@@ -2,6 +2,8 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimiter;
 use PHPUnit\Framework\TestCase;
 
@@ -30,6 +32,16 @@ class RequestLimiterTest extends TestCase
         $requestLimiter = RequestLimiter::createFromRule(['host' => 'www.test.com']);
 
         $this->assertInstanceOf(RequestLimiter::class, $requestLimiter);
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function cannot_be_created_from_rule_without_host()
+    {
+        $this->expectException(HostNotDefinedException::class);
+
+        RequestLimiter::createFromRule(['some' => 'crap']);
     }
 
     /** @test
@@ -67,5 +79,22 @@ class RequestLimiterTest extends TestCase
         $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
         $requestLimiter->canRequest();
         $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function restores_state()
+    {
+        $storage = new ArrayAdapter();
+        $maxRequests = 15;
+        $requestIntervalSeconds = 120;
+
+        $requestLimiterOne = RequestLimiter::create('www.test.com', $maxRequests, $requestIntervalSeconds, $storage);
+        $requestLimiterOne->canRequest();
+        $requestLimiterTwo = RequestLimiter::create('www.test.com', $maxRequests, $requestIntervalSeconds, $storage);
+
+        $this->assertEquals($requestLimiterOne->getRemainingSeconds(), $requestLimiterTwo->getRemainingSeconds());
+        $this->assertEquals($requestLimiterOne->getCurrentRequestCount(), $requestLimiterTwo->getCurrentRequestCount());
     }
 }

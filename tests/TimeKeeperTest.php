@@ -73,9 +73,20 @@ class TimeKeeperTest extends TestCase
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
         $this->assertFalse($timeKeeper->isExpired());
-
         $timeKeeper->setExpiration((new DateTime())->sub(new DateInterval('P1D')));
         $this->assertTrue($timeKeeper->isExpired());
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function remaining_time_is_correct_when_expired()
+    {
+        $interval = 60;
+        $timeKeeper = new TimeKeeper($interval);
+        $timeKeeper->start();
+        $timeKeeper->setExpiration((new DateTime())->sub(new DateInterval('P1D')));
+        $this->assertEquals(60, $timeKeeper->getRemainingSeconds());
     }
 
     /** @test
