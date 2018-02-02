@@ -63,7 +63,7 @@ class TimeKeeper
      */
     public function getRemainingSeconds() : int
     {
-        return $this->isExpired() ? $this->_expirationIntervalSeconds : $this->_expiresAt->getTimestamp() - \time();
+        return $this->_expiresAt === null || $this->isExpired() ? $this->_expirationIntervalSeconds : $this->_expiresAt->getTimestamp() - \time();
     }
 
     /**

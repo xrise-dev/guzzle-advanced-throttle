@@ -15,7 +15,7 @@ class RequestLimitGroup
     private $_requestLimiters;
 
     /** @var int */
-    private $_retryAfter;
+    private $_retryAfter = 0;
 
     /**
      * RequestLimitGroup constructor.
@@ -46,21 +46,25 @@ class RequestLimitGroup
      * The timers of each limiter have to be updated despite of another limiter already preventing the request.
      *
      * @return bool
+     * @throws \Exception
      */
     public function canRequest() : bool
     {
-        $this->_retryAfter = null;
         $groupCanRequest = true;
-
-        /** @var RequestLimiter $requestLimiter */
-        foreach ($this->_requestLimiters as $requestLimiter)
+        $this->_requestLimiters->rewind();
+        while ($this->_requestLimiters->valid())
         {
+            /** @var RequestLimiter $requestLimiter */
+            $requestLimiter = $this->_requestLimiters->current();
+
             $canRequest = $requestLimiter->canRequest();
             if ($groupCanRequest && !$canRequest)
             {
                 $groupCanRequest = false;
                 $this->_retryAfter = $requestLimiter->getRemainingSeconds();
             }
+
+            $this->_requestLimiters->next();
         }
 
         return $groupCanRequest;
@@ -86,5 +90,13 @@ class RequestLimitGroup
         $this->_requestLimiters->detach($requestLimiter);
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRequestLimiterCount() : int
+    {
+        return $this->_requestLimiters->count();
     }
 }
