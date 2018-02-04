@@ -27,20 +27,22 @@ class ThrottleMiddleware
     }
 
     /**
-     * @param callable $handler
      * @return callable
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
-    public function handle(callable $handler) : callable
+    public function handle() : callable
     {
-        return function(RequestInterface $request, array $options) use ($handler)
-        {
-            if (!$this->_requestLimitGroup->canRequest())
-            {
-                throw new TooManyRequestsHttpException($this->_requestLimitGroup->getRetryAfter(), 'The rate limit was exceeded. Please try again later.');
-            }
+        return function (callable $handler): callable {
+            return function (RequestInterface $request, array $options) use ($handler) : callable {
+                if (!$this->_requestLimitGroup->canRequest()) {
+                    throw new TooManyRequestsHttpException(
+                        $this->_requestLimitGroup->getRetryAfter(),
+                        'The rate limit was exceeded. Please try again later.'
+                    );
+                }
 
-            return $handler($request, $options);
+                return $handler($request, $options);
+            };
         };
     }
 }
