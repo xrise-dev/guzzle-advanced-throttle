@@ -35,7 +35,7 @@ class ThrottleMiddleware
     {
         return function(callable $handler) : callable
         {
-            return function(RequestInterface $request, array $options) use ($handler) : object
+            return function(RequestInterface $request, array $options) use ($handler)
             {
                 if (!$this->_requestLimitGroup->canRequest())
                 {
