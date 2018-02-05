@@ -5,6 +5,9 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\LaravelAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\Cache;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\ForceCache;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\NoCache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
 
 /**
@@ -18,6 +21,13 @@ class RequestLimitRuleset
     private const STORAGE_MAP = [
         'array'   => ArrayAdapter::class,
         'laravel' => LaravelAdapter::class
+    ];
+
+    /** @var array */
+    private const CACHE_STRATEGIES = [
+        'no-cache'    => NoCache::class,
+        'cache'       => Cache::class,
+        'force-cache' => ForceCache::class
     ];
 
     /** @var array */

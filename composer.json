@@ -1,14 +1,18 @@
 {
   "name": "hamburgscleanest/guzzle-advanced-throttle",
-  "description": "A Guzzle middleware that can throttle requests according to (multiple) defined rules.",
+  "description": "A Guzzle middleware that can throttle requests according to (multiple) defined rules. It is also possible to define a caching strategy, e.g. get response from cache when rate limit is exceeded or always get cached value to spare your rate limits.",
   "keywords": [
     "hamburgscleanest",
     "api",
     "ratelimit",
+    "rate limit",
     "rate limiting",
     "throttle",
     "request",
-    "guzzle"
+    "guzzle",
+    "cache",
+    "advanced",
+    "response"
   ],
   "type": "library",
   "license": "MIT",

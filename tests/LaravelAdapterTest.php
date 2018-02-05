@@ -3,6 +3,8 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use DateTime;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\LaravelAdapter;
 use PHPUnit\Framework\TestCase;
 
@@ -31,5 +33,21 @@ class LaravelAdapterTest extends TestCase
         $this->assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
         $this->assertEquals($requestInfo->requestCount, $requestCount);
         $this->assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function stores_and_retrieves_response()
+    {
+        $request = new Request('GET', 'www.test.de');
+        $response = new Response(200, [], null, '1337');
+
+        $arrayAdapter = new LaravelAdapter();
+        $arrayAdapter->saveResponse($request, $response);
+
+        $storedResponse = $arrayAdapter->getResponse($request);
+
+        $this->assertEquals($response, $storedResponse);
     }
 }

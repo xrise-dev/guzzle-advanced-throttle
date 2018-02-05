@@ -7,7 +7,10 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A Guzzle middleware that can throttle requests according to (multiple) defined rules.
+A Guzzle middleware that can throttle requests according to (multiple) defined rules. 
+
+It is also possible to define a caching strategy, 
+e.g. get response from cache when rate limit is exceeded or always get cached value to spare your rate limits.
 
 ## Install
 
