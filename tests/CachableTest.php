@@ -5,8 +5,6 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\Cache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use PHPUnit\Framework\TestCase;
@@ -30,9 +28,9 @@ class CachableTest extends TestCase
                 'host'         => $host,
                 'max_requests' => 1
             ]
-        ]);
-        $storage = new ArrayAdapter();
-        $throttle = new ThrottleMiddleware($ruleset, new Cache($storage));
+        ],
+            'cache');
+        $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(500), new Response()]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
