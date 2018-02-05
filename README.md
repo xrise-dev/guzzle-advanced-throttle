@@ -41,7 +41,7 @@ Just throttle the requests.
 TODO
 ```
 
-###$ With caching
+#### With caching
 
 Use cached responses when your defined rate limit is exceeded.
 
@@ -49,7 +49,7 @@ Use cached responses when your defined rate limit is exceeded.
 TODO
 ```
 
-###$ With forced caching
+#### With forced caching
 
 Always use cached responses when available to spare your rate limits.
 
