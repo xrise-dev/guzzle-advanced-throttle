@@ -4,7 +4,7 @@ All Notable changes to `guzzle-advanced-throttle` will be documented in this fil
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Release Candidate
+## Next
 
 ### Added
 - Nothing
@@ -13,10 +13,19 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Nothing
 
 ### Fixed
-- Host not recognized
+- Nothing
 
 ### Removed
 - Nothing
 
 ### Security
 - Nothing
+
+## 1.0.1 
+
+### Fixed
+- Host not recognized
+
+## 1.0.0
+
+Initial release
