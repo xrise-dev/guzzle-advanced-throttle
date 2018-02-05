@@ -12,7 +12,8 @@
     "guzzle",
     "cache",
     "advanced",
-    "response"
+    "response",
+    "laravel"
   ],
   "type": "library",
   "license": "MIT",

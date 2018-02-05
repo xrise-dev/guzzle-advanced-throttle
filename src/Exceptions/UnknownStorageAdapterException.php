@@ -10,12 +10,12 @@ class UnknownStorageAdapterException extends \RuntimeException
 {
 
     /**
-     * HostNotDefinedException constructor.
+     * UnknownStorageAdapterException constructor.
      * @param string $adapterName
-     * @param array $availableAdapters
+     * @param array $availableStrategies
      */
-    public function __construct(string $adapterName, array $availableAdapters)
+    public function __construct(string $adapterName, array $availableStrategies)
     {
-        parent::__construct('Unknown storage adapter "' . $adapterName . '".' . \PHP_EOL . 'Available adapters: ' . \implode(', ', $availableAdapters));
+        parent::__construct('Unknown storage adapter "' . $adapterName . '".' . \PHP_EOL . 'Available adapters: ' . \implode(', ', $availableStrategies));
     }
 }

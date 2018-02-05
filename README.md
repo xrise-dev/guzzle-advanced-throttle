@@ -20,6 +20,43 @@ Via Composer
 $ composer require hamburgscleanest/guzzle-advanced-throttle
 ```
 
+## Usage
+
+### General use
+
+ - TODO
+
+### Caching
+
+#### Available storage adapters
+
+- array
+- laravel
+
+#### Without caching
+
+Just throttle the requests.
+
+``` php
+TODO
+```
+
+###$ With caching
+
+Use cached responses when your defined rate limit is exceeded.
+
+``` php
+TODO
+```
+
+###$ With forced caching
+
+Always use cached responses when available to spare your rate limits.
+
+``` php
+TODO
+```
+
 ## Changes
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

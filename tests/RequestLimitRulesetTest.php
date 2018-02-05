@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use PHPUnit\Framework\TestCase;
@@ -22,11 +23,19 @@ class RequestLimitRulesetTest extends TestCase
     }
 
     /** @test */
+    public function throws_unknown_cache_strategy_exception()
+    {
+        $this->expectException(UnknownCacheStrategyException::class);
+
+        RequestLimitRuleset::create([], 'garbage');
+    }
+
+    /** @test */
     public function throws_unknown_storage_adapter_exception()
     {
         $this->expectException(UnknownStorageAdapterException::class);
 
-        RequestLimitRuleset::create([], 'garbage');
+        RequestLimitRuleset::create([], 'no-cache', 'garbage');
     }
 
     /** @test

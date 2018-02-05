@@ -5,7 +5,6 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\NoCache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use PHPUnit\Framework\TestCase;
@@ -29,8 +28,9 @@ class NoCacheTest extends TestCase
                 'host'         => $host,
                 'max_requests' => 1
             ]
-        ]);
-        $throttle = new ThrottleMiddleware($ruleset, new NoCache());
+        ],
+            'no-cache');
+        $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(200), new Response(200)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 

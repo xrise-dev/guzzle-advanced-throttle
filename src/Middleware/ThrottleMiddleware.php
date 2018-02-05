@@ -14,10 +14,9 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 class ThrottleMiddleware
 {
 
-    /** @var \hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitGroup */
-    private $_requestLimitGroup;
-    /** @var CacheStrategy|null */
-    private $_cacheStrategy;
+    /** @var RequestLimitRuleset */
+    private $_requestLimitRuleset;
+
 
     /**
      * ThrottleMiddleware constructor.
@@ -25,10 +24,9 @@ class ThrottleMiddleware
      * @param CacheStrategy|null $cacheStrategy
      * @throws \Exception
      */
-    public function __construct(RequestLimitRuleset $requestLimitRuleset, CacheStrategy $cacheStrategy = null)
+    public function __construct(RequestLimitRuleset $requestLimitRuleset)
     {
-        $this->_requestLimitGroup = $requestLimitRuleset->getRequestLimitGroup();
-        $this->_cacheStrategy = $cacheStrategy;
+        $this->_requestLimitRuleset = $requestLimitRuleset;
     }
 
     /**
@@ -42,12 +40,7 @@ class ThrottleMiddleware
         {
             return function(RequestInterface $request, array $options) use ($handler)
             {
-                if ($this->_cacheStrategy !== null)
-                {
-                    return $this->_cacheStrategy->request($request, $this->_requestHandler($handler, $request, $options));
-                }
-
-                return $this->_requestHandler($handler, $request, $options)();
+                return $this->_requestLimitRuleset->cache($request, $this->_requestHandler($handler, $request, $options));
             };
         };
     }
@@ -63,10 +56,12 @@ class ThrottleMiddleware
     {
         return function() use ($handler, $request, $options)
         {
-            if (!$this->_requestLimitGroup->canRequest())
+            $requestLimitGroup = $this->_requestLimitRuleset->getRequestLimitGroup();
+
+            if (!$requestLimitGroup->canRequest())
             {
                 throw new TooManyRequestsHttpException(
-                    $this->_requestLimitGroup->getRetryAfter(),
+                    $requestLimitGroup->getRetryAfter(),
                     'The rate limit was exceeded. Please try again later.'
                 );
             }

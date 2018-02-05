@@ -2,13 +2,17 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\LaravelAdapter;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\CacheStrategy;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\Cache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\ForceCache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\NoCache;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Class RequestLimitRuleset
@@ -36,16 +40,22 @@ class RequestLimitRuleset
     /** @var StorageInterface */
     private $_storage;
 
+    /** @var CacheStrategy */
+    private $_cacheStrategy;
+
     /**
      * RequestLimitRuleset constructor.
      * @param array $rules
+     * @param string $cacheStrategy
      * @param string|null $storageAdapter
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException
      */
-    public function __construct(array $rules, string $storageAdapter = 'array')
+    public function __construct(array $rules, string $cacheStrategy = 'no-cache', string $storageAdapter = 'array')
     {
         $this->_rules = $rules;
         $this->_setStorageAdapter($storageAdapter);
+        $this->_setCacheStrategy($cacheStrategy);
     }
 
     /**
@@ -60,18 +70,45 @@ class RequestLimitRuleset
         }
 
         $storageAdapterClass = self::STORAGE_MAP[$adapterName];
-        $this->_storage = new $storageAdapterClass;
+        $this->_storage = new $storageAdapterClass();
+    }
+
+    /**
+     * @param string $cacheStrategy
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException
+     */
+    private function _setCacheStrategy(string $cacheStrategy) : void
+    {
+        if (!isset(self::CACHE_STRATEGIES[$cacheStrategy]))
+        {
+            throw new UnknownCacheStrategyException($cacheStrategy, self::CACHE_STRATEGIES);
+        }
+
+        $cacheStrategyClass = self::CACHE_STRATEGIES[$cacheStrategy];
+        $this->_cacheStrategy = new $cacheStrategyClass($this->_storage);
     }
 
     /**
      * @param array $rules
+     * @param string $cacheStrategy
      * @param string $storageAdapter
      * @return static
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException
      */
-    public static function create(array $rules, string $storageAdapter = 'array')
+    public static function create(array $rules, string $cacheStrategy = 'no-cache', string $storageAdapter = 'array')
     {
-        return new static($rules, $storageAdapter);
+        return new static($rules, $cacheStrategy, $storageAdapter);
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param callable $handler
+     * @return PromiseInterface
+     */
+    public function cache(RequestInterface $request, callable $handler) : PromiseInterface
+    {
+        return $this->_cacheStrategy->request($request, $handler);
     }
 
     /**
