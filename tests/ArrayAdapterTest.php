@@ -50,4 +50,20 @@ class ArrayAdapterTest extends TestCase
 
         $this->assertEquals($response, $storedResponse);
     }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function stored_value_gets_invalidated_when_expired()
+    {
+        $request = new Request('GET', 'www.test.de');
+        $response = new Response(200, [], null, '1337');
+
+        $arrayAdapter = new ArrayAdapter();
+        $arrayAdapter->saveResponse($request, $response, 0);
+
+        $storedResponse = $arrayAdapter->getResponse($request);
+
+        $this->assertNull($storedResponse);
+    }
 }

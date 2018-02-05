@@ -10,6 +10,7 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\Cache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
  * Class CacheTest
@@ -41,6 +42,27 @@ class CacheTest extends TestCase
 
         $this->assertNotEquals($responseOne, $responseTwo);
         $this->assertEquals($responseTwo, $responseThree);
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function throw_too_many_requests_when_nothing_in_cache()
+    {
+        $host = 'www.test.de';
+        $ruleset = new RequestLimitRuleset([
+            [
+                'host'         => $host,
+                'max_requests' => 0
+            ]
+        ]);
+        $storage = new ArrayAdapter();
+        $throttle = new ThrottleMiddleware($ruleset, new Cache($storage));
+        $stack = new MockHandler([new Response()]);
+        $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
+
+        $this->expectException(TooManyRequestsHttpException::class);
+        $client->request('GET', '/');
     }
 
 }
