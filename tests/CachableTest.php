@@ -22,7 +22,7 @@ class CachableTest extends TestCase
      */
     public function dont_cache_error_responses()
     {
-        $host = 'www.test.de';
+        $host = 'www.test.com';
         $ruleset = new RequestLimitRuleset([
             [
                 'host'         => $host,

@@ -53,7 +53,7 @@ class LaravelAdapter implements StorageInterface
         $this->_cacheManager->put(
             $this->_buildKey($host, $key),
             RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds),
-            $remainingSeconds
+            $remainingSeconds / 60
         );
     }
 

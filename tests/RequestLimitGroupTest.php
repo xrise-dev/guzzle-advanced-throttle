@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
+use GuzzleHttp\Psr7\Request;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimiter;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitGroup;
 use PHPUnit\Framework\TestCase;
@@ -51,12 +52,14 @@ class RequestLimitGroupTest extends TestCase
      */
     public function can_request_is_correct()
     {
+        $host = 'http://www.test.com';
         $interval = 100;
         $requestLimitGroup = RequestLimitGroup::create();
-        $requestLimitGroup->addRequestLimiter(new RequestLimiter('www.test', 1, $interval));
+        $requestLimitGroup->addRequestLimiter(new RequestLimiter($host, 1, $interval));
+        $request = new Request('GET', $host . '/check');
 
-        $this->assertTrue($requestLimitGroup->canRequest());
-        $this->assertFalse($requestLimitGroup->canRequest());
+        $this->assertTrue($requestLimitGroup->canRequest($request));
+        $this->assertFalse($requestLimitGroup->canRequest($request));
     }
 
     /** @test
@@ -64,13 +67,14 @@ class RequestLimitGroupTest extends TestCase
      */
     public function retry_seconds_are_correct()
     {
+        $host = 'http://www.test.com';
         $interval = 100;
         $requestLimitGroup = RequestLimitGroup::create();
 
         $this->assertEquals(0, $requestLimitGroup->getRetryAfter());
 
-        $requestLimitGroup->addRequestLimiter(new RequestLimiter('www.test', 0, $interval));
-        $requestLimitGroup->canRequest();
+        $requestLimitGroup->addRequestLimiter(new RequestLimiter($host, 0, $interval));
+        $requestLimitGroup->canRequest(new Request('GET', $host . '/check'));
 
         $this->assertEquals($interval, $requestLimitGroup->getRetryAfter());
     }

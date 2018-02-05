@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
+use GuzzleHttp\Psr7\Request;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
@@ -43,11 +44,12 @@ class RequestLimitRulesetTest extends TestCase
      */
     public function ruleset_contains_the_correct_request_limit_group()
     {
+        $host = 'http://www.test.com';
         $interval = 33;
 
-        $requestLimitRuleset = RequestLimitRuleset::create([['host' => 'www.test.de', 'max_requests' => 0, 'request_interval' => $interval]]);
+        $requestLimitRuleset = RequestLimitRuleset::create([['host' => $host, 'max_requests' => 0, 'request_interval' => $interval]]);
         $requestLimitGroup = $requestLimitRuleset->getRequestLimitGroup();
-        $requestLimitGroup->canRequest();
+        $requestLimitGroup->canRequest(new Request('GET', $host . '/check'));
 
         $this->assertEquals($interval, $requestLimitGroup->getRetryAfter());
     }

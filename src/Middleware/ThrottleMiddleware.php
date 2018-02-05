@@ -57,8 +57,7 @@ class ThrottleMiddleware
         return function() use ($handler, $request, $options)
         {
             $requestLimitGroup = $this->_requestLimitRuleset->getRequestLimitGroup();
-
-            if (!$requestLimitGroup->canRequest())
+            if (!$requestLimitGroup->canRequest($request, $options))
             {
                 throw new TooManyRequestsHttpException(
                     $requestLimitGroup->getRetryAfter(),

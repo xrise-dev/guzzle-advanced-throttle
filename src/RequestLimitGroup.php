@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
+use Psr\Http\Message\RequestInterface;
 use SplObjectStorage;
 
 /**
@@ -45,10 +46,12 @@ class RequestLimitGroup
      * We have to cycle through all the limiters (no early return).
      * The timers of each limiter have to be updated despite of another limiter already preventing the request.
      *
+     * @param RequestInterface $request
+     * @param array $options
      * @return bool
      * @throws \Exception
      */
-    public function canRequest() : bool
+    public function canRequest(RequestInterface $request, array $options = []) : bool
     {
         $groupCanRequest = true;
         $this->_requestLimiters->rewind();
@@ -57,7 +60,7 @@ class RequestLimitGroup
             /** @var RequestLimiter $requestLimiter */
             $requestLimiter = $this->_requestLimiters->current();
 
-            $canRequest = $requestLimiter->canRequest();
+            $canRequest = $requestLimiter->canRequest($request, $options);
             if ($groupCanRequest && !$canRequest)
             {
                 $groupCanRequest = false;

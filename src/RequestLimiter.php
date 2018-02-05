@@ -2,9 +2,11 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
+use GuzzleHttp\Psr7\Uri;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Class RequestLimiter
@@ -58,11 +60,13 @@ class RequestLimiter
         $this->_timekeeper = new TimeKeeper($requestIntervalSeconds);
 
         $requestInfo = $this->_storage->get($this->_host, $this->_storageKey);
-        if ($requestInfo !== null)
+        if ($requestInfo === null)
         {
-            $this->_requestCount = $requestInfo->requestCount;
-            $this->_timekeeper->setExpiration($requestInfo->expiresAt);
+            return;
         }
+
+        $this->_requestCount = $requestInfo->requestCount;
+        $this->_timekeeper->setExpiration($requestInfo->expiresAt);
     }
 
     /**
@@ -96,11 +100,18 @@ class RequestLimiter
     }
 
     /**
+     * @param RequestInterface $request
+     * @param array $options
      * @return bool
      * @throws \Exception
      */
-    public function canRequest() : bool
+    public function canRequest(RequestInterface $request, array $options = []) : bool
     {
+        if (!$this->matches($this->_getHostFromRequestAndOptions($request, $options)))
+        {
+            return true;
+        }
+
         if ($this->_requestCount >= $this->_maxRequestCount)
         {
             return false;
@@ -110,6 +121,46 @@ class RequestLimiter
         $this->_save();
 
         return true;
+    }
+
+    /**
+     * @param string $host
+     * @return bool
+     */
+    public function matches(string $host) : bool
+    {
+        return $this->_host === $host;
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @param array $options
+     * @return string
+     */
+    private function _getHostFromRequestAndOptions(RequestInterface $request, array $options = []) : string
+    {
+        $uri = $options['base_uri'] ?? $request->getUri();
+
+        return $this->_buildHostUrl($uri);
+    }
+
+    /**
+     * @param Uri $uri
+     * @return string
+     */
+    private function _buildHostUrl(Uri $uri) : string
+    {
+        $host = $uri->getHost();
+        $scheme = $uri->getScheme();
+        if (!empty($host) && !empty($scheme))
+        {
+            $host = $scheme . '://' . $host;
+        } else
+        {
+            $host = $uri->getPath();
+        }
+
+        return $host;
     }
 
     /**

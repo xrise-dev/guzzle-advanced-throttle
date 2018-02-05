@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
+use GuzzleHttp\Psr7\Request;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimiter;
@@ -49,10 +50,12 @@ class RequestLimiterTest extends TestCase
      */
     public function can_request_is_correct()
     {
-        $requestLimiter = RequestLimiter::create('www.test.com', 1);
+        $host = 'http://www.test.com';
+        $requestLimiter = RequestLimiter::create($host, 1);
+        $request = new Request('GET', $host . '/check');
 
-        $this->assertTrue($requestLimiter->canRequest());
-        $this->assertFalse($requestLimiter->canRequest());
+        $this->assertTrue($requestLimiter->canRequest($request));
+        $this->assertFalse($requestLimiter->canRequest($request));
     }
 
     /** @test
@@ -60,9 +63,10 @@ class RequestLimiterTest extends TestCase
      */
     public function remaining_seconds_are_correct()
     {
-        $requestLimiter = RequestLimiter::create('www.test.com', 20, 30);
+        $host = 'http://www.test.com';
+        $requestLimiter = RequestLimiter::create($host, 20, 30);
 
-        $requestLimiter->canRequest();
+        $requestLimiter->canRequest(new Request('GET', $host . '/check'));
         $this->assertEquals(30, $requestLimiter->getRemainingSeconds());
     }
 
@@ -71,12 +75,14 @@ class RequestLimiterTest extends TestCase
      */
     public function current_request_count_is_correct()
     {
-        $requestLimiter = RequestLimiter::create('www.test.com', 1);
+        $host = 'http://www.test.com';
+        $requestLimiter = RequestLimiter::create($host, 1);
+        $request = new Request('GET', $host . '/check');
 
         $this->assertEquals(0, $requestLimiter->getCurrentRequestCount());
-        $requestLimiter->canRequest();
+        $requestLimiter->canRequest($request);
         $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
-        $requestLimiter->canRequest();
+        $requestLimiter->canRequest($request);
         $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
     }
 
@@ -85,8 +91,9 @@ class RequestLimiterTest extends TestCase
      */
     public function current_request_count_is_correct_when_expired()
     {
-        $requestLimiter = RequestLimiter::create('www.test.com', 1, 0);
-        $requestLimiter->canRequest();
+        $host = 'http://www.test.com';
+        $requestLimiter = RequestLimiter::create($host, 1, 0);
+        $requestLimiter->canRequest(new Request('GET', $host . '/check'));
 
         $this->assertEquals(0, $requestLimiter->getCurrentRequestCount());
     }
@@ -96,15 +103,30 @@ class RequestLimiterTest extends TestCase
      */
     public function restores_state()
     {
+        $host = 'http://www.test.com';
+
         $storage = new ArrayAdapter();
         $maxRequests = 15;
         $requestIntervalSeconds = 120;
 
-        $requestLimiterOne = RequestLimiter::create('www.test.com', $maxRequests, $requestIntervalSeconds, $storage);
-        $requestLimiterOne->canRequest();
-        $requestLimiterTwo = RequestLimiter::create('www.test.com', $maxRequests, $requestIntervalSeconds, $storage);
+        $requestLimiterOne = RequestLimiter::create($host, $maxRequests, $requestIntervalSeconds, $storage);
+        $requestLimiterOne->canRequest(new Request('GET', $host . '/check'));
+        $requestLimiterTwo = RequestLimiter::create($host, $maxRequests, $requestIntervalSeconds, $storage);
 
         $this->assertEquals($requestLimiterOne->getRemainingSeconds(), $requestLimiterTwo->getRemainingSeconds());
         $this->assertEquals($requestLimiterOne->getCurrentRequestCount(), $requestLimiterTwo->getCurrentRequestCount());
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function matches_host_correctly()
+    {
+        $host = 'http://www.test.com';
+
+        $requestLimiter = RequestLimiter::create($host);
+
+        $this->assertTrue($requestLimiter->matches($host));
+        $this->assertFalse($requestLimiter->matches('http://www.check.com'));
     }
 }
