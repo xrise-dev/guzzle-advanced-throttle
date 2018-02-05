@@ -56,6 +56,9 @@ class RequestLimiterTest extends TestCase
 
         $this->assertTrue($requestLimiter->canRequest($request));
         $this->assertFalse($requestLimiter->canRequest($request));
+
+        $otherRequest = new Request('GET', 'http://www.check.com');
+        $this->assertTrue($requestLimiter->canRequest($otherRequest));
     }
 
     /** @test
