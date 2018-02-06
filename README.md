@@ -11,7 +11,7 @@
 A Guzzle middleware that can throttle requests according to (multiple) defined rules. 
 
 It is also possible to define a caching strategy, 
-e.g. get response from cache when rate limit is exceeded or always get cached value to spare your rate limits.
+e.g. get the response from cache when the rate limit is exceeded or always get a cached value to spare your rate limits.
 
 ## Install
 
