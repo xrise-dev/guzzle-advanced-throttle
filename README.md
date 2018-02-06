@@ -79,6 +79,10 @@ $client = new Client(['base_uri' => 'https://www.google.com', 'handler' => $stac
 Either the `base_uri` has to be the same as the defined host in the rules array or you have to request absolute URLs for the middleware to have an effect.
 
 ``` php
+// relative
+$response = $client->get('test');
+
+// absolute
 $response = $client->get('https://www.google.com/test');
 ```
 
