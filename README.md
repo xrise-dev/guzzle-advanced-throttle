@@ -1,3 +1,4 @@
+
 # hamburgscleanest/guzzle-advanced-throttle
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
@@ -24,37 +25,145 @@ $ composer require hamburgscleanest/guzzle-advanced-throttle
 
 ### General use
 
- - TODO
+Let's say you wanted to implement the following rules:
+
+> **20** requests every **1 seconds** 
+> **100** requests every **2 minutes**
+
+
+----------
+
+
+1. First you have to define the rules in a `hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset`:
+``` php
+$rules = new RequestLimitRuleset([
+        [
+            'host'             => 'https://www.google.com',
+            'max_requests'     => 20,
+            'request_interval' => 1
+        ],
+        [
+            'host'             => 'https://www.google.com',
+            'max_requests'     => 100,
+            'request_interval' => 120
+        ]
+    ]);
+```
+
+
+----------
+
+
+2. Your handler stack might look like this:
+``` php
+ $stack = new HandlerStack();
+ $stack->setHandler(new CurlHandler());
+```
+
+
+----------
+3. Push the `handle()` function of `hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware` to the stack. 
+
+> It should always be the first middleware on the stack.
+
+``` php
+ $stack->push((new ThrottleMiddleware($rules))->handle());
+```
+----------
+5. Pass the stack to the client
+``` php
+$client = new Client(['base_uri' => 'https://www.google.com', 'handler' => $stack]);
+```
+
+Either the `base_uri` has to be the same as the defined host in the rules array or you have to request absolute URLs for the middleware to have an effect.
+
+``` php
+$response = $client->get('https://www.google.com/test');
+```
+
+----------
 
 ### Caching
 
 #### Available storage adapters
 
-- array
-- laravel
+- `array`
+- `laravel` (illuminate/cache)
 
-#### Without caching
-
-Just throttle the requests.
+##### The adapters can be defined in the rule set.
 
 ``` php
-TODO
+$rules = new RequestLimitRuleset(
+	[
+        [
+            'host'             => 'https://www.google.com',
+            'max_requests'     => 20,
+            'request_interval' => 1
+        ]
+    ], 
+    'cache', // caching strategy
+    'laravel' // storage adapter
+    );
 ```
 
-#### With caching
+----------
 
-Use cached responses when your defined rate limit is exceeded.
+#### Without caching - `no-cache`
+
+Just throttle the requests. No caching is done.
 
 ``` php
-TODO
+$rules = new RequestLimitRuleset(
+	[
+        [
+            'host'             => 'https://www.google.com',
+            'max_requests'     => 20,
+            'request_interval' => 1
+        ]
+    ], 
+    'no-cache', // caching strategy
+    'laravel' // storage adapter
+    );
 ```
 
-#### With forced caching
+----------
 
-Always use cached responses when available to spare your rate limits.
+#### With caching - `cache`
+
+Use cached responses when your defined rate limit is exceeded. The middleware will try to fallback to a cached response before throwing `429 - Too Many Requests`.
 
 ``` php
-TODO
+$rules = new RequestLimitRuleset(
+	[
+        [
+            'host'             => 'https://www.google.com',
+            'max_requests'     => 20,
+            'request_interval' => 1
+        ]
+    ], 
+    'cache', // caching strategy
+    'laravel' // storage adapter
+    );
+```
+
+----------
+
+#### With forced caching - `force-cache`
+
+Always use cached responses when available to spare your rate limits. As long as there is a response in cache for the current request it will return the cached response. It will only actually fire the request when it is not cached. If there is no cached response and the request limits are also reached, it will throw `429 - Too Many Requests`.
+
+``` php
+$rules = new RequestLimitRuleset(
+	[
+        [
+            'host'             => 'https://www.google.com',
+            'max_requests'     => 20,
+            'request_interval' => 1
+        ]
+    ], 
+    'force-cache', // caching strategy
+    'laravel' // storage adapter
+    );
 ```
 
 ## Changes
