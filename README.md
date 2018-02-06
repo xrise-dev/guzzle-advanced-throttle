@@ -99,7 +99,7 @@ $response = $client->get('https://www.google.com/test');
 
 ``` php
 $rules = new RequestLimitRuleset(
-	[
+    [
         [
             'host'             => 'https://www.google.com',
             'max_requests'     => 20,
@@ -119,7 +119,7 @@ Just throttle the requests. No caching is done.
 
 ``` php
 $rules = new RequestLimitRuleset(
-	[
+    [
         [
             'host'             => 'https://www.google.com',
             'max_requests'     => 20,
@@ -139,7 +139,7 @@ Use cached responses when your defined rate limit is exceeded. The middleware wi
 
 ``` php
 $rules = new RequestLimitRuleset(
-	[
+    [
         [
             'host'             => 'https://www.google.com',
             'max_requests'     => 20,
@@ -159,7 +159,7 @@ Always use cached responses when available to spare your rate limits. As long as
 
 ``` php
 $rules = new RequestLimitRuleset(
-	[
+    [
         [
             'host'             => 'https://www.google.com',
             'max_requests'     => 20,
