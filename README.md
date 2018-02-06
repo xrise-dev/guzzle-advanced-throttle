@@ -27,7 +27,8 @@ $ composer require hamburgscleanest/guzzle-advanced-throttle
 
 Let's say you wanted to implement the following rules:
 
-> **20** requests every **1 seconds** 
+> **20** requests every **1 seconds**
+>
 > **100** requests every **2 minutes**
 
 
