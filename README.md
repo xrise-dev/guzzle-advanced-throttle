@@ -1,4 +1,5 @@
 
+
 # hamburgscleanest/guzzle-advanced-throttle
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
@@ -92,8 +93,10 @@ $response = $client->get('https://www.google.com/test');
 
 #### Available storage adapters
 
-- `array`
-- `laravel` (illuminate/cache)
+- `array` (default)
+- `laravel` (illuminate/cache) - *recommended*
+
+> The same adapter will be used to store the internal request timers.
 
 ##### The adapters can be defined in the rule set.
 
@@ -133,7 +136,7 @@ $rules = new RequestLimitRuleset(
 
 ----------
 
-#### With caching - `cache`
+#### With caching (default) - `cache`
 
 Use cached responses when your defined rate limit is exceeded. The middleware will try to fallback to a cached response before throwing `429 - Too Many Requests`.
 
