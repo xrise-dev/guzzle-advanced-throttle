@@ -43,23 +43,33 @@ class LaravelAdapter implements StorageInterface
      */
     private function _getCacheManager(Repository $config = null) : CacheManager
     {
-        /** @var Repository $storageConfig */
-        $storageConfig = null;
         if ($config === null || ($storageConfig = new Repository($config->get('storage'))) === null)
         {
             throw new LaravelCacheConfigNotSetException();
         }
 
+        $container = $this->_getContainer($storageConfig);
+
+        $container['config'] = $storageConfig->all();
+
+        return new CacheManager($container);
+    }
+
+    /**
+     * @param Repository $config
+     * @return Container
+     */
+    private function _getContainer(Repository $config) : Container
+    {
         $container = new Container();
-        $store = $storageConfig->get('cache.stores.file');
+
+        $store = $config->get('cache.stores.file');
         if ($store !== null && $store['driver'] === 'file')
         {
             $container['files'] = new Filesystem();
         }
 
-        $container['config'] = $storageConfig->all();
-
-        return new CacheManager($container);
+        return $container;
     }
 
     /**
