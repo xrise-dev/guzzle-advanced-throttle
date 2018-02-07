@@ -7,6 +7,7 @@ use DateTime;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
+use Illuminate\Config\Repository;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -94,5 +95,14 @@ class ArrayAdapter implements StorageInterface
     private function _invalidate(string $host, string $path)
     {
         unset($this->_storage[self::STORAGE_KEY][$host][$path]);
+    }
+
+    /**
+     * StorageInterface constructor.
+     * @param Repository|null $config
+     */
+    public function __construct(?Repository $config = null)
+    {
+
     }
 }

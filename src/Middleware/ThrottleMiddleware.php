@@ -2,7 +2,6 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Middleware;
 
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\CacheStrategy;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -17,12 +16,9 @@ class ThrottleMiddleware
     /** @var RequestLimitRuleset */
     private $_requestLimitRuleset;
 
-
     /**
      * ThrottleMiddleware constructor.
      * @param RequestLimitRuleset $requestLimitRuleset
-     * @param CacheStrategy|null $cacheStrategy
-     * @throws \Exception
      */
     public function __construct(RequestLimitRuleset $requestLimitRuleset)
     {

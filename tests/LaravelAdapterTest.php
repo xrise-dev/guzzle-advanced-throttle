@@ -6,6 +6,8 @@ use DateTime;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\LaravelAdapter;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
+use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,6 +16,14 @@ use PHPUnit\Framework\TestCase;
  */
 class LaravelAdapterTest extends TestCase
 {
+
+    /** @test */
+    public function throws_an_exception_when_config_is_not_set()
+    {
+        $this->expectException(LaravelCacheConfigNotSetException::class);
+
+        new LaravelAdapter();
+    }
 
     /** @test
      */
@@ -25,7 +35,7 @@ class LaravelAdapterTest extends TestCase
         $expiresAt = new DateTime();
         $remainingSeconds = 120;
 
-        $laravelAdapter = new LaravelAdapter();
+        $laravelAdapter = new LaravelAdapter($this->_getConfig());
         $laravelAdapter->save($host, $key, $requestCount, $expiresAt, $remainingSeconds);
 
         $requestInfo = $laravelAdapter->get($host, $key);
@@ -33,6 +43,14 @@ class LaravelAdapterTest extends TestCase
         $this->assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
         $this->assertEquals($requestInfo->requestCount, $requestCount);
         $this->assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
+    }
+
+    /**
+     * @return Repository
+     */
+    private function _getConfig() : Repository
+    {
+        return new Repository(require 'config/app.php');
     }
 
     /** @test
@@ -43,7 +61,7 @@ class LaravelAdapterTest extends TestCase
         $request = new Request('GET', 'www.test.de');
         $response = new Response(200, [], null, '1337');
 
-        $arrayAdapter = new LaravelAdapter();
+        $arrayAdapter = new LaravelAdapter($this->_getConfig());
         $arrayAdapter->saveResponse($request, $response);
 
         $storedResponse = $arrayAdapter->getResponse($request);

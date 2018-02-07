@@ -5,8 +5,10 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 use DateTime;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Illuminate\Cache\CacheManager;
+use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
 use Illuminate\Filesystem\Filesystem;
 use Psr\Http\Message\RequestInterface;
@@ -24,21 +26,40 @@ class LaravelAdapter implements StorageInterface
     /** @var CacheManager */
     private $_cacheManager;
 
-    public function __construct()
+    /**
+     * LaravelAdapter constructor.
+     * @param Repository|null $config
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException
+     */
+    public function __construct(?Repository $config = null)
     {
+        $this->_cacheManager = $this->_getCacheManager($config);
+    }
+
+    /**
+     * @param Repository|null $config
+     * @return CacheManager
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException
+     */
+    private function _getCacheManager(Repository $config = null) : CacheManager
+    {
+        /** @var Repository $storageConfig */
+        $storageConfig = null;
+        if ($config === null || ($storageConfig = new Repository($config->get('storage'))) === null)
+        {
+            throw new LaravelCacheConfigNotSetException();
+        }
+
         $container = new Container();
+        $store = $storageConfig->get('cache.stores.file');
+        if ($store !== null && $store['driver'] === 'file')
+        {
+            $container['files'] = new Filesystem();
+        }
 
-        // TODO: Set from outside..
-        $container['config'] = [
-            'cache.default'     => 'file',
-            'cache.stores.file' => [
-                'driver' => 'file',
-                'path'   => __DIR__ . '/cache'
-            ]
-        ];
-        $container['files'] = new Filesystem(); // TODO: Remove when config extracted..
+        $container['config'] = $storageConfig->all();
 
-        $this->_cacheManager = new CacheManager($container);
+        return new CacheManager($container);
     }
 
     /**

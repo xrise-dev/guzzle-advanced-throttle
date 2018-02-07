@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a15dbc0a0a3f3acdf4b730bbc16a9a5",
+    "content-hash": "7d1e205a885e91c87230aa9cc01babc3",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -302,6 +302,50 @@
             "description": "The Illuminate Cache package.",
             "homepage": "https://laravel.com",
             "time": "2018-01-27T10:11:12+00:00"
+        },
+        {
+            "name": "illuminate/config",
+            "version": "v5.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/config.git",
+                "reference": "e8158dff3189deed846c84c66c60fa68c21ee579"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/config/zipball/e8158dff3189deed846c84c66c60fa68c21ee579",
+                "reference": "e8158dff3189deed846c84c66c60fa68c21ee579",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "5.6.*",
+                "illuminate/support": "5.6.*",
+                "php": "^7.1.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Config\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Config package.",
+            "homepage": "https://laravel.com",
+            "time": "2017-11-07T20:23:51+00:00"
         },
         {
             "name": "illuminate/container",

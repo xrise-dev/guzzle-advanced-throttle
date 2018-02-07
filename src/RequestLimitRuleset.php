@@ -12,6 +12,7 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\ForceCache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\NoCache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
+use Illuminate\Config\Repository;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -43,17 +44,22 @@ class RequestLimitRuleset
     /** @var CacheStrategy */
     private $_cacheStrategy;
 
+    /** @var Repository */
+    private $_config;
+
     /**
      * RequestLimitRuleset constructor.
      * @param array $rules
      * @param string $cacheStrategy
      * @param string|null $storageAdapter
+     * @param Repository|null $config
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException
      */
-    public function __construct(array $rules, string $cacheStrategy = 'no-cache', string $storageAdapter = 'array')
+    public function __construct(array $rules, string $cacheStrategy = 'no-cache', string $storageAdapter = 'array', Repository $config = null)
     {
         $this->_rules = $rules;
+        $this->_config = $config;
         $this->_setStorageAdapter($storageAdapter);
         $this->_setCacheStrategy($cacheStrategy);
     }
@@ -70,7 +76,7 @@ class RequestLimitRuleset
         }
 
         $storageAdapterClass = self::STORAGE_MAP[$adapterName];
-        $this->_storage = new $storageAdapterClass();
+        $this->_storage = new $storageAdapterClass($this->_config);
     }
 
     /**

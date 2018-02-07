@@ -4,6 +4,7 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces;
 
 use DateTime;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
+use Illuminate\Config\Repository;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -13,6 +14,12 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface StorageInterface
 {
+
+    /**
+     * StorageInterface constructor.
+     * @param Repository|null $config
+     */
+    public function __construct(?Repository $config = null);
 
     /**
      * @param string $host
