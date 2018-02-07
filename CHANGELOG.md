@@ -21,10 +21,19 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+----------
+
+## 1.0.2
+
+### Added
+- Possibility to configure the laravel adapter
+
 ## 1.0.1 
 
 ### Fixed
 - Host not recognized
+
+----------
 
 ## 1.0.0
 
