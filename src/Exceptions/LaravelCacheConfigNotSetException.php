@@ -14,6 +14,6 @@ class LaravelCacheConfigNotSetException extends \RuntimeException
      */
     public function __construct()
     {
-        parent::__construct('Laravel was enabled as the cache driver but no config was found.');
+        parent::__construct('Laravel was enabled as the cache adapter but no config was found.');
     }
 }

@@ -3,14 +3,12 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
 use DateTime;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\CacheConfigHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
-use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
-use Illuminate\Container\Container;
-use Illuminate\Filesystem\Filesystem;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -29,47 +27,12 @@ class LaravelAdapter implements StorageInterface
     /**
      * LaravelAdapter constructor.
      * @param Repository|null $config
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException
      */
     public function __construct(?Repository $config = null)
     {
-        $this->_cacheManager = $this->_getCacheManager($config);
-    }
-
-    /**
-     * @param Repository|null $config
-     * @return CacheManager
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException
-     */
-    private function _getCacheManager(Repository $config = null) : CacheManager
-    {
-        if ($config === null || ($storageConfig = new Repository($config->get('storage'))) === null)
-        {
-            throw new LaravelCacheConfigNotSetException();
-        }
-
-        $container = $this->_getContainer($storageConfig);
-
-        $container['config'] = $storageConfig->all();
-
-        return new CacheManager($container);
-    }
-
-    /**
-     * @param Repository $config
-     * @return Container
-     */
-    private function _getContainer(Repository $config) : Container
-    {
-        $container = new Container();
-
-        $store = $config->get('cache.stores.file');
-        if ($store !== null && $store['driver'] === 'file')
-        {
-            $container['files'] = new Filesystem();
-        }
-
-        return $container;
+        $this->_cacheManager = CacheConfigHelper::getCacheManager($config);
     }
 
     /**

@@ -103,6 +103,35 @@ Works out of the box.
 
 You need to provide a config (`Illuminate\Config\Repository`) for this adapter.
 
+###### Config array structure
+
+In this example we are using the `file` driver:
+
+``` php
+    'cache' => [
+        'driver'  => 'file',
+        'options' => [
+            'path' => './cache'
+        ]
+    ]
+```
+
+The options array accepts everything the normal laravel driver knows. 
+So you could pass a `connection` for the `redis` driver for example:
+
+``` php
+    'cache' => [
+        'driver'  => 'redis',
+        'options' => [
+            'connection' => 'default'
+        ]
+    ]
+```
+
+----------
+
+###### Pass the config repository in the constructor of RequestLimitRuleset
+
 ``` php
 $rules = new RequestLimitRuleset(
     [
@@ -114,7 +143,7 @@ $rules = new RequestLimitRuleset(
     ], 
     'cache', // caching strategy
     'laravel', // storage adapter
-    new Repository(require '../config/laravel-guzzle-limiter.php')
+    new Repository(require '../config/laravel-guzzle-limiter.php') // config repository
     );
 ```
 

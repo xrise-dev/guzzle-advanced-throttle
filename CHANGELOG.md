@@ -23,10 +23,19 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 1.0.3
+
+### Added
+- Simplified the config format of the laravel cache adapter
+
+----------
+
 ## 1.0.2
 
 ### Added
-- Possibility to configure the laravel adapter
+- Possibility to configure the laravel cache adapter
+
+----------
 
 ## 1.0.1 
 
