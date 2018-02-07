@@ -93,10 +93,36 @@ $response = $client->get('https://www.google.com/test');
 
 #### Available storage adapters
 
-- `array` (default)
-- `laravel` (illuminate/cache) - *recommended*
+##### `array` (default)
+
+Works out of the box.
+
+----------
+
+##### `laravel` (Illuminate/Cache) - *recommended*
+
+You need to provide a config (`Illuminate\Config\Repository`) for this adapter.
+
+``` php
+$rules = new RequestLimitRuleset(
+    [
+        [
+            'host'             => 'https://www.google.com',
+            'max_requests'     => 20,
+            'request_interval' => 1
+        ]
+    ], 
+    'cache', // caching strategy
+    'laravel', // storage adapter
+    new Repository(require '../config/laravel-guzzle-limiter.php')
+    );
+```
+
+----------
 
 > The same adapter will be used to store the internal request timers.
+
+----------
 
 ##### The adapters can be defined in the rule set.
 
@@ -110,7 +136,7 @@ $rules = new RequestLimitRuleset(
         ]
     ], 
     'cache', // caching strategy
-    'laravel' // storage adapter
+    'array' // storage adapter
     );
 ```
 
@@ -130,7 +156,7 @@ $rules = new RequestLimitRuleset(
         ]
     ], 
     'no-cache', // caching strategy
-    'laravel' // storage adapter
+    'array' // storage adapter
     );
 ```
 
@@ -150,7 +176,7 @@ $rules = new RequestLimitRuleset(
         ]
     ], 
     'cache', // caching strategy
-    'laravel' // storage adapter
+    'array' // storage adapter
     );
 ```
 
@@ -170,7 +196,7 @@ $rules = new RequestLimitRuleset(
         ]
     ], 
     'force-cache', // caching strategy
-    'laravel' // storage adapter
+    'array' // storage adapter
     );
 ```
 
