@@ -3,6 +3,7 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies;
 
 use GuzzleHttp\Promise\PromiseInterface;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\ResponseHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\CacheStrategy;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -48,7 +49,7 @@ class Cachable implements CacheStrategy
      */
     protected function _saveResponse(RequestInterface $request, ResponseInterface $response) : void
     {
-        if ($response->getStatusCode() !== 200)
+        if (ResponseHelper::hasErrorStatusCode($response))
         {
             return;
         }

@@ -23,6 +23,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 1.0.5
+
+### Fixed
+
+- Do not only cache responses with status code 200 but rather filter out responses with error status codes: 4xx, 5xx
+
+----------
+
 ## 1.0.4
 
 ### Added
