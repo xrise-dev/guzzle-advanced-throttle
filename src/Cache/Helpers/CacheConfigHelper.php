@@ -3,7 +3,6 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers;
 
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\LaravelDriver;
-use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
@@ -19,19 +18,13 @@ class CacheConfigHelper
 {
 
     /**
-     * @param Repository|null $config
+     * @param Repository $config
      * @return CacheManager
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException
      */
-    public static function getCacheManager(Repository $config = null) : CacheManager
+    public static function getCacheManager(Repository $config) : CacheManager
     {
-        if ($config === null || ($cacheConfig = $config->get('cache')) === null)
-        {
-            throw new LaravelCacheConfigNotSetException();
-        }
-
-        return new CacheManager(self::getContainer(new Repository($cacheConfig)));
+        return new CacheManager(self::getContainer($config));
     }
 
     /**
@@ -63,6 +56,7 @@ class CacheConfigHelper
     public static function getDriver(Repository $config) : string
     {
         $driver = $config->get('driver');
+
         if ($driver === null)
         {
             throw new LaravelCacheDriverNotSetException();

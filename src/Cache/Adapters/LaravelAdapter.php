@@ -6,6 +6,7 @@ use DateTime;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\CacheConfigHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
@@ -19,10 +20,14 @@ use Psr\Http\Message\ResponseInterface;
 class LaravelAdapter implements StorageInterface
 {
 
+    /** @var int */
+    private const DEFAULT_TTL = 300;
     /** @var string */
     private const STORAGE_KEY = 'requests';
     /** @var CacheManager */
     private $_cacheManager;
+    /** @var int Time To Live in minutes */
+    private $_ttl;
 
     /**
      * LaravelAdapter constructor.
@@ -32,7 +37,14 @@ class LaravelAdapter implements StorageInterface
      */
     public function __construct(?Repository $config = null)
     {
-        $this->_cacheManager = CacheConfigHelper::getCacheManager($config);
+        if ($config === null || ($cacheConfig = $config->get('cache')) === null)
+        {
+            throw new LaravelCacheConfigNotSetException();
+        }
+
+        $cacheRepository = new Repository($cacheConfig);
+        $this->_cacheManager = CacheConfigHelper::getCacheManager($cacheRepository);
+        $this->_ttl = $cacheRepository->get('ttl', self::DEFAULT_TTL);
     }
 
     /**
@@ -75,14 +87,13 @@ class LaravelAdapter implements StorageInterface
     /**
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param int $duration
      * @throws \Exception
      */
-    public function saveResponse(RequestInterface $request, ResponseInterface $response, int $duration = 300) : void
+    public function saveResponse(RequestInterface $request, ResponseInterface $response) : void
     {
         [$host, $path] = RequestHelper::getHostAndPath($request);
 
-        $this->_cacheManager->put($this->_buildResponseKey($host, $path), $response, $duration);
+        $this->_cacheManager->put($this->_buildResponseKey($host, $path), $response, $this->_ttl);
     }
 
     /**

@@ -6,6 +6,7 @@ use DateTime;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
+use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -56,14 +57,12 @@ class ArrayAdapterTest extends TestCase
      */
     public function stored_value_gets_invalidated_when_expired()
     {
-        $request = new Request('GET', 'www.test.de');
+        $request = new Request('GET', 'www.test.com');
         $response = new Response(200, [], null, '1337');
 
-        $arrayAdapter = new ArrayAdapter();
-        $arrayAdapter->saveResponse($request, $response, 0);
+        $arrayAdapter = new ArrayAdapter(new Repository(['cache' => ['ttl' => 0]]));
+        $arrayAdapter->saveResponse($request, $response);
 
-        $storedResponse = $arrayAdapter->getResponse($request);
-
-        $this->assertNull($storedResponse);
+        $this->assertNull($arrayAdapter->getResponse($request));
     }
 }

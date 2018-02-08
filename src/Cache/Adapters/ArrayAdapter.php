@@ -18,15 +18,33 @@ use Psr\Http\Message\ResponseInterface;
 class ArrayAdapter implements StorageInterface
 {
 
+    /** @var int */
+    private const DEFAULT_TTL = 300;
     /** @var string */
     private const STORAGE_KEY = 'requests';
     /** @var string */
     private const RESPONSE_KEY = 'response';
     /** @var string */
     private const EXPIRATION_KEY = 'expires_at';
+    /** @var int Time To Live in minutes */
+    private $_ttl = self::DEFAULT_TTL;
 
     /** @var array */
     private $_storage = [];
+
+    /**
+     * StorageInterface constructor.
+     * @param Repository|null $config
+     */
+    public function __construct(?Repository $config = null)
+    {
+        if ($config === null)
+        {
+            return;
+        }
+
+        $this->_ttl = $config->get('cache.ttl', self::DEFAULT_TTL);
+    }
 
     /**
      * @param string $host
@@ -53,16 +71,15 @@ class ArrayAdapter implements StorageInterface
     /**
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param int $duration
      * @throws \Exception
      */
-    public function saveResponse(RequestInterface $request, ResponseInterface $response, int $duration = 300) : void
+    public function saveResponse(RequestInterface $request, ResponseInterface $response) : void
     {
         [$host, $path] = RequestHelper::getHostAndPath($request);
 
         $this->_storage[self::STORAGE_KEY][$host][$path] = [
             self::RESPONSE_KEY   => $response,
-            self::EXPIRATION_KEY => (new DateTime())->add(new DateInterval('PT' . $duration . 'M'))->getTimestamp()
+            self::EXPIRATION_KEY => (new DateTime())->add(new DateInterval('PT' . $this->_ttl . 'M'))->getTimestamp()
         ];
     }
 
@@ -95,14 +112,5 @@ class ArrayAdapter implements StorageInterface
     private function _invalidate(string $host, string $path)
     {
         unset($this->_storage[self::STORAGE_KEY][$host][$path]);
-    }
-
-    /**
-     * StorageInterface constructor.
-     * @param Repository|null $config
-     */
-    public function __construct(?Repository $config = null)
-    {
-
     }
 }

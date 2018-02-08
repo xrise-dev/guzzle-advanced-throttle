@@ -42,7 +42,7 @@ interface StorageInterface
      * @param ResponseInterface $response
      * @param int $duration
      */
-    public function saveResponse(RequestInterface $request, ResponseInterface $response, int $duration = 300) : void;
+    public function saveResponse(RequestInterface $request, ResponseInterface $response) : void;
 
     /**
      * @param RequestInterface $request

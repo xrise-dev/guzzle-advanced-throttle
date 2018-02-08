@@ -59,7 +59,7 @@ class CacheConfigHelperTest extends TestCase
      */
     public function gets_cache_manager()
     {
-        $cacheManager = CacheConfigHelper::getCacheManager($this->_getConfig());
+        $cacheManager = CacheConfigHelper::getCacheManager($this->_getCacheConfig());
 
         $this->assertEquals('file', $cacheManager->getDefaultDriver());
     }

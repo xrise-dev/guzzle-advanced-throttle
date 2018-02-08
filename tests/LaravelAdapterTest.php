@@ -68,4 +68,22 @@ class LaravelAdapterTest extends TestCase
 
         $this->assertEquals($response, $storedResponse);
     }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function stored_value_gets_invalidated_when_expired()
+    {
+        $request = new Request('GET', 'www.test.com');
+        $response = new Response(200, [], null, '1337');
+
+        $config = $this->_getConfig();
+        $config->set('cache.ttl', 0);
+        $laravelAdapter = new LaravelAdapter($config);
+        $laravelAdapter->saveResponse($request, $response);
+
+        $storedResponse = $laravelAdapter->getResponse($request);
+
+        $this->assertNull($storedResponse);
+    }
 }

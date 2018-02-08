@@ -23,6 +23,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 1.0.4
+
+### Added
+- Possibility to define the TTL for the cache in the config 
+
+----------
+
 ## 1.0.3
 
 ### Added
