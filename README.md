@@ -91,6 +91,14 @@ $response = $client->get('https://www.google.com/test');
 
 ### Caching
 
+----------
+
+#### Beforehand
+
+Responses with an error status code `4xx` or `5xx` will not be cached (even with `force-cache` enabled)! 
+
+----------
+
 #### Available storage adapters
 
 ##### `array` (default)
