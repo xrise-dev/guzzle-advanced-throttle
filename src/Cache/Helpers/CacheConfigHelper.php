@@ -56,7 +56,6 @@ class CacheConfigHelper
     public static function getDriver(Repository $config) : string
     {
         $driver = $config->get('driver');
-
         if ($driver === null)
         {
             throw new LaravelCacheDriverNotSetException();
