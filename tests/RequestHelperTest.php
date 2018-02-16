@@ -18,10 +18,7 @@ class RequestHelperTest extends TestCase
     public function gets_correct_host_and_path() : void
     {
         $url = 'https://www.test.com/path';
-
-        $request = new Request('GET', $url);
-
-        [$host, $path] = RequestHelper::getHostAndPath($request);
+        [$host, $path] = RequestHelper::getHostAndPath(new Request('GET', $url));
 
         $this->assertEquals($url, $host . $path);
     }

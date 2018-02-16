@@ -61,7 +61,9 @@ class CachableTest extends TestCase
 
         $client->request('GET', 'test?query=' . $query);
         $client->request('GET', 'test?query=' . $query); // should get cached response
+
         $this->expectException(TooManyRequestsHttpException::class);
+
         $client->request('GET', 'test?query=different');
     }
 
@@ -84,7 +86,9 @@ class CachableTest extends TestCase
 
         $client->request('POST', 'test', ['form_params' => $params]);
         $client->request('POST', 'test', ['form_params' => $params]); // should get cached response
+
         $this->expectException(TooManyRequestsHttpException::class);
+
         $client->request('POST', 'test', ['form_params' => ['another_param' => 'different']]);
     }
 
