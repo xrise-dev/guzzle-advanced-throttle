@@ -20,7 +20,7 @@ class ThrottleMiddlewareTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function requests_are_limited()
+    public function requests_are_limited() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([

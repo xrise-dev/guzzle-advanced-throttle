@@ -20,7 +20,7 @@ class NoCacheTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function requests_are_not_cached()
+    public function requests_are_not_cached() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([

@@ -15,7 +15,7 @@ class RequestLimitGroupTest extends TestCase
 {
 
     /** @test */
-    public function can_be_created_statically()
+    public function can_be_created_statically() : void
     {
         $requestLimitGroup = RequestLimitGroup::create();
 
@@ -25,7 +25,7 @@ class RequestLimitGroupTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function can_add_request_limiters()
+    public function can_add_request_limiters() : void
     {
         $requestLimitGroup = RequestLimitGroup::create();
         $requestLimitGroup->addRequestLimiter(new RequestLimiter('www.test'));
@@ -36,7 +36,7 @@ class RequestLimitGroupTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function can_remove_request_limiters()
+    public function can_remove_request_limiters() : void
     {
         $requestLimiter = new RequestLimiter('www.test');
 
@@ -50,7 +50,7 @@ class RequestLimitGroupTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function can_request_is_correct()
+    public function can_request_is_correct() : void
     {
         $host = 'http://www.test.com';
         $interval = 100;
@@ -65,7 +65,7 @@ class RequestLimitGroupTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function retry_seconds_are_correct()
+    public function retry_seconds_are_correct() : void
     {
         $host = 'http://www.test.com';
         $interval = 100;

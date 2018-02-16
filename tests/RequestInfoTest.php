@@ -15,7 +15,7 @@ class RequestInfoTest extends TestCase
 
     /** @test
      */
-    public function can_be_created_statically()
+    public function can_be_created_statically() : void
     {
         $timestamp = (new DateTime())->getTimestamp();
         $requestCount = 15;

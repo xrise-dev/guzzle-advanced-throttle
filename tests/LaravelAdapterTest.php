@@ -18,7 +18,7 @@ class LaravelAdapterTest extends TestCase
 {
 
     /** @test */
-    public function throws_an_exception_when_config_is_not_set()
+    public function throws_an_exception_when_config_is_not_set() : void
     {
         $this->expectException(LaravelCacheConfigNotSetException::class);
 
@@ -27,7 +27,7 @@ class LaravelAdapterTest extends TestCase
 
     /** @test
      */
-    public function stores_and_retrieves_data()
+    public function stores_and_retrieves_data() : void
     {
         $host = 'test';
         $key = 'my_key';
@@ -56,7 +56,7 @@ class LaravelAdapterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function stores_and_retrieves_response()
+    public function stores_and_retrieves_response() : void
     {
         $request = new Request('GET', 'www.test.de');
         $response = new Response(200, [], null, '1337');
@@ -72,7 +72,7 @@ class LaravelAdapterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function stored_value_gets_invalidated_when_expired()
+    public function stored_value_gets_invalidated_when_expired() : void
     {
         $request = new Request('GET', 'www.test.com');
         $response = new Response(200, [], null, '1337');

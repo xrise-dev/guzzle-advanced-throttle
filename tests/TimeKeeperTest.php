@@ -17,7 +17,7 @@ class TimeKeeperTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function can_be_created_statically()
+    public function can_be_created_statically() : void
     {
         $timeKeeper = TimeKeeper::create(60);
 
@@ -27,7 +27,7 @@ class TimeKeeperTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function sets_correct_expiration_date()
+    public function sets_correct_expiration_date() : void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -42,7 +42,7 @@ class TimeKeeperTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function expiration_date_can_be_set_manually()
+    public function expiration_date_can_be_set_manually() : void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -56,7 +56,7 @@ class TimeKeeperTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function remaining_time_is_correct()
+    public function remaining_time_is_correct() : void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -67,7 +67,7 @@ class TimeKeeperTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function is_expired_is_correct()
+    public function is_expired_is_correct() : void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -80,7 +80,7 @@ class TimeKeeperTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function remaining_time_is_correct_when_expired()
+    public function remaining_time_is_correct_when_expired() : void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -92,7 +92,7 @@ class TimeKeeperTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function resets_correctly()
+    public function resets_correctly() : void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);

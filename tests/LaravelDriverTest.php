@@ -13,7 +13,7 @@ class LaravelDriverTest extends TestCase
 {
 
     /** @test */
-    public function gets_correct_driver_config()
+    public function gets_correct_driver_config() : void
     {
         $driver = 'test';
         $options = ['my_option' => true];

@@ -91,19 +91,18 @@ class LaravelAdapter implements StorageInterface
      */
     public function saveResponse(RequestInterface $request, ResponseInterface $response) : void
     {
-        [$host, $path] = RequestHelper::getHostAndPath($request);
-
-        $this->_cacheManager->put($this->_buildResponseKey($host, $path), $response, $this->_ttl);
+        $this->_cacheManager->put($this->_buildResponseKey($request), $response, $this->_ttl);
     }
 
     /**
-     * @param string $host
-     * @param string $path
+     * @param RequestInterface $request
      * @return string
      */
-    private function _buildResponseKey(string $host, string $path) : string
+    private function _buildResponseKey(RequestInterface $request) : string
     {
-        return self::STORAGE_KEY . '.' . $this->_buildKey($host, $path);
+        [$host, $path] = RequestHelper::getHostAndPath($request);
+
+        return self::STORAGE_KEY . '.' . $host . '.' . $path . '.' . RequestHelper::getStorageKey($request);
     }
 
     /**
@@ -112,9 +111,7 @@ class LaravelAdapter implements StorageInterface
      */
     public function getResponse(RequestInterface $request) : ? ResponseInterface
     {
-        [$host, $path] = RequestHelper::getHostAndPath($request);
-
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_cacheManager->get($this->_buildResponseKey($host, $path));
+        return $this->_cacheManager->get($this->_buildResponseKey($request));
     }
 }

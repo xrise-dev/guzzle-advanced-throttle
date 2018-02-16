@@ -24,4 +24,31 @@ class RequestHelper
             $uri->getPath()
         ];
     }
+
+    /**
+     * @param RequestInterface $request
+     * @return string
+     */
+    public static function getStorageKey(RequestInterface $request) : string
+    {
+        $uri = $request->getUri();
+        $method = $request->getMethod();
+
+        if ($method !== 'GET')
+        {
+            return self::_getMethodAndParams($method, $request->getBody()->getContents());
+        }
+
+        return self::_getMethodAndParams($method, $uri->getQuery());
+    }
+
+    /**
+     * @param string $method
+     * @param string $params
+     * @return string
+     */
+    private static function _getMethodAndParams(string $method, string $params) : string
+    {
+        return $method . '_' . $params;
+    }
 }

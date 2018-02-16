@@ -20,7 +20,7 @@ class CacheTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function requests_are_cached()
+    public function requests_are_cached() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
@@ -45,7 +45,7 @@ class CacheTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function throw_too_many_requests_when_nothing_in_cache()
+    public function throw_too_many_requests_when_nothing_in_cache() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([

@@ -19,7 +19,7 @@ class ForceCacheTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function requests_are_always_cached()
+    public function requests_are_always_cached() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([

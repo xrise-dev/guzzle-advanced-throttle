@@ -16,7 +16,7 @@ class CacheConfigHelperTest extends TestCase
 {
 
     /** @test */
-    public function throws_driver_not_set_exception()
+    public function throws_driver_not_set_exception() : void
     {
         $this->expectException(LaravelCacheDriverNotSetException::class);
 
@@ -25,7 +25,7 @@ class CacheConfigHelperTest extends TestCase
 
     /** @test
      */
-    public function gets_driver()
+    public function gets_driver() : void
     {
         $this->assertEquals('file', CacheConfigHelper::getDriver($this->_getCacheConfig()));
     }
@@ -48,7 +48,7 @@ class CacheConfigHelperTest extends TestCase
 
     /** @test
      */
-    public function gets_container()
+    public function gets_container() : void
     {
         $container = CacheConfigHelper::getContainer($this->_getCacheConfig());
 
@@ -57,7 +57,7 @@ class CacheConfigHelperTest extends TestCase
 
     /** @test
      */
-    public function gets_cache_manager()
+    public function gets_cache_manager() : void
     {
         $cacheManager = CacheConfigHelper::getCacheManager($this->_getCacheConfig());
 

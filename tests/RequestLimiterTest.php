@@ -18,7 +18,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function can_be_created_statically()
+    public function can_be_created_statically() : void
     {
         $requestLimiter = RequestLimiter::create('www.test.com');
 
@@ -28,7 +28,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function can_be_created_from_rule()
+    public function can_be_created_from_rule() : void
     {
         $requestLimiter = RequestLimiter::createFromRule(['host' => 'www.test.com']);
 
@@ -38,7 +38,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function cannot_be_created_from_rule_without_host()
+    public function cannot_be_created_from_rule_without_host() : void
     {
         $this->expectException(HostNotDefinedException::class);
 
@@ -48,7 +48,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function can_request_is_correct()
+    public function can_request_is_correct() : void
     {
         $host = 'http://www.test.com';
         $requestLimiter = RequestLimiter::create($host, 1);
@@ -64,7 +64,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function remaining_seconds_are_correct()
+    public function remaining_seconds_are_correct() : void
     {
         $host = 'http://www.test.com';
         $requestLimiter = RequestLimiter::create($host, 20, 30);
@@ -76,7 +76,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function current_request_count_is_correct()
+    public function current_request_count_is_correct() : void
     {
         $host = 'http://www.test.com';
         $requestLimiter = RequestLimiter::create($host, 1);
@@ -92,7 +92,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function current_request_count_is_correct_when_expired()
+    public function current_request_count_is_correct_when_expired() : void
     {
         $host = 'http://www.test.com';
         $requestLimiter = RequestLimiter::create($host, 1, 0);
@@ -104,7 +104,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function restores_state()
+    public function restores_state() : void
     {
         $host = 'http://www.test.com';
 
@@ -123,7 +123,7 @@ class RequestLimiterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function matches_host_correctly()
+    public function matches_host_correctly() : void
     {
         $host = 'http://www.test.com';
 

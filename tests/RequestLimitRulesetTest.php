@@ -16,7 +16,7 @@ class RequestLimitRulesetTest extends TestCase
 {
 
     /** @test */
-    public function can_be_created_statically()
+    public function can_be_created_statically() : void
     {
         $requestLimitRuleset = RequestLimitRuleset::create([]);
 
@@ -24,7 +24,7 @@ class RequestLimitRulesetTest extends TestCase
     }
 
     /** @test */
-    public function throws_unknown_cache_strategy_exception()
+    public function throws_unknown_cache_strategy_exception() : void
     {
         $this->expectException(UnknownCacheStrategyException::class);
 
@@ -32,7 +32,7 @@ class RequestLimitRulesetTest extends TestCase
     }
 
     /** @test */
-    public function throws_unknown_storage_adapter_exception()
+    public function throws_unknown_storage_adapter_exception() : void
     {
         $this->expectException(UnknownStorageAdapterException::class);
 
@@ -42,7 +42,7 @@ class RequestLimitRulesetTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function ruleset_contains_the_correct_request_limit_group()
+    public function ruleset_contains_the_correct_request_limit_group() : void
     {
         $host = 'http://www.test.com';
         $interval = 33;

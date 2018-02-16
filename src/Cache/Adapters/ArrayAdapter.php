@@ -77,7 +77,7 @@ class ArrayAdapter implements StorageInterface
     {
         [$host, $path] = RequestHelper::getHostAndPath($request);
 
-        $this->_storage[self::STORAGE_KEY][$host][$path] = [
+        $this->_storage[self::STORAGE_KEY][$host][$path][RequestHelper::getStorageKey($request)] = [
             self::RESPONSE_KEY   => $response,
             self::EXPIRATION_KEY => (new DateTime())->add(new DateInterval('PT' . $this->_ttl . 'M'))->getTimestamp()
         ];
@@ -90,8 +90,9 @@ class ArrayAdapter implements StorageInterface
     public function getResponse(RequestInterface $request) : ? ResponseInterface
     {
         [$host, $path] = RequestHelper::getHostAndPath($request);
+        $key = RequestHelper::getStorageKey($request);
 
-        $response = $this->_storage[self::STORAGE_KEY][$host][$path] ?? null;
+        $response = $this->_storage[self::STORAGE_KEY][$host][$path][$key] ?? null;
         if ($response !== null)
         {
             if ($response[self::EXPIRATION_KEY] > \time())
@@ -99,7 +100,7 @@ class ArrayAdapter implements StorageInterface
                 return $response[self::RESPONSE_KEY];
             }
 
-            $this->_invalidate($host, $path);
+            $this->_invalidate($host, $path, $key);
         }
 
         return null;
@@ -108,9 +109,10 @@ class ArrayAdapter implements StorageInterface
     /**
      * @param string $host
      * @param string $path
+     * @param string $key
      */
-    private function _invalidate(string $host, string $path)
+    private function _invalidate(string $host, string $path, string $key) : void
     {
-        unset($this->_storage[self::STORAGE_KEY][$host][$path]);
+        unset($this->_storage[self::STORAGE_KEY][$host][$path][$key]);
     }
 }
