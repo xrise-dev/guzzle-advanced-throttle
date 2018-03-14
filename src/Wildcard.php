@@ -1,14 +1,12 @@
 <?php
 
-
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
-
 /**
- * Class WildcardMatcher
+ * Class Wildcard
  * @package hamburgscleanest\GuzzleAdvancedThrottle
  */
-class WildcardMatcher
+class Wildcard
 {
 
     private const REGEX_WILDCARD  = '/{[^}]*}/';
@@ -22,7 +20,6 @@ class WildcardMatcher
      */
     public static function matches(string $wildcardText, string $text) : bool
     {
-        // TODO: Security -> escape
         $regex = \preg_replace(self::REGEX_WILDCARD, self::REGEX_ANY_CHAR, $wildcardText);
 
         $matches = [];
