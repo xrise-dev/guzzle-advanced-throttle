@@ -129,7 +129,7 @@ class RequestLimiter
      */
     public function matches(string $host) : bool
     {
-        return $this->_host === $host;
+        return $this->_host === $host || WildcardMatcher::matches($this->_host, $host);
     }
 
     /**
