@@ -237,9 +237,34 @@ $rules = new RequestLimitRuleset(
     );
 ```
 
+----------
+
+### Wildcards
+
+If you want to define the same rules for multiple different hosts, you can use wildcards.
+A possible use case can be subdomains:
+
+``` php
+$rules = new RequestLimitRuleset(
+    [
+        [
+            'host'             => 'https://www.{subdomain}.mysite.com',
+            'max_requests'     => 50,
+            'request_interval' => 2
+        ]
+    ]
+);
+```
+
+This `host` will match `https://www.en.mysite.com`, `https://www.de.mysite.com`, `https://www.fr.mysite.com`, etc.
+
+----------
+
 ## Changes
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+----------
 
 ## Testing
 
@@ -247,19 +272,27 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 $ composer test
 ```
 
+----------
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
 
+----------
+
 ## Security
 
 If you discover any security related issues, please email chroma91@gmail.com instead of using the issue tracker.
+
+----------
 
 ## Credits
 
 - [Timo Prüße][link-author]
 - [Andre Biel][link-andre]
 - [All Contributors][link-contributors]
+
+----------
 
 ## License
 
