@@ -23,6 +23,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 1.0.7
+
+### Added
+
+- Support for Laravel 5.5
+----------
+
 ## 1.0.6
 
 ### Fixed
