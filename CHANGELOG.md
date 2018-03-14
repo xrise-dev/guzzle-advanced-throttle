@@ -7,7 +7,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## Next
 
 ### Added
-- Nothing
+- Host wildcards: [WILDCARDS](README.md#Wildcards)
 
 ### Deprecated
 - Nothing
