@@ -5,7 +5,6 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle;
 use GuzzleHttp\Psr7\Uri;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
-use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -70,20 +69,15 @@ class RequestLimiter
     }
 
     /**
+     * @param string $host
      * @param array $rule
      * @param StorageInterface|null $storage
      * @return RequestLimiter
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException
      * @throws \Exception
      */
-    public static function createFromRule(array $rule, StorageInterface $storage = null) : self
+    public static function createFromRule(string $host, array $rule, StorageInterface $storage = null) : self
     {
-        if (!isset($rule['host']))
-        {
-            throw new HostNotDefinedException();
-        }
-
-        return new static($rule['host'], $rule['max_requests'] ?? null, $rule['request_interval'] ?? null, $storage);
+        return new static($host, $rule['max_requests'] ?? null, $rule['request_interval'] ?? null, $storage);
     }
 
     /**
@@ -177,7 +171,7 @@ class RequestLimiter
     }
 
     /**
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
+     * Save timer in storage
      */
     private function _save() : void
     {
@@ -192,7 +186,6 @@ class RequestLimiter
 
     /**
      * @return int
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
      */
     public function getRemainingSeconds() : int
     {
@@ -201,7 +194,6 @@ class RequestLimiter
 
     /**
      * @return int
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
      */
     public function getCurrentRequestCount() : int
     {

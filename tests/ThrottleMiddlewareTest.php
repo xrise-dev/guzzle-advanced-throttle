@@ -19,14 +19,16 @@ class ThrottleMiddlewareTest extends TestCase
 
     /** @test
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_limited() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
-            [
-                'host'         => $host,
-                'max_requests' => 1
+            $host => [
+                [
+                    'max_requests' => 1
+                ]
             ]
         ]);
         $throttle = new ThrottleMiddleware($ruleset);
@@ -34,21 +36,23 @@ class ThrottleMiddlewareTest extends TestCase
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $response = $client->request('GET', '/');
-
         $this->assertEquals(200, $response->getStatusCode());
-        $this->expectException(TooManyRequestsHttpException::class);
 
+        $this->expectException(TooManyRequestsHttpException::class);
         $client->request('GET', '/');
     }
 
     /** @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function wildcards_are_matched() : void
     {
         $ruleset = new RequestLimitRuleset([
-            [
-                'host'          => 'www.{subdomain}.test.com',
-                'max_requests'  => 1,
+            'www.{subdomain}.test.com' => [
+                [
+                    'max_requests' => 1
+                ]
             ]
         ]);
         $throttle = new ThrottleMiddleware($ruleset);

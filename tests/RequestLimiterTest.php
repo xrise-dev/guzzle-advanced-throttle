@@ -4,7 +4,6 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use GuzzleHttp\Psr7\Request;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
-use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimiter;
 use PHPUnit\Framework\TestCase;
 
@@ -30,19 +29,9 @@ class RequestLimiterTest extends TestCase
      */
     public function can_be_created_from_rule() : void
     {
-        $requestLimiter = RequestLimiter::createFromRule(['host' => 'www.test.com']);
+        $requestLimiter = RequestLimiter::createFromRule('www.test.com', []);
 
         $this->assertInstanceOf(RequestLimiter::class, $requestLimiter);
-    }
-
-    /** @test
-     * @throws \Exception
-     */
-    public function cannot_be_created_from_rule_without_host() : void
-    {
-        $this->expectException(HostNotDefinedException::class);
-
-        RequestLimiter::createFromRule(['some' => 'crap']);
     }
 
     /** @test

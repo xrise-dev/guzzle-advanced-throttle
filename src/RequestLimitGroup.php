@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use Psr\Http\Message\RequestInterface;
 use SplObjectStorage;
 
@@ -101,5 +102,25 @@ class RequestLimitGroup
     public function getRequestLimiterCount() : int
     {
         return $this->_requestLimiters->count();
+    }
+
+    /**
+     * @param string $host
+     * @param array $rules
+     * @param StorageInterface $storage
+     * @throws \Exception
+     */
+    public function addRules(string $host, array $rules, StorageInterface $storage) : void
+    {
+        foreach ($rules as $rule)
+        {
+            $this->addRequestLimiter(
+                RequestLimiter::createFromRule(
+                    $host,
+                    $rule,
+                    $storage
+                )
+            );
+        }
     }
 }

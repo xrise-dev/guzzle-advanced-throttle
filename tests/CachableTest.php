@@ -19,18 +19,18 @@ class CachableTest extends TestCase
 
     /** @test
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function dont_cache_error_responses() : void
     {
         $host = 'www.test.com';
-        $ruleset = new RequestLimitRuleset(
-            [
+        $ruleset = new RequestLimitRuleset([
+            $host => [
                 [
-                    'host'         => $host,
                     'max_requests' => 1
                 ]
-            ],
-            'cache');
+            ]
+        ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(500), new Response()]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
@@ -42,19 +42,21 @@ class CachableTest extends TestCase
         $client->request('GET', '/');
     }
 
-    /** @test */
+    /** @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
     public function respects_request_parameters() : void
     {
         $host = 'www.test.com';
         $query = 'test';
-        $ruleset = new RequestLimitRuleset(
-            [
+        $ruleset = new RequestLimitRuleset([
+            $host => [
                 [
-                    'host'         => $host,
                     'max_requests' => 1
                 ]
-            ],
-            'cache');
+            ]
+        ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(), new Response(), new Response()]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
@@ -67,19 +69,21 @@ class CachableTest extends TestCase
         $client->request('GET', 'test?query=different');
     }
 
-    /** @test */
+    /** @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
     public function respects_body_parameters() : void
     {
         $host = 'www.test.com';
         $params = ['some_param' => 'test'];
-        $ruleset = new RequestLimitRuleset(
-            [
+        $ruleset = new RequestLimitRuleset([
+            $host => [
                 [
-                    'host'         => $host,
                     'max_requests' => 1
                 ]
-            ],
-            'cache');
+            ]
+        ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(), new Response(), new Response()]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);

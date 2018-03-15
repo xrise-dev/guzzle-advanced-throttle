@@ -19,17 +19,18 @@ class NoCacheTest extends TestCase
 
     /** @test
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_not_cached() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
-            [
-                'host'         => $host,
-                'max_requests' => 1
+            $host => [
+                [
+                    'max_requests' => 1
+                ]
             ]
-        ],
-            'no-cache');
+        ], 'no-cache');
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(200), new Response(200)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);

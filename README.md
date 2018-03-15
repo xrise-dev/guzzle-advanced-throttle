@@ -14,6 +14,9 @@ A Guzzle middleware that can throttle requests according to (multiple) defined r
 It is also possible to define a caching strategy, 
 e.g. get the response from cache when the rate limit is exceeded or always get a cached value to spare your rate limits.
 
+> **Please be aware that the format of the configuration changed since 2.0.0!**  
+> Check out [Usage](#Usage)
+
 ## Install
 
 Via Composer
@@ -37,6 +40,9 @@ Let's say you wanted to implement the following rules:
 
 
 1. First you have to define the rules in a `hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset`:
+
+#### Configuration in version 1.x.x
+
 ``` php
 $rules = new RequestLimitRuleset([
         [
@@ -48,6 +54,23 @@ $rules = new RequestLimitRuleset([
             'host'             => 'https://www.google.com',
             'max_requests'     => 100,
             'request_interval' => 120
+        ]
+    ]);
+```
+
+#### Configuration in version 2.x.x
+
+``` php
+$rules = new RequestLimitRuleset([
+        'https://www.google.com' => [
+            [
+                'max_requests'     => 20,
+                'request_interval' => 1
+            ],
+            [
+                'max_requests'     => 100,
+                'request_interval' => 120
+            ]
         ]
     ]);
 ```
@@ -142,13 +165,7 @@ So you could pass a `connection` for the `redis` driver for example:
 
 ``` php
 $rules = new RequestLimitRuleset(
-    [
-        [
-            'host'             => 'https://www.google.com',
-            'max_requests'     => 20,
-            'request_interval' => 1
-        ]
-    ], 
+    [ ... ], 
     'cache', // caching strategy
     'laravel', // storage adapter
     new Repository(require '../config/laravel-guzzle-limiter.php') // config repository
@@ -165,13 +182,7 @@ $rules = new RequestLimitRuleset(
 
 ``` php
 $rules = new RequestLimitRuleset(
-    [
-        [
-            'host'             => 'https://www.google.com',
-            'max_requests'     => 20,
-            'request_interval' => 1
-        ]
-    ], 
+    [ ... ], 
     'cache', // caching strategy
     'array' // storage adapter
     );
@@ -185,13 +196,7 @@ Just throttle the requests. No caching is done.
 
 ``` php
 $rules = new RequestLimitRuleset(
-    [
-        [
-            'host'             => 'https://www.google.com',
-            'max_requests'     => 20,
-            'request_interval' => 1
-        ]
-    ], 
+    [ ... ], 
     'no-cache', // caching strategy
     'array' // storage adapter
     );
@@ -205,13 +210,7 @@ Use cached responses when your defined rate limit is exceeded. The middleware wi
 
 ``` php
 $rules = new RequestLimitRuleset(
-    [
-        [
-            'host'             => 'https://www.google.com',
-            'max_requests'     => 20,
-            'request_interval' => 1
-        ]
-    ], 
+    [ ... ], 
     'cache', // caching strategy
     'array' // storage adapter
     );
@@ -225,13 +224,7 @@ Always use cached responses when available to spare your rate limits. As long as
 
 ``` php
 $rules = new RequestLimitRuleset(
-    [
-        [
-            'host'             => 'https://www.google.com',
-            'max_requests'     => 20,
-            'request_interval' => 1
-        ]
-    ], 
+    [ ... ], 
     'force-cache', // caching strategy
     'array' // storage adapter
     );
@@ -241,19 +234,20 @@ $rules = new RequestLimitRuleset(
 
 ### Wildcards
 
+> Available in version 2.x.x and higher
+
 If you want to define the same rules for multiple different hosts, you can use wildcards.
 A possible use case can be subdomains:
 
 ``` php
-$rules = new RequestLimitRuleset(
-    [
-        [
-            'host'             => 'https://www.{subdomain}.mysite.com',
-            'max_requests'     => 50,
-            'request_interval' => 2
+$rules = new RequestLimitRuleset([
+        'https://www.{subdomain}.mysite.com' => [
+            [
+                'max_requests'     => 50,
+                'request_interval' => 2
+            ]
         ]
-    ]
-);
+    ]);
 ```
 
 This `host` will match `https://www.en.mysite.com`, `https://www.de.mysite.com`, `https://www.fr.mysite.com`, etc.

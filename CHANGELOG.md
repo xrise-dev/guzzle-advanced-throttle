@@ -8,6 +8,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Added
 - Host wildcards: [WILDCARDS](README.md#Wildcards)
+- More flexible configuration: [USAGE](README.md#Usage)
 
 ### Deprecated
 - Nothing
