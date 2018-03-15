@@ -121,6 +121,7 @@ class RequestLimitRuleset
     /**
      * @return RequestLimitGroup
      * @throws \Exception
+     * @throws HostNotDefinedException
      */
     public function getRequestLimitGroup() : RequestLimitGroup
     {
