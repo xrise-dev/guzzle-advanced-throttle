@@ -10,6 +10,7 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\Cache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\ForceCache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\NoCache;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
 use Illuminate\Config\Repository;
@@ -124,9 +125,14 @@ class RequestLimitRuleset
     public function getRequestLimitGroup() : RequestLimitGroup
     {
         $requestLimitGroup = new RequestLimitGroup();
-        foreach ($this->_rules as $rule)
+        foreach ($this->_rules as $host => $rules)
         {
-            $requestLimitGroup->addRequestLimiter(RequestLimiter::createFromRule($rule, $this->_storage));
+            if (!\is_string($host))
+            {
+                throw new HostNotDefinedException();
+            }
+
+            $requestLimitGroup->addRules($host, $rules, $this->_storage);
         }
 
         return $requestLimitGroup;

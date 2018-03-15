@@ -3,6 +3,7 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use GuzzleHttp\Psr7\Request;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
@@ -46,11 +47,36 @@ class RequestLimitRulesetTest extends TestCase
     {
         $host = 'http://www.test.com';
         $interval = 33;
+        $ruleset = [
+            $host => [
+                [
+                    'max_requests'     => 0,
+                    'request_interval' => $interval
+                ]
+            ]
+        ];
 
-        $requestLimitRuleset = RequestLimitRuleset::create([['host' => $host, 'max_requests' => 0, 'request_interval' => $interval]]);
+        $requestLimitRuleset = RequestLimitRuleset::create($ruleset);
         $requestLimitGroup = $requestLimitRuleset->getRequestLimitGroup();
         $requestLimitGroup->canRequest(new Request('GET', $host . '/check'));
 
         $this->assertEquals($interval, $requestLimitGroup->getRetryAfter());
+    }
+
+    /** @test
+     * @throws \Exception
+     */
+    public function host_for_rules_has_to_be_defined() : void
+    {
+        $ruleset = new RequestLimitRuleset([
+            [
+                [
+                    'max_requests' => 1
+                ]
+            ]
+        ]);
+
+        $this->expectException(HostNotDefinedException::class);
+        $ruleset->getRequestLimitGroup();
     }
 }

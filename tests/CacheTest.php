@@ -19,17 +19,18 @@ class CacheTest extends TestCase
 
     /** @test
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_cached() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
-            [
-                'host'         => $host,
-                'max_requests' => 2
+            $host => [
+                [
+                    'max_requests' => 2
+                ]
             ]
-        ],
-            'cache');
+        ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
@@ -44,17 +45,18 @@ class CacheTest extends TestCase
 
     /** @test
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
-            [
-                'host'         => $host,
-                'max_requests' => 0
+            $host => [
+                [
+                    'max_requests' => 0
+                ]
             ]
-        ],
-            'cache');
+        ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response()]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);

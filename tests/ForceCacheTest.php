@@ -18,17 +18,18 @@ class ForceCacheTest extends TestCase
 
     /** @test
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_always_cached() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
-            [
-                'host'         => $host,
-                'max_requests' => 2
+            $host => [
+                [
+                    'max_requests' => 2
+                ]
             ]
-        ],
-            'force-cache');
+        ], 'force-cache');
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
