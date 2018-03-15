@@ -15,7 +15,7 @@ It is also possible to define a caching strategy,
 e.g. get the response from cache when the rate limit is exceeded or always get a cached value to spare your rate limits.
 
 > **Please be aware that the format of the configuration changed since 2.0.0!**  
-> Check out [Usage](#Usage)
+> Check out [Usage](#usage)
 
 ## Install
 
