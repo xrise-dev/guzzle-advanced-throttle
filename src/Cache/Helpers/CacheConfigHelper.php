@@ -2,13 +2,14 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers;
 
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\FileDriver;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\LaravelDriver;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\RedisDriver;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
 use Illuminate\Filesystem\Filesystem;
-
 
 /**
  * Class CacheConfigHelper
@@ -16,6 +17,12 @@ use Illuminate\Filesystem\Filesystem;
  */
 class CacheConfigHelper
 {
+
+    /** @var array */
+    private $drivers = [
+        'file'  => FileDriver::class,
+        'redis' => RedisDriver::class
+    ];
 
     /**
      * @param Repository $config
@@ -36,16 +43,13 @@ class CacheConfigHelper
     {
         $driver = self::getDriver($config);
 
-        $container = new Container();
+        /** @var LaravelDriver $driverClass */
+        $driverClass = new self::$this->drivers[$driver](
+            $driver,
+            $config['options'] ?? []
+        );
 
-        if ($driver === 'file')
-        {
-            $container['files'] = new Filesystem();
-        }
-
-        $container['config'] = LaravelDriver::getDriverConfig($driver, $config['options'] ?? []);
-
-        return $container;
+        return $driverClass->getContainer();
     }
 
     /**
