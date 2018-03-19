@@ -3,6 +3,7 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers;
 
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\RedisDatabaseNotSetException;
+use Illuminate\Redis\RedisManager;
 
 /**
  * Class RedisDriver
@@ -11,6 +12,9 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\RedisDatabaseNotSetExcept
 class RedisDriver extends LaravelDriver
 {
 
+    /**
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\RedisDatabaseNotSetException
+     */
     protected function _setContainer() : void
     {
         if (!isset($this->_options['database']))
@@ -18,6 +22,6 @@ class RedisDriver extends LaravelDriver
             throw new RedisDatabaseNotSetException();
         }
 
-        $this->_container['database']['redis'] = $this->_options['database'];
+        $this->_container['redis'] = new RedisManager('predis', $this->_options['database']);
     }
 }

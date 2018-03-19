@@ -4,12 +4,13 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers;
 
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\FileDriver;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\LaravelDriver;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\MemcachedDriver;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers\RedisDriver;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownLaravelDriverException;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
-use Illuminate\Filesystem\Filesystem;
 
 /**
  * Class CacheConfigHelper
@@ -19,14 +20,16 @@ class CacheConfigHelper
 {
 
     /** @var array */
-    private $drivers = [
-        'file'  => FileDriver::class,
-        'redis' => RedisDriver::class
+    private const DRIVERS = [
+        'file'      => FileDriver::class,
+        'redis'     => RedisDriver::class,
+        'memcached' => MemcachedDriver::class
     ];
 
     /**
      * @param Repository $config
      * @return CacheManager
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownLaravelDriverException
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException
      */
     public static function getCacheManager(Repository $config) : CacheManager
@@ -37,17 +40,16 @@ class CacheConfigHelper
     /**
      * @param Repository $config
      * @return Container
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownLaravelDriverException
      * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException
      */
     public static function getContainer(Repository $config) : Container
     {
-        $driver = self::getDriver($config);
+        $driverName = self::getDriver($config);
+        $driverClass = self::_getDriverClass($driverName);
 
         /** @var LaravelDriver $driverClass */
-        $driverClass = new self::$this->drivers[$driver](
-            $driver,
-            $config['options'] ?? []
-        );
+        $driverClass = new $driverClass($driverName, $config['options'] ?? []);
 
         return $driverClass->getContainer();
     }
@@ -66,5 +68,20 @@ class CacheConfigHelper
         }
 
         return $driver;
+    }
+
+    /**
+     * @param string $driverName
+     * @return string
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownLaravelDriverException
+     */
+    private static function _getDriverClass(string $driverName) : string
+    {
+        if (!isset(self::DRIVERS[$driverName]))
+        {
+            throw new UnknownLaravelDriverException($driverName, self::DRIVERS);
+        }
+
+        return self::DRIVERS[$driverName];
     }
 }

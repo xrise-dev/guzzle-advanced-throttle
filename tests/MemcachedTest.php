@@ -12,10 +12,10 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
- * Class RedisTest
+ * Class MemcachedTest
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
  */
-class RedisTest extends TestCase
+class MemcachedTest extends TestCase
 {
 
     /** @test
@@ -36,15 +36,13 @@ class RedisTest extends TestCase
             'laravel',
             new Repository([
                 'cache' => [
-                    'driver'  => 'redis',
+                    'driver'  => 'memcached',
                     'options' => [
-                        'connection' => 'default',
-                        'database'   => [
-                            'cluster' => false,
-                            'default' => [
-                                'host'     => '127.0.0.1',
-                                'port'     => 6379,
-                                'database' => 0,
+                        'servers' => [
+                            [
+                                'host'   => '127.0.0.1',
+                                'port'   => 11211,
+                                'weight' => 100,
                             ],
                         ]
                     ]
@@ -80,15 +78,13 @@ class RedisTest extends TestCase
             'laravel',
             new Repository([
                 'cache' => [
-                    'driver'  => 'redis',
+                    'driver'  => 'memcached',
                     'options' => [
-                        'connection' => 'default',
-                        'database'   => [
-                            'cluster' => false,
-                            'default' => [
-                                'host'     => '127.0.0.1',
-                                'port'     => 6379,
-                                'database' => 0,
+                        'servers' => [
+                            [
+                                'host'   => '127.0.0.1',
+                                'port'   => 11211,
+                                'weight' => 100,
                             ],
                         ]
                     ]

@@ -3,7 +3,6 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Drivers;
 
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\MemcachedServersNotSetException;
-use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\RedisDatabaseNotSetException;
 use Illuminate\Cache\MemcachedConnector;
 
 /**
@@ -13,6 +12,9 @@ use Illuminate\Cache\MemcachedConnector;
 class MemcachedDriver extends LaravelDriver
 {
 
+    /**
+     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\MemcachedServersNotSetException
+     */
     protected function _setContainer() : void
     {
         if (!isset($this->_options['servers']))
