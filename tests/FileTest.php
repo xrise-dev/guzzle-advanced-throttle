@@ -7,17 +7,19 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
-use Illuminate\Cache\MemcachedConnector;
 use Illuminate\Config\Repository;
+use Illuminate\Filesystem\Filesystem;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
- * Class MemcachedTest
+ * Class FileTest
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
  */
-class MemcachedTest extends TestCase
+class FileTest extends TestCase
 {
+
+    private const CACHE_DIR = './cache';
 
     /** @test
      * @throws \Exception
@@ -25,17 +27,7 @@ class MemcachedTest extends TestCase
      */
     public function requests_are_cached() : void
     {
-        $servers = [
-            [
-                'host'   => '127.0.0.1',
-                'port'   => 11211,
-                'weight' => 100,
-            ],
-        ];
-
-        $memcached = new MemcachedConnector();
-        $memcached = $memcached->connect($servers);
-        $memcached->flush();
+        $this->_deleteCachedFiles();
 
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
@@ -49,15 +41,9 @@ class MemcachedTest extends TestCase
             'laravel',
             new Repository([
                 'cache' => [
-                    'driver'  => 'memcached',
+                    'driver'  => 'file',
                     'options' => [
-                        'servers' => [
-                            [
-                                'host'   => '127.0.0.1',
-                                'port'   => 11211,
-                                'weight' => 100,
-                            ],
-                        ]
+                        'path' => self::CACHE_DIR
                     ]
                 ]
             ]));
@@ -73,23 +59,19 @@ class MemcachedTest extends TestCase
         $this->assertEquals($responseTwo, $responseThree);
     }
 
+    private function _deleteCachedFiles() : void
+    {
+        $filesystem = new Filesystem();
+        $filesystem->deleteDirectory(self::CACHE_DIR);
+    }
+
     /** @test
      * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {
-        $servers = [
-            [
-                'host'   => '127.0.0.1',
-                'port'   => 11211,
-                'weight' => 100,
-            ],
-        ];
-
-        $memcached = new MemcachedConnector();
-        $memcached = $memcached->connect($servers);
-        $memcached->flush();
+        $this->_deleteCachedFiles();
 
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
@@ -103,9 +85,9 @@ class MemcachedTest extends TestCase
             'laravel',
             new Repository([
                 'cache' => [
-                    'driver'  => 'memcached',
+                    'driver'  => 'file',
                     'options' => [
-                        'servers' => $servers
+                        'path' => self::CACHE_DIR
                     ]
                 ]
             ]));

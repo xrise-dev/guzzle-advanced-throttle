@@ -134,9 +134,11 @@ Works out of the box.
 
 You need to provide a config (`Illuminate\Config\Repository`) for this adapter.
 
-###### Config array structure
+----------
 
-In this example we are using the `file` driver:
+#### Laravel Drivers
+
+##### File
 
 ``` php
     'cache' => [
@@ -147,14 +149,41 @@ In this example we are using the `file` driver:
     ]
 ```
 
-The options array accepts everything the normal laravel driver knows. 
-So you could pass a `connection` for the `redis` driver for example:
+----------
+
+##### Redis
 
 ``` php
     'cache' => [
         'driver'  => 'redis',
         'options' => [
-            'connection' => 'default'
+            'database' => [
+                'cluster' => false,
+                'default' => [
+                    'host'     => '127.0.0.1',
+                    'port'     => 6379,
+                    'database' => 0,
+                ],
+            ]
+        ]
+    ]
+```
+
+----------
+
+##### Memcached
+
+``` php
+    'cache' => [
+        'driver'  => 'memcached',
+        'options' => [
+            'servers' => [
+                [
+                    'host'   => '127.0.0.1',
+                    'port'   => 11211,
+                    'weight' => 100,
+                ],
+            ]
         ]
     ]
 ```
