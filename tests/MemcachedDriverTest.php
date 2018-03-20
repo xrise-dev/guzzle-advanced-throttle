@@ -5,6 +5,7 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\MemcachedServersNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use Illuminate\Cache\MemcachedConnector;
@@ -18,6 +19,31 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
  */
 class MemcachedDriverTest extends TestCase
 {
+
+    /** @test
+     * @throws \Exception
+     */
+    public function throws_servers_not_set_exception() : void
+    {
+        $this->expectException(MemcachedServersNotSetException::class);
+
+        new RequestLimitRuleset([
+            'www.test.de' => [
+                [
+                    'max_requests' => 2
+                ]
+            ]
+        ],
+            'cache',
+            'laravel',
+            new Repository([
+                'cache' => [
+                    'driver'  => 'memcached',
+                    'options' => []
+                ]
+            ])
+        );
+    }
 
     /** @test
      * @throws \Exception

@@ -15,8 +15,6 @@ class LaravelDriverTest extends TestCase
 {
 
     /** @test
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function throws_unknown_driver_exception() : void
     {
@@ -36,5 +34,23 @@ class LaravelDriverTest extends TestCase
                     'driver' => 'bullshit',
                 ]
             ]));
+    }
+
+    /** @test
+     */
+    public function container_is_built_correctly() : void
+    {
+        $mockDriver = new MockDriver('mock');
+
+        $this->assertArraySubset(
+            [
+                'cache.default'     => 'mock',
+                'cache.stores.mock' => [
+                    'driver' => 'mock'
+                ],
+                'cache.prefix'      => 'throttle_cache'
+            ],
+            $mockDriver->getContainer()->offsetGet('config')
+        );
     }
 }

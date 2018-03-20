@@ -5,6 +5,7 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\RedisDatabaseNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use Illuminate\Config\Repository;
@@ -18,6 +19,29 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
  */
 class RedisDriverTest extends TestCase
 {
+
+    /** @test
+     */
+    public function throws_database_not_set_exception() : void
+    {
+        $this->expectException(RedisDatabaseNotSetException::class);
+
+        new RequestLimitRuleset([
+            'www.test.de' => [
+                [
+                    'max_requests' => 2
+                ]
+            ]
+        ],
+            'cache',
+            'laravel',
+            new Repository([
+                'cache' => [
+                    'driver'  => 'redis',
+                    'options' => []
+                ]
+            ]));
+    }
 
     /** @test
      * @throws \Exception
