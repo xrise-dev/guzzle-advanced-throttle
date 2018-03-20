@@ -7,8 +7,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## Next
 
 ### Added
-- Host wildcards: [WILDCARDS](README.md#Wildcards)
-- More flexible configuration: [USAGE](README.md#Usage)
+- Nothing
 
 ### Deprecated
 - Nothing
@@ -21,6 +20,24 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Security
 - Nothing
+
+----------
+
+
+## 2.0.1
+
+### Fixed
+There was a problem in the composer.json that for example broke the compatibility to Drupal 8. This is fixed in this release. 
+
+Thanks to @berenddeboer !
+
+----------
+
+## 2.0.0
+
+### Added
+- Host wildcards: [WILDCARDS](README.md#wildcards)
+- More flexible configuration: [USAGE](README.md#usage) - **BREAKING**
 
 ----------
 
