@@ -13,10 +13,10 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
- * Class RedisTest
+ * Class RedisDriverTest
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
  */
-class RedisTest extends TestCase
+class RedisDriverTest extends TestCase
 {
 
     /** @test
