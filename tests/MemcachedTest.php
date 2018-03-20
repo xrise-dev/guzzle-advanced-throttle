@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
+use Illuminate\Cache\MemcachedConnector;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -24,6 +25,18 @@ class MemcachedTest extends TestCase
      */
     public function requests_are_cached() : void
     {
+        $servers = [
+            [
+                'host'   => '127.0.0.1',
+                'port'   => 11211,
+                'weight' => 100,
+            ],
+        ];
+
+        $memcached = new MemcachedConnector();
+        $memcached = $memcached->connect($servers);
+        $memcached->flush();
+
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -66,6 +79,18 @@ class MemcachedTest extends TestCase
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {
+        $servers = [
+            [
+                'host'   => '127.0.0.1',
+                'port'   => 11211,
+                'weight' => 100,
+            ],
+        ];
+
+        $memcached = new MemcachedConnector();
+        $memcached = $memcached->connect($servers);
+        $memcached->flush();
+
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -80,13 +105,7 @@ class MemcachedTest extends TestCase
                 'cache' => [
                     'driver'  => 'memcached',
                     'options' => [
-                        'servers' => [
-                            [
-                                'host'   => '127.0.0.1',
-                                'port'   => 11211,
-                                'weight' => 100,
-                            ],
-                        ]
+                        'servers' => $servers
                     ]
                 ]
             ]));

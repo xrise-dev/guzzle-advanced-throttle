@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use Illuminate\Config\Repository;
+use Illuminate\Redis\RedisManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -24,6 +25,17 @@ class RedisTest extends TestCase
      */
     public function requests_are_cached() : void
     {
+        $database = [
+            'cluster' => false,
+            'default' => [
+                'host'     => '127.0.0.1',
+                'port'     => 6379,
+                'database' => 0,
+            ],
+        ];
+        $redis = new RedisManager('predis', $database);
+        $redis->flushdb();
+
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -38,15 +50,7 @@ class RedisTest extends TestCase
                 'cache' => [
                     'driver'  => 'redis',
                     'options' => [
-                        'connection' => 'default',
-                        'database'   => [
-                            'cluster' => false,
-                            'default' => [
-                                'host'     => '127.0.0.1',
-                                'port'     => 6379,
-                                'database' => 0,
-                            ],
-                        ]
+                        'database' => $database
                     ]
                 ]
             ]));
@@ -68,6 +72,17 @@ class RedisTest extends TestCase
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {
+        $database = [
+            'cluster' => false,
+            'default' => [
+                'host'     => '127.0.0.1',
+                'port'     => 6379,
+                'database' => 0,
+            ],
+        ];
+        $redis = new RedisManager('predis', $database);
+        $redis->flushdb();
+
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -82,15 +97,7 @@ class RedisTest extends TestCase
                 'cache' => [
                     'driver'  => 'redis',
                     'options' => [
-                        'connection' => 'default',
-                        'database'   => [
-                            'cluster' => false,
-                            'default' => [
-                                'host'     => '127.0.0.1',
-                                'port'     => 6379,
-                                'database' => 0,
-                            ],
-                        ]
+                        'database' => $database
                     ]
                 ]
             ]));
