@@ -75,6 +75,8 @@ $rules = new RequestLimitRuleset([
     ]);
 ```
 
+Make sure the host name does not end with a trailing slash. It should
+be `https://www.google.com` not `https://www.google.com/`.
 
 ----------
 
