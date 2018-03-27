@@ -223,7 +223,7 @@ $rules = new RequestLimitRuleset(
 
 #### Without caching - `no-cache`
 
-Just throttle the requests. No caching is done.
+Just throttle the requests. No caching is done. When the limit is exceeded, a `429 - Too Many Requests` exception will be thrown.
 
 ``` php
 $rules = new RequestLimitRuleset(
@@ -251,7 +251,7 @@ $rules = new RequestLimitRuleset(
 
 #### With forced caching - `force-cache`
 
-Always use cached responses when available to spare your rate limits. As long as there is a response in cache for the current request it will return the cached response. It will only actually fire the request when it is not cached. If there is no cached response and the request limits are also reached, it will throw `429 - Too Many Requests`.
+Always use cached responses when available to spare your rate limits. As long as there is a response in cache for the current request it will return the cached response. It will only actually send the request when it is not cached. If there is no cached response and the request limits are exceeded, it will throw `429 - Too Many Requests`.
 
 ``` php
 $rules = new RequestLimitRuleset(
