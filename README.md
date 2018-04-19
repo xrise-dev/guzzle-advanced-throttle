@@ -43,25 +43,6 @@ Let's say you wanted to implement the following rules:
 
 1. First you have to define the rules in a `hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset`:
 
-#### Configuration in version 1.x.x
-
-``` php
-$rules = new RequestLimitRuleset([
-        [
-            'host'             => 'https://www.google.com',
-            'max_requests'     => 20,
-            'request_interval' => 1
-        ],
-        [
-            'host'             => 'https://www.google.com',
-            'max_requests'     => 100,
-            'request_interval' => 120
-        ]
-    ]);
-```
-
-#### Configuration in version 2.x.x
-
 ``` php
 $rules = new RequestLimitRuleset([
         'https://www.google.com' => [
