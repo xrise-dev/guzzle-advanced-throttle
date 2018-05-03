@@ -163,7 +163,7 @@ class RequestLimiter
      */
     private function _increment() : void
     {
-        $this->_requestCount ++;
+        $this->_requestCount++;
         if ($this->_requestCount === 1)
         {
             $this->_timekeeper->start();
