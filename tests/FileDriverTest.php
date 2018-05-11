@@ -22,8 +22,6 @@ class FileDriverTest extends TestCase
     private const CACHE_DIR = './cache';
 
     /** @test
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_cached() : void
     {
@@ -55,8 +53,8 @@ class FileDriverTest extends TestCase
         $responseTwo = $client->request('GET', '/')->getProtocolVersion();
         $responseThree = $client->request('GET', '/')->getProtocolVersion();
 
-        $this->assertNotEquals($responseOne, $responseTwo);
-        $this->assertEquals($responseTwo, $responseThree);
+        static::assertNotEquals($responseOne, $responseTwo);
+        static::assertEquals($responseTwo, $responseThree);
     }
 
     private function _deleteCachedFiles() : void
@@ -66,8 +64,6 @@ class FileDriverTest extends TestCase
     }
 
     /** @test
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {

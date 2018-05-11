@@ -22,8 +22,8 @@ class RequestInfoTest extends TestCase
         $remainingSeconds = 60;
         $requestInfo = RequestInfo::create($requestCount, $timestamp, $remainingSeconds);
 
-        $this->assertEquals($requestCount, $requestInfo->requestCount);
-        $this->assertEquals($remainingSeconds, $requestInfo->remainingSeconds);
-        $this->assertEquals($timestamp, $requestInfo->expiresAt->getTimestamp());
+        static::assertEquals($requestCount, $requestInfo->requestCount);
+        static::assertEquals($remainingSeconds, $requestInfo->remainingSeconds);
+        static::assertEquals($timestamp, $requestInfo->expiresAt->getTimestamp());
     }
 }

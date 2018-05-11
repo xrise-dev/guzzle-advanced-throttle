@@ -18,8 +18,6 @@ class CachableTest extends TestCase
 {
 
     /** @test
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function dont_cache_error_responses() : void
     {
@@ -43,8 +41,6 @@ class CachableTest extends TestCase
     }
 
     /** @test
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Exception
      */
     public function respects_request_parameters() : void
     {
@@ -70,8 +66,6 @@ class CachableTest extends TestCase
     }
 
     /** @test
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Exception
      */
     public function respects_body_parameters() : void
     {

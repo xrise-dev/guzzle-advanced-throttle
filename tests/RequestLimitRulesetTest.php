@@ -21,7 +21,7 @@ class RequestLimitRulesetTest extends TestCase
     {
         $requestLimitRuleset = RequestLimitRuleset::create([]);
 
-        $this->assertInstanceOf(RequestLimitRuleset::class, $requestLimitRuleset);
+        static::assertInstanceOf(RequestLimitRuleset::class, $requestLimitRuleset);
     }
 
     /** @test */
@@ -60,7 +60,7 @@ class RequestLimitRulesetTest extends TestCase
         $requestLimitGroup = $requestLimitRuleset->getRequestLimitGroup();
         $requestLimitGroup->canRequest(new Request('GET', $host . '/check'));
 
-        $this->assertEquals($interval, $requestLimitGroup->getRetryAfter());
+        static::assertEquals($interval, $requestLimitGroup->getRetryAfter());
     }
 
     /** @test

@@ -20,7 +20,7 @@ class RequestHelperTest extends TestCase
         $url = 'https://www.test.com/path';
         [$host, $path] = RequestHelper::getHostAndPath(new Request('GET', $url));
 
-        $this->assertEquals($url, $host . $path);
+        static::assertEquals($url, $host . $path);
     }
 
     /** @test
@@ -29,7 +29,7 @@ class RequestHelperTest extends TestCase
     {
         $query = 'test=someVal';
 
-        $this->assertEquals('GET_' . $query, RequestHelper::getStorageKey(new Request('GET', 'https://www.test.com/path?' . $query)));
+        static::assertEquals('GET_' . $query, RequestHelper::getStorageKey(new Request('GET', 'https://www.test.com/path?' . $query)));
     }
 
     /** @test
@@ -38,7 +38,7 @@ class RequestHelperTest extends TestCase
     {
         $body = 'test=someVal';
 
-        $this->assertEquals('POST_' . $body, RequestHelper::getStorageKey(new Request('POST', 'https://www.test.com/path', [], $body)));
+        static::assertEquals('POST_' . $body, RequestHelper::getStorageKey(new Request('POST', 'https://www.test.com/path', [], $body)));
     }
 
 }

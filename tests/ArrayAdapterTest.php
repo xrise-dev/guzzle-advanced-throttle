@@ -30,10 +30,10 @@ class ArrayAdapterTest extends TestCase
         $arrayAdapter->save($host, $key, $requestCount, $expiresAt, $remainingSeconds);
 
         $requestInfo = $arrayAdapter->get($host, $key);
-        $this->assertNotNull($requestInfo);
-        $this->assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
-        $this->assertEquals($requestInfo->requestCount, $requestCount);
-        $this->assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
+        static::assertNotNull($requestInfo);
+        static::assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
+        static::assertEquals($requestInfo->requestCount, $requestCount);
+        static::assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
     }
 
     /** @test
@@ -49,7 +49,7 @@ class ArrayAdapterTest extends TestCase
 
         $storedResponse = $arrayAdapter->getResponse($request);
 
-        $this->assertEquals($response, $storedResponse);
+        static::assertEquals($response, $storedResponse);
     }
 
     /** @test
@@ -63,6 +63,6 @@ class ArrayAdapterTest extends TestCase
         $arrayAdapter = new ArrayAdapter(new Repository(['cache' => ['ttl' => 0]]));
         $arrayAdapter->saveResponse($request, $response);
 
-        $this->assertNull($arrayAdapter->getResponse($request));
+        static::assertNull($arrayAdapter->getResponse($request));
     }
 }

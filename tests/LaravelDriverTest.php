@@ -42,7 +42,7 @@ class LaravelDriverTest extends TestCase
     {
         $mockDriver = new MockDriver('mock');
 
-        $this->assertArraySubset(
+        static::assertArraySubset(
             [
                 'cache.default'     => 'mock',
                 'cache.stores.mock' => [

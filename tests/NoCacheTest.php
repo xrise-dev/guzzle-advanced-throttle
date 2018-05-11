@@ -18,8 +18,6 @@ class NoCacheTest extends TestCase
 {
 
     /** @test
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_not_cached() : void
     {
@@ -37,7 +35,7 @@ class NoCacheTest extends TestCase
 
         $response = $client->request('GET', '/');
 
-        $this->assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
         $this->expectException(TooManyRequestsHttpException::class);
 
         $client->request('GET', '/');

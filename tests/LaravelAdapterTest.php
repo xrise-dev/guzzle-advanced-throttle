@@ -39,10 +39,10 @@ class LaravelAdapterTest extends TestCase
         $laravelAdapter->save($host, $key, $requestCount, $expiresAt, $remainingSeconds);
 
         $requestInfo = $laravelAdapter->get($host, $key);
-        $this->assertNotNull($requestInfo);
-        $this->assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
-        $this->assertEquals($requestInfo->requestCount, $requestCount);
-        $this->assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
+        static::assertNotNull($requestInfo);
+        static::assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
+        static::assertEquals($requestInfo->requestCount, $requestCount);
+        static::assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
     }
 
     /**
@@ -66,7 +66,7 @@ class LaravelAdapterTest extends TestCase
 
         $storedResponse = $arrayAdapter->getResponse($request);
 
-        $this->assertEquals($response, $storedResponse);
+        static::assertEquals($response, $storedResponse);
     }
 
     /** @test
@@ -84,6 +84,6 @@ class LaravelAdapterTest extends TestCase
 
         $storedResponse = $laravelAdapter->getResponse($request);
 
-        $this->assertNull($storedResponse);
+        static::assertNull($storedResponse);
     }
 }

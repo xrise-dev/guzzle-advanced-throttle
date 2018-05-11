@@ -21,7 +21,7 @@ class RequestLimiterTest extends TestCase
     {
         $requestLimiter = RequestLimiter::create('www.test.com');
 
-        $this->assertInstanceOf(RequestLimiter::class, $requestLimiter);
+        static::assertInstanceOf(RequestLimiter::class, $requestLimiter);
     }
 
     /** @test
@@ -31,7 +31,7 @@ class RequestLimiterTest extends TestCase
     {
         $requestLimiter = RequestLimiter::createFromRule('www.test.com', []);
 
-        $this->assertInstanceOf(RequestLimiter::class, $requestLimiter);
+        static::assertInstanceOf(RequestLimiter::class, $requestLimiter);
     }
 
     /** @test
@@ -43,11 +43,11 @@ class RequestLimiterTest extends TestCase
         $requestLimiter = RequestLimiter::create($host, 1);
         $request = new Request('GET', $host . '/check');
 
-        $this->assertTrue($requestLimiter->canRequest($request));
-        $this->assertFalse($requestLimiter->canRequest($request));
+        static::assertTrue($requestLimiter->canRequest($request));
+        static::assertFalse($requestLimiter->canRequest($request));
 
         $otherRequest = new Request('GET', 'http://www.check.com');
-        $this->assertTrue($requestLimiter->canRequest($otherRequest));
+        static::assertTrue($requestLimiter->canRequest($otherRequest));
     }
 
     /** @test
@@ -59,7 +59,7 @@ class RequestLimiterTest extends TestCase
         $requestLimiter = RequestLimiter::create($host, 20, 30);
 
         $requestLimiter->canRequest(new Request('GET', $host . '/check'));
-        $this->assertEquals(30, $requestLimiter->getRemainingSeconds());
+        static::assertEquals(30, $requestLimiter->getRemainingSeconds());
     }
 
     /** @test
@@ -71,11 +71,11 @@ class RequestLimiterTest extends TestCase
         $requestLimiter = RequestLimiter::create($host, 1);
         $request = new Request('GET', $host . '/check');
 
-        $this->assertEquals(0, $requestLimiter->getCurrentRequestCount());
+        static::assertEquals(0, $requestLimiter->getCurrentRequestCount());
         $requestLimiter->canRequest($request);
-        $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
+        static::assertEquals(1, $requestLimiter->getCurrentRequestCount());
         $requestLimiter->canRequest($request);
-        $this->assertEquals(1, $requestLimiter->getCurrentRequestCount());
+        static::assertEquals(1, $requestLimiter->getCurrentRequestCount());
     }
 
     /** @test
@@ -87,7 +87,7 @@ class RequestLimiterTest extends TestCase
         $requestLimiter = RequestLimiter::create($host, 1, 0);
         $requestLimiter->canRequest(new Request('GET', $host . '/check'));
 
-        $this->assertEquals(0, $requestLimiter->getCurrentRequestCount());
+        static::assertEquals(0, $requestLimiter->getCurrentRequestCount());
     }
 
     /** @test
@@ -105,8 +105,8 @@ class RequestLimiterTest extends TestCase
         $requestLimiterOne->canRequest(new Request('GET', $host . '/check'));
         $requestLimiterTwo = RequestLimiter::create($host, $maxRequests, $requestIntervalSeconds, $storage);
 
-        $this->assertEquals($requestLimiterOne->getRemainingSeconds(), $requestLimiterTwo->getRemainingSeconds());
-        $this->assertEquals($requestLimiterOne->getCurrentRequestCount(), $requestLimiterTwo->getCurrentRequestCount());
+        static::assertEquals($requestLimiterOne->getRemainingSeconds(), $requestLimiterTwo->getRemainingSeconds());
+        static::assertEquals($requestLimiterOne->getCurrentRequestCount(), $requestLimiterTwo->getCurrentRequestCount());
     }
 
     /** @test
@@ -118,7 +118,7 @@ class RequestLimiterTest extends TestCase
 
         $requestLimiter = RequestLimiter::create($host);
 
-        $this->assertTrue($requestLimiter->matches($host));
-        $this->assertFalse($requestLimiter->matches('http://www.check.com'));
+        static::assertTrue($requestLimiter->matches($host));
+        static::assertFalse($requestLimiter->matches('http://www.check.com'));
     }
 }

@@ -27,7 +27,7 @@ class CacheConfigHelperTest extends TestCase
      */
     public function gets_driver() : void
     {
-        $this->assertEquals('file', CacheConfigHelper::getDriver($this->_getCacheConfig()));
+        static::assertEquals('file', CacheConfigHelper::getDriver($this->_getCacheConfig()));
     }
 
     /**
@@ -52,7 +52,7 @@ class CacheConfigHelperTest extends TestCase
     {
         $container = CacheConfigHelper::getContainer($this->_getCacheConfig());
 
-        $this->assertInstanceOf(Filesystem::class, $container->offsetGet('files'));
+        static::assertInstanceOf(Filesystem::class, $container->offsetGet('files'));
     }
 
     /** @test
@@ -61,6 +61,6 @@ class CacheConfigHelperTest extends TestCase
     {
         $cacheManager = CacheConfigHelper::getCacheManager($this->_getCacheConfig());
 
-        $this->assertEquals('file', $cacheManager->getDefaultDriver());
+        static::assertEquals('file', $cacheManager->getDefaultDriver());
     }
 }

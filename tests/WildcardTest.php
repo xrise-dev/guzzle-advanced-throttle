@@ -16,7 +16,7 @@ class WildcardTest extends TestCase
      */
     public function matches_wildcards() : void
     {
-        $this->assertTrue(Wildcard::matches('test1.{wildcard1}.test2.{wildcard2}.test3', 'test1.replace1.test2.replace2.test3'));
+        static::assertTrue(Wildcard::matches('test1.{wildcard1}.test2.{wildcard2}.test3', 'test1.replace1.test2.replace2.test3'));
     }
 
     /** @test
@@ -25,10 +25,10 @@ class WildcardTest extends TestCase
     {
         $wildcardText = 'test1.{wildcard1}.test2.{wildcard2}.test3';
 
-        $this->assertFalse(Wildcard::matches($wildcardText, 'no_wildcards'));
-        $this->assertFalse(Wildcard::matches($wildcardText, 'test1.{wildcard1}.test2.test3'));
-        $this->assertFalse(Wildcard::matches($wildcardText, 'test1.{wildcard1}.test2.{wildcard2}'));
-        $this->assertFalse(Wildcard::matches($wildcardText, 'one.{wildcard1}.two.{wildcard2}.three'));
+        static::assertFalse(Wildcard::matches($wildcardText, 'no_wildcards'));
+        static::assertFalse(Wildcard::matches($wildcardText, 'test1.{wildcard1}.test2.test3'));
+        static::assertFalse(Wildcard::matches($wildcardText, 'test1.{wildcard1}.test2.{wildcard2}'));
+        static::assertFalse(Wildcard::matches($wildcardText, 'one.{wildcard1}.two.{wildcard2}.three'));
     }
 
     /** @test
@@ -37,7 +37,7 @@ class WildcardTest extends TestCase
     {
         $wildcardText = 'test1';
 
-        $this->assertTrue(Wildcard::matches($wildcardText, $wildcardText));
-        $this->assertFalse(Wildcard::matches($wildcardText, 'test2'));
+        static::assertTrue(Wildcard::matches($wildcardText, $wildcardText));
+        static::assertFalse(Wildcard::matches($wildcardText, 'test2'));
     }
 }

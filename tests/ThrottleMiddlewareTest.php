@@ -18,8 +18,6 @@ class ThrottleMiddlewareTest extends TestCase
 {
 
     /** @test
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_limited() : void
     {
@@ -36,15 +34,36 @@ class ThrottleMiddlewareTest extends TestCase
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $response = $client->request('GET', '/');
-        $this->assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
 
         $this->expectException(TooManyRequestsHttpException::class);
         $client->request('GET', '/');
     }
 
     /** @test
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Exception
+     */
+    public function requests_are_limited_when_invoked() : void
+    {
+        $host = 'www.test.de';
+        $ruleset = new RequestLimitRuleset([
+            $host => [
+                [
+                    'max_requests' => 1
+                ]
+            ]
+        ]);
+        $throttle = new ThrottleMiddleware($ruleset);
+        $stack = new MockHandler([new Response(200), new Response(200)]);
+        $client = new Client(['base_uri' => $host, 'handler' => $throttle()($stack)]);
+
+        $response = $client->request('GET', '/');
+        static::assertEquals(200, $response->getStatusCode());
+
+        $this->expectException(TooManyRequestsHttpException::class);
+        $client->request('GET', '/');
+    }
+
+    /** @test
      */
     public function wildcards_are_matched() : void
     {
@@ -61,7 +80,7 @@ class ThrottleMiddlewareTest extends TestCase
 
         $response = $client->request('GET', '/');
 
-        $this->assertEquals(200, $response->getStatusCode());
+        static::assertEquals(200, $response->getStatusCode());
         $this->expectException(TooManyRequestsHttpException::class);
 
         $client->request('GET', '/');

@@ -77,7 +77,13 @@ be `https://www.google.com` not `https://www.google.com/`.
 > It should always be the first middleware on the stack.
 
 ``` php
- $stack->push((new ThrottleMiddleware($rules))->handle());
+ $throttle = new ThrottleMiddleware($rules);
+
+ // Invoke the middleware
+ $stack->push($throttle());
+ 
+ // or call the handle method directly
+ $stack->push($throttle->handle());
 ```
 ----------
 5. Pass the stack to the client

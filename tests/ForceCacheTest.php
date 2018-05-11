@@ -17,8 +17,6 @@ class ForceCacheTest extends TestCase
 {
 
     /** @test
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_always_cached() : void
     {
@@ -38,8 +36,8 @@ class ForceCacheTest extends TestCase
         $responseTwo = $client->request('GET', '/')->getProtocolVersion();
         $responseThree = $client->request('GET', '/')->getProtocolVersion();
 
-        $this->assertEquals($responseOne, $responseTwo);
-        $this->assertEquals($responseTwo, $responseThree);
+        static::assertEquals($responseOne, $responseTwo);
+        static::assertEquals($responseTwo, $responseThree);
     }
 
 }

@@ -35,12 +35,11 @@ interface StorageInterface
      * @param string $key
      * @return RequestInfo|null
      */
-    public function get(string $host, string $key) : ? RequestInfo;
+    public function get(string $host, string $key) : ?RequestInfo;
 
     /**
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param int $duration
      */
     public function saveResponse(RequestInterface $request, ResponseInterface $response) : void;
 
@@ -48,5 +47,5 @@ interface StorageInterface
      * @param RequestInterface $request
      * @return ResponseInterface|null
      */
-    public function getResponse(RequestInterface $request) : ? ResponseInterface;
+    public function getResponse(RequestInterface $request) : ?ResponseInterface;
 }

@@ -23,6 +23,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 2.0.4
+- The middleware can now be called as a function instead of calling the `handle` method. 
+
+``` php
+ $throttle = new ThrottleMiddleware($rules);
+ 
+ $stack->push($throttle());
+```
+ 
+---------- 
+
 ## 2.0.3
 
 ### Fixed

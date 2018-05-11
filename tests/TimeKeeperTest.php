@@ -21,7 +21,7 @@ class TimeKeeperTest extends TestCase
     {
         $timeKeeper = TimeKeeper::create(60);
 
-        $this->assertInstanceOf(TimeKeeper::class, $timeKeeper);
+        static::assertInstanceOf(TimeKeeper::class, $timeKeeper);
     }
 
     /** @test
@@ -32,11 +32,13 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
 
-        $minutesNow = + (new DateTime())->format('i');
+        $minutesNow = +(new DateTime())->format('i');
         $timeKeeper->start();
-        $minutesExpiration = + $timeKeeper->getExpiration()->format('i');
 
-        $this->assertEquals($minutesNow + 1, $minutesExpiration);
+        $minutesExpiration = +$timeKeeper->getExpiration()->format('i');
+
+
+        static::assertEquals($minutesNow + 1, $minutesExpiration);
     }
 
     /** @test
@@ -50,7 +52,7 @@ class TimeKeeperTest extends TestCase
         $myExpiration = (new DateTime())->add(new DateInterval('PT120S'));
         $timeKeeper->setExpiration($myExpiration);
 
-        $this->assertEquals($myExpiration, $timeKeeper->getExpiration());
+        static::assertEquals($myExpiration, $timeKeeper->getExpiration());
     }
 
     /** @test
@@ -61,7 +63,7 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
-        $this->assertEquals($interval, $timeKeeper->getRemainingSeconds());
+        static::assertEquals($interval, $timeKeeper->getRemainingSeconds());
     }
 
     /** @test
@@ -72,9 +74,9 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
-        $this->assertFalse($timeKeeper->isExpired());
+        static::assertFalse($timeKeeper->isExpired());
         $timeKeeper->setExpiration((new DateTime())->sub(new DateInterval('P1D')));
-        $this->assertTrue($timeKeeper->isExpired());
+        static::assertTrue($timeKeeper->isExpired());
     }
 
     /** @test
@@ -86,7 +88,7 @@ class TimeKeeperTest extends TestCase
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
         $timeKeeper->setExpiration((new DateTime())->sub(new DateInterval('P1D')));
-        $this->assertEquals(60, $timeKeeper->getRemainingSeconds());
+        static::assertEquals(60, $timeKeeper->getRemainingSeconds());
     }
 
     /** @test
@@ -99,6 +101,6 @@ class TimeKeeperTest extends TestCase
         $timeKeeper->start();
         $timeKeeper->reset();
 
-        $this->assertNull($timeKeeper->getExpiration());
+        static::assertNull($timeKeeper->getExpiration());
     }
 }

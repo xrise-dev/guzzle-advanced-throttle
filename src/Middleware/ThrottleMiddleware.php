@@ -27,6 +27,14 @@ class ThrottleMiddleware
 
     /**
      * @return callable
+     */
+    public function __invoke() : callable
+    {
+        return $this->handle();
+    }
+
+    /**
+     * @return callable
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      * @throws \Exception
      */

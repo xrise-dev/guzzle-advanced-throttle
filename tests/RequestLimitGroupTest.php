@@ -19,7 +19,7 @@ class RequestLimitGroupTest extends TestCase
     {
         $requestLimitGroup = RequestLimitGroup::create();
 
-        $this->assertInstanceOf(RequestLimitGroup::class, $requestLimitGroup);
+        static::assertInstanceOf(RequestLimitGroup::class, $requestLimitGroup);
     }
 
     /** @test
@@ -30,7 +30,7 @@ class RequestLimitGroupTest extends TestCase
         $requestLimitGroup = RequestLimitGroup::create();
         $requestLimitGroup->addRequestLimiter(new RequestLimiter('www.test'));
 
-        $this->assertEquals(1, $requestLimitGroup->getRequestLimiterCount());
+        static::assertEquals(1, $requestLimitGroup->getRequestLimiterCount());
     }
 
     /** @test
@@ -44,7 +44,7 @@ class RequestLimitGroupTest extends TestCase
         $requestLimitGroup->addRequestLimiter($requestLimiter);
         $requestLimitGroup->removeRequestLimiter($requestLimiter);
 
-        $this->assertEquals(0, $requestLimitGroup->getRequestLimiterCount());
+        static::assertEquals(0, $requestLimitGroup->getRequestLimiterCount());
     }
 
     /** @test
@@ -58,8 +58,8 @@ class RequestLimitGroupTest extends TestCase
         $requestLimitGroup->addRequestLimiter(new RequestLimiter($host, 1, $interval));
         $request = new Request('GET', $host . '/check');
 
-        $this->assertTrue($requestLimitGroup->canRequest($request));
-        $this->assertFalse($requestLimitGroup->canRequest($request));
+        static::assertTrue($requestLimitGroup->canRequest($request));
+        static::assertFalse($requestLimitGroup->canRequest($request));
     }
 
     /** @test
@@ -71,12 +71,12 @@ class RequestLimitGroupTest extends TestCase
         $interval = 100;
         $requestLimitGroup = RequestLimitGroup::create();
 
-        $this->assertEquals(0, $requestLimitGroup->getRetryAfter());
+        static::assertEquals(0, $requestLimitGroup->getRetryAfter());
 
         $requestLimitGroup->addRequestLimiter(new RequestLimiter($host, 0, $interval));
         $requestLimitGroup->canRequest(new Request('GET', $host . '/check'));
 
-        $this->assertEquals($interval, $requestLimitGroup->getRetryAfter());
+        static::assertEquals($interval, $requestLimitGroup->getRetryAfter());
     }
 
 }
