@@ -72,7 +72,7 @@ be `https://www.google.com` not `https://www.google.com/`.
 
 
 ----------
-3. Push the `handle()` function of `hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware` to the stack. 
+3. Push `hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware` to the stack. 
 
 > It should always be the first middleware on the stack.
 
@@ -82,7 +82,7 @@ be `https://www.google.com` not `https://www.google.com/`.
  // Invoke the middleware
  $stack->push($throttle());
  
- // or call the handle method directly
+ // OR: alternatively call the handle method directly
  $stack->push($throttle->handle());
 ```
 ----------
