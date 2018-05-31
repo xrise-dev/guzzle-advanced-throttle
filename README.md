@@ -133,7 +133,7 @@ You need to provide a config (`Illuminate\Config\Repository`) for this adapter.
 
 When you create a new implementation, pass the class name to the `RequestLimitRuleset::create` method. 
 You'll also need to implement any sort of configuration parsing your instance needs.
-Please see `LarvalAdapter` for an example.
+Please see `LaravelAdapter` for an example.
 
 ###### Usage:
 ``` php
