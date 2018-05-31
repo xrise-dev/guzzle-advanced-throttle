@@ -27,7 +27,7 @@ class ArrayAdapter implements StorageInterface
     /** @var string */
     private const EXPIRATION_KEY = 'expires_at';
     /** @var int Time To Live in minutes */
-    private $_ttl = self::DEFAULT_TTL;
+    private $_ttl;
 
     /** @var array */
     private $_storage = [];
@@ -63,7 +63,7 @@ class ArrayAdapter implements StorageInterface
      * @param string $key
      * @return RequestInfo|null
      */
-    public function get(string $host, string $key) : ? RequestInfo
+    public function get(string $host, string $key) : ?RequestInfo
     {
         return $this->_storage[$host][$key] ?? null;
     }
@@ -87,7 +87,7 @@ class ArrayAdapter implements StorageInterface
      * @param RequestInterface $request
      * @return ResponseInterface|null
      */
-    public function getResponse(RequestInterface $request) : ? ResponseInterface
+    public function getResponse(RequestInterface $request) : ?ResponseInterface
     {
         [$host, $path] = RequestHelper::getHostAndPath($request);
         $key = RequestHelper::getStorageKey($request);

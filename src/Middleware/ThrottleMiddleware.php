@@ -27,6 +27,7 @@ class ThrottleMiddleware
 
     /**
      * @return callable
+     * @throws \Exception
      */
     public function __invoke() : callable
     {

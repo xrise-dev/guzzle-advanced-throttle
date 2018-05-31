@@ -10,7 +10,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class Cache
+ * Class Cacheable
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies
  */
 class Cachable implements CacheStrategy
