@@ -27,7 +27,7 @@ class ArrayAdapter implements StorageInterface
     /** @var string */
     private const EXPIRATION_KEY = 'expires_at';
     /** @var int Time To Live in minutes */
-    private $_ttl;
+    private $_ttl = self::DEFAULT_TTL;
 
     /** @var array */
     private $_storage = [];
