@@ -4,10 +4,27 @@ All Notable changes to `guzzle-advanced-throttle` will be documented in this fil
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Next
+## 2.0.5
 
 ### Added
-- Nothing
+- You can now provide a custom caching strategy instead of being limited to the default ones.
+  
+  Your custom caching strategy must implement `CacheStrategy`.
+  It is suggested you use `Cacheable` for a parent class.
+  This will give a good head start, see `ForceCache` and `Cache` for ideas.
+
+  To use your custom caching strategy, you'll need to pass the fully qualified cache name to `RequestLimitRuleset`.
+
+  ```php
+    $rules = new RequestLimitRuleset([ ... ], 
+                                MyCustomCacheStrategy::class, 
+                                'array', 
+                                new Repository(...));
+                                
+    $throttle = new ThrottleMiddleware($rules);                                
+  ```
+  
+  > Thanks to @LightGuard
 
 ### Deprecated
 - Nothing

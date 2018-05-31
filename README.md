@@ -72,7 +72,7 @@ be `https://www.google.com` not `https://www.google.com/`.
 
 
 ----------
-3. Push the `handle()` function of `hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware` to the stack. 
+3. Push `hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware` to the stack. 
 
 > It should always be the first middleware on the stack.
 
@@ -82,7 +82,7 @@ be `https://www.google.com` not `https://www.google.com/`.
  // Invoke the middleware
  $stack->push($throttle());
  
- // or call the handle method directly
+ // OR: alternatively call the handle method directly
  $stack->push($throttle->handle());
 ```
 ----------
@@ -124,6 +124,30 @@ Works out of the box.
 ##### `laravel` (Illuminate/Cache) - *recommended*
 
 You need to provide a config (`Illuminate\Config\Repository`) for this adapter.
+
+----------
+
+##### Custom (Implements `hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface`)
+
+> Available in version 2.0.5 and higher
+
+When you create a new implementation, pass the class name to the `RequestLimitRuleset::create` method. 
+You'll also need to implement any sort of configuration parsing your instance needs.
+Please see `LaravelAdapter` for an example.
+
+###### Usage:
+``` php
+$rules = new RequestLimitRuleset(
+    [ ... ], 
+    'force-cache', // caching strategy
+    MyCustomAdapter::class // storage adapter
+    );
+    
+$throttle = new ThrottleMiddleware($rules);
+
+// Invoke the middleware
+$stack->push($throttle());  
+```
 
 ----------
 
@@ -249,6 +273,30 @@ $rules = new RequestLimitRuleset(
     'array' // storage adapter
     );
 ```
+
+----------
+
+#### Custom caching strategy
+
+> Available in version 2.0.5 and higher
+
+Your custom caching strategy must implement `CacheStrategy`.
+It is suggested you use `Cacheable` for a parent class.
+This will give a good head start, see `ForceCache` and `Cache` for ideas.
+
+To use your custom caching strategy, you'll need to pass the fully qualified cache name to `RequestLimitRuleset`.
+
+##### Usage
+```php
+$rules = new RequestLimitRuleset([ ... ], 
+                                MyCustomCacheStrategy::class, 
+                                'array', 
+                                new Repository(...));
+                                
+$throttle = new ThrottleMiddleware($rules);
+...                                
+```
+
 
 ----------
 
