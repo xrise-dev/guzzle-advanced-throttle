@@ -4,6 +4,25 @@ All Notable changes to `guzzle-advanced-throttle` will be documented in this fil
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Next
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+----------
+
 ## 2.0.5
 
 ### Added
@@ -25,18 +44,6 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
   ```
   
   > Thanks to @LightGuard
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
 
 ----------
 
