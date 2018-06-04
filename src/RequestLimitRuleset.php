@@ -13,6 +13,7 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Strategies\NoCache;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\HostNotDefinedException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownCacheStrategyException;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownStorageAdapterException;
+use hamburgscleanest\GuzzleAdvancedThrottle\Helpers\InterfaceHelper;
 use Illuminate\Config\Repository;
 use Psr\Http\Message\RequestInterface;
 
@@ -72,23 +73,11 @@ class RequestLimitRuleset
      */
     private function _setStorageAdapter(string $adapterName) : void
     {
-        // Storing this so we can potentially change it later
-        $adapterClassName = $adapterName;
+        $adapterClassName = self::STORAGE_MAP[$adapterName] ?? $adapterName;
 
-        // Set the actual class name from the map
-        if (isset(self::STORAGE_MAP[$adapterName]))
+        if (!InterfaceHelper::implementsInterface($adapterClassName, StorageInterface::class))
         {
-            $adapterClassName = self::STORAGE_MAP[$adapterName];
-        }
-
-        if (!$this->_implementsInterface($adapterClassName, StorageInterface::class))
-        {
-            $validStrategies = \array_filter(get_declared_classes(), function($className) {
-                    return $this->_implementsInterface($className, StorageInterface::class);
-                }
-            );
-            throw new UnknownStorageAdapterException($adapterClassName,
-                $validStrategies + \array_values(self::STORAGE_MAP));
+            throw new UnknownStorageAdapterException($adapterClassName, \array_values(self::STORAGE_MAP));
         }
 
         $this->_storage = new $adapterClassName($this->_config);
@@ -101,36 +90,14 @@ class RequestLimitRuleset
      */
     private function _setCacheStrategy(string $cacheStrategy) : void
     {
-        // Storing this so we can potentially change it later
-        $cacheStrategyClassName = $cacheStrategy;
+        $cacheStrategyClassName = self::CACHE_STRATEGIES[$cacheStrategy] ?? $cacheStrategy;
 
-        // Set the actual class name from the map
-        if (isset(self::CACHE_STRATEGIES[$cacheStrategy]))
+        if (!InterfaceHelper::implementsInterface($cacheStrategyClassName, CacheStrategy::class))
         {
-            $cacheStrategyClassName = self::CACHE_STRATEGIES[$cacheStrategy];
-        }
-
-        if (!$this->_implementsInterface($cacheStrategyClassName, CacheStrategy::class))
-        {
-            $validStrategies = \array_filter(get_declared_classes(), function($className) {
-                return $this->_implementsInterface($className, CacheStrategy::class);
-            });
-
-            throw new UnknownCacheStrategyException($cacheStrategyClassName,
-                $validStrategies + \array_values(self::CACHE_STRATEGIES));
+            throw new UnknownCacheStrategyException($cacheStrategyClassName, \array_values(self::CACHE_STRATEGIES));
         }
 
         $this->_cacheStrategy = new $cacheStrategyClassName($this->_storage);
-    }
-
-    /**
-     * Returns true|false if the $implementerClassName implements interface $interfaceName
-     * @param string $implementerClassName class name of the implementation class to test
-     * @param string $interfaceName name of the interface that should be implemented
-     * @return bool TRUE if the $implementerClassName implements $interfaceName, FALSE otherwise
-     */
-    private function _implementsInterface(string $implementerClassName, string $interfaceName) : bool {
-        return \in_array($interfaceName, \class_implements($implementerClassName), TRUE);
     }
 
     /**

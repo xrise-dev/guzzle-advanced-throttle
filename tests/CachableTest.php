@@ -17,7 +17,10 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 class CachableTest extends TestCase
 {
 
-    /** @test
+    /**
+     * @test
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function dont_cache_error_responses() : void
     {
@@ -40,7 +43,10 @@ class CachableTest extends TestCase
         $client->request('GET', '/');
     }
 
-    /** @test
+    /**
+     * @test
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function respects_request_parameters() : void
     {
@@ -65,7 +71,10 @@ class CachableTest extends TestCase
         $client->request('GET', 'test?query=different');
     }
 
-    /** @test
+    /**
+     * @test
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function respects_body_parameters() : void
     {

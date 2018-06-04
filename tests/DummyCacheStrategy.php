@@ -14,6 +14,10 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\CacheStrategy;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use Psr\Http\Message\RequestInterface;
 
+/**
+ * Class DummyCacheStrategy
+ * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
+ */
 class DummyCacheStrategy implements CacheStrategy
 {
 

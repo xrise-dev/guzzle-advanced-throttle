@@ -21,12 +21,13 @@ class FileDriverTest extends TestCase
 
     private const CACHE_DIR = './cache';
 
-    /** @test
+    /**
+     * @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function requests_are_cached() : void
     {
-        $this->_deleteCachedFiles();
-
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -57,18 +58,13 @@ class FileDriverTest extends TestCase
         static::assertEquals($responseTwo, $responseThree);
     }
 
-    private function _deleteCachedFiles() : void
-    {
-        $filesystem = new Filesystem();
-        $filesystem->deleteDirectory(self::CACHE_DIR);
-    }
-
-    /** @test
+    /**
+     * @test
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {
-        $this->_deleteCachedFiles();
-
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -93,6 +89,20 @@ class FileDriverTest extends TestCase
 
         $this->expectException(TooManyRequestsHttpException::class);
         $client->request('GET', '/');
+    }
+
+    /**
+     * Delete generated test files..
+     */
+    protected function tearDown() : void
+    {
+        $this->_deleteCachedFiles();
+    }
+
+    private function _deleteCachedFiles() : void
+    {
+        $filesystem = new Filesystem();
+        $filesystem->deleteDirectory(self::CACHE_DIR);
     }
 
 }
