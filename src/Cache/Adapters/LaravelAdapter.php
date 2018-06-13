@@ -4,7 +4,7 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
 use DateTime;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\CacheConfigHelper;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\RequestHelper;
+use hamburgscleanest\GuzzleAdvancedThrottle\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;

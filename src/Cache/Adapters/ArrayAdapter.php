@@ -4,8 +4,8 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
 use DateInterval;
 use DateTime;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
+use hamburgscleanest\GuzzleAdvancedThrottle\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Illuminate\Config\Repository;
 use Psr\Http\Message\RequestInterface;

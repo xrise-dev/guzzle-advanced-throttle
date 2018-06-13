@@ -3,7 +3,7 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use GuzzleHttp\Psr7\Request;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\RequestHelper;
+use hamburgscleanest\GuzzleAdvancedThrottle\Helpers\RequestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**

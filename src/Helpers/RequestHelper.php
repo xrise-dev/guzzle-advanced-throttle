@@ -1,12 +1,12 @@
 <?php
 
-namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers;
+namespace hamburgscleanest\GuzzleAdvancedThrottle\Helpers;
 
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Class RequestHelper
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers
+ * @package hamburgscleanest\GuzzleAdvancedThrottle\Helpers
  */
 class RequestHelper
 {
