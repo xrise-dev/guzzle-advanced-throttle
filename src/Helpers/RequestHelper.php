@@ -31,15 +31,13 @@ class RequestHelper
      */
     public static function getStorageKey(RequestInterface $request) : string
     {
-        $uri = $request->getUri();
         $method = $request->getMethod();
-
         if ($method !== 'GET')
         {
             return self::_getMethodAndParams($method, $request->getBody()->getContents());
         }
 
-        return self::_getMethodAndParams($method, $uri->getQuery());
+        return self::_getMethodAndParams($method, $request->getUri()->getQuery());
     }
 
     /**
