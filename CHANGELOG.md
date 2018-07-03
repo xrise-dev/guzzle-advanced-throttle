@@ -23,6 +23,15 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 2.0.6
+
+### Fixed
+- The request count was not properly reset because `RateLimiter::getCurrentRequestCount()` wasn't used internally.
+
+Thanks to @huisman303 for finding this!
+
+----------
+
 ## 2.0.5
 
 ### Added
