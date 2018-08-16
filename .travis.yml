@@ -1,17 +1,22 @@
 language: php
 php:
-  - '7.1'
-  - '7.2'
+- '7.1'
+- '7.2'
+- 'nightly'
+matrix:
+  allow_failures:
+  - php: nightly
+  fast_finish: true
 services:
-  - redis-server
-  - memcached
+- redis-server
+- memcached
 before_script:
-  - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 install:
-  - composer update
+- composer update
 script:
   ./vendor/bin/phpunit --coverage-clover=coverage.clover
 after_script:
-  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+- if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+- if [ "$TRAVIS_PHP_VERSION" == "7.2" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
