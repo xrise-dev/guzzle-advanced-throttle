@@ -34,7 +34,13 @@ class RequestHelper
         $method = $request->getMethod();
         if ($method !== 'GET')
         {
-            return self::_getMethodAndParams($method, $request->getBody()->getContents());
+            $contentType = $request->getHeader('Content-Type')[0] ?? null;
+            $params = $request->getBody()->getContents();
+
+            return self::_getMethodAndParams(
+                $method,
+                $contentType === 'application/json' ? self::_decodeJSON($params) : $params
+            );
         }
 
         return self::_getMethodAndParams($method, $request->getUri()->getQuery());
@@ -47,6 +53,27 @@ class RequestHelper
      */
     private static function _getMethodAndParams(string $method, string $params) : string
     {
-        return $method . '_' . $params;
+        return $method . '_' . self::_sortParams($params);
+    }
+
+    /**
+     * @param string $params
+     * @return string
+     */
+    private static function _sortParams(string $params) : string
+    {
+        $paramArray = \explode('&', $params);
+        \sort($paramArray);
+
+        return \implode('&', $paramArray);
+    }
+
+    /**
+     * @param string $json
+     * @return string
+     */
+    private static function _decodeJSON(string $json) : string
+    {
+        return http_build_query(\GuzzleHttp\json_decode($json, true), '', '&');
     }
 }

@@ -61,4 +61,27 @@ class CacheTest extends TestCase
         $client->request('GET', '/');
     }
 
+    /** @test
+     */
+    public function order_of_parameters_is_irrelevant() : void
+    {
+        $host = 'www.test.de';
+        $ruleset = new RequestLimitRuleset([
+            $host => [
+                [
+                    'max_requests' => 1
+                ]
+            ]
+        ], 'cache');
+        $throttle = new ThrottleMiddleware($ruleset);
+        $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
+        $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
+
+        $responses = [];
+        $responses[] = $client->request('GET', '?a=1&b=2&c=3')->getProtocolVersion();
+        $responses[] = $client->request('GET', '?b=2&a=1&c=3')->getProtocolVersion();
+        $responses[] = $client->request('GET', '?c=3&b=2&a=1')->getProtocolVersion();
+
+        static::assertEquals(['1', '1', '1'], $responses);
+    }
 }
