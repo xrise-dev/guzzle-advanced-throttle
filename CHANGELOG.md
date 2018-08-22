@@ -23,6 +23,16 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 2.0.7
+
+### Improvement
+The order of request parameters is now irrelevant for the cache.
+If the values of the parameters are the same, the requests will be treated as the same, too.
+
+For example if you request `/test?a=1&b=2`,  
+the cache will know that it yields the same response as `/test?b=2&a=1`.
+
+----------
 ## 2.0.6
 
 ### Fixed

@@ -63,7 +63,7 @@ class CacheTest extends TestCase
 
     /** @test
      */
-    public function order_of_parameters_is_irrelevant() : void
+    public function order_of_parameters_is_irrelevant_when_values_are_the_same() : void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
@@ -83,5 +83,28 @@ class CacheTest extends TestCase
         $responses[] = $client->request('GET', '?c=3&b=2&a=1')->getProtocolVersion();
 
         static::assertEquals(['1', '1', '1'], $responses);
+    }
+
+    /** @test
+     */
+    public function unordered_parameters_with_different_values_are_not_the_same() : void
+    {
+        $host = 'www.test.de';
+        $ruleset = new RequestLimitRuleset([
+            $host => [
+                [
+                    'max_requests' => 1
+                ]
+            ]
+        ], 'cache');
+        $throttle = new ThrottleMiddleware($ruleset);
+        $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
+        $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
+
+        $responses = [];
+        $responses[] = $client->request('GET', '?a=1&b=2&c=3')->getProtocolVersion();
+
+        $this->expectException(TooManyRequestsHttpException::class);
+        $responses[] = $client->request('GET', '?b=1&a=2&c=3')->getProtocolVersion();
     }
 }
