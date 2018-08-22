@@ -4,31 +4,20 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
 use DateInterval;
 use DateTime;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
-use hamburgscleanest\GuzzleAdvancedThrottle\Helpers\RequestHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
-use Illuminate\Config\Repository;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Illuminate\Config\Repository;
 
 /**
  * Class ArrayAdapter
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters
  */
-class ArrayAdapter implements StorageInterface
+class ArrayAdapter extends BaseAdapter
 {
-
-    /** @var int */
-    private const DEFAULT_TTL = 300;
-    /** @var string */
-    private const STORAGE_KEY = 'requests';
     /** @var string */
     private const RESPONSE_KEY = 'response';
     /** @var string */
     private const EXPIRATION_KEY = 'expires_at';
-    /** @var int Time To Live in minutes */
-    private $_ttl = self::DEFAULT_TTL;
-
     /** @var array */
     private $_storage = [];
 
@@ -69,29 +58,29 @@ class ArrayAdapter implements StorageInterface
     }
 
     /**
-     * @param RequestInterface $request
      * @param ResponseInterface $response
+     * @param string $host
+     * @param string $path
+     * @param string $key
+     * @param int $expiresAt
      * @throws \Exception
      */
-    public function saveResponse(RequestInterface $request, ResponseInterface $response) : void
+    protected function _saveResponse(ResponseInterface $response, string $host, string $path, string $key) : void
     {
-        [$host, $path] = RequestHelper::getHostAndPath($request);
-
-        $this->_storage[self::STORAGE_KEY][$host][$path][RequestHelper::getStorageKey($request)] = [
+        $this->_storage[self::STORAGE_KEY][$host][$path][$key] = [
             self::RESPONSE_KEY   => $response,
             self::EXPIRATION_KEY => (new DateTime())->add(new DateInterval('PT' . $this->_ttl . 'M'))->getTimestamp()
         ];
     }
 
     /**
-     * @param RequestInterface $request
-     * @return ResponseInterface|null
+     * @param string $host
+     * @param string $path
+     * @param string $key
+     * @return null|ResponseInterface
      */
-    public function getResponse(RequestInterface $request) : ?ResponseInterface
+    protected function _getResponse(string $host, string $path, string $key) : ?ResponseInterface
     {
-        [$host, $path] = RequestHelper::getHostAndPath($request);
-        $key = RequestHelper::getStorageKey($request);
-
         $response = $this->_storage[self::STORAGE_KEY][$host][$path][$key] ?? null;
         if ($response !== null)
         {

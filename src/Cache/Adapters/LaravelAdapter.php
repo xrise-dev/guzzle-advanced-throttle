@@ -4,30 +4,21 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
 use DateTime;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\CacheConfigHelper;
-use hamburgscleanest\GuzzleAdvancedThrottle\Helpers\RequestHelper;
-use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class LaravelAdapter
  * @package hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters
  */
-class LaravelAdapter implements StorageInterface
+class LaravelAdapter extends BaseAdapter
 {
 
-    /** @var int */
-    private const DEFAULT_TTL = 300;
-    /** @var string */
-    private const STORAGE_KEY = 'requests';
     /** @var CacheManager */
     private $_cacheManager;
-    /** @var int Time To Live in minutes */
-    private $_ttl;
 
     /**
      * LaravelAdapter constructor.
@@ -78,40 +69,43 @@ class LaravelAdapter implements StorageInterface
      * @param string $key
      * @return RequestInfo|null
      */
-    public function get(string $host, string $key) : ? RequestInfo
+    public function get(string $host, string $key) : ?RequestInfo
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->_cacheManager->get($this->_buildKey($host, $key));
     }
 
     /**
-     * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @throws \Exception
+     * @param string $host
+     * @param string $path
+     * @param string $key
      */
-    public function saveResponse(RequestInterface $request, ResponseInterface $response) : void
+    protected function _saveResponse(ResponseInterface $response, string $host, string $path, string $key) : void
     {
-        $this->_cacheManager->put($this->_buildResponseKey($request), $response, $this->_ttl);
+        $this->_cacheManager->put($this->_buildResponseKey($host, $path, $key), $response, $this->_ttl);
     }
 
     /**
-     * @param RequestInterface $request
+     * @param string $host
+     * @param string $path
+     * @param string $key
      * @return string
      */
-    private function _buildResponseKey(RequestInterface $request) : string
+    private function _buildResponseKey(string $host, string $path, string $key) : string
     {
-        [$host, $path] = RequestHelper::getHostAndPath($request);
-
-        return self::STORAGE_KEY . '.' . $host . '.' . $path . '.' . RequestHelper::getStorageKey($request);
+        return self::STORAGE_KEY . '.' . $host . '.' . $path . '.' . $key;
     }
 
     /**
-     * @param RequestInterface $request
-     * @return ResponseInterface|null
+     * @param string $host
+     * @param string $path
+     * @param string $key
+     * @return null|ResponseInterface
      */
-    public function getResponse(RequestInterface $request) : ? ResponseInterface
+    protected function _getResponse(string $host, string $path, string $key) : ?ResponseInterface
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_cacheManager->get($this->_buildResponseKey($request));
+        return $this->_cacheManager->get($this->_buildResponseKey($host, $path, $key));
     }
 }
