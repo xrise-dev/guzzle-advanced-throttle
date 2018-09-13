@@ -16,6 +16,11 @@ e.g. get the response from cache when the rate limit is exceeded or always get a
 
 Using [wildcards](#wildcards) in host names is also supported.
 
+## Notice
+
+You have to use the [v2 branch](https://github.com/hamburgscleanest/guzzle-advanced-throttle/tree/v2) 
+if you are using a Laravel version or any Illuminate component below version `5.7`. 
+
 ## Install
 
 Via Composer
