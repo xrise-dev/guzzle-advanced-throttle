@@ -55,7 +55,7 @@ class RedisDriverTest extends TestCase
                 'database' => 0,
             ],
         ];
-        $redis = new RedisManager('predis', $database);
+        $redis = new RedisManager(null, 'predis', $database);
         $redis->flushdb();
 
         $host = 'www.test.de';
@@ -100,7 +100,7 @@ class RedisDriverTest extends TestCase
                 'database' => 0,
             ],
         ];
-        $redis = new RedisManager('predis', $database);
+        $redis = new RedisManager(null, 'predis', $database);
         $redis->flushdb();
 
         $host = 'www.test.de';

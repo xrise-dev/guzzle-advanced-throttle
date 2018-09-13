@@ -49,6 +49,8 @@ class MemcachedDriverTest extends TestCase
      */
     public function requests_are_cached() : void
     {
+        $this->_memcachedRequired();
+
         $servers = [
             [
                 'host'   => '127.0.0.1',
@@ -97,10 +99,20 @@ class MemcachedDriverTest extends TestCase
         static::assertEquals($responseTwo, $responseThree);
     }
 
+    private function _memcachedRequired() : void
+    {
+        if (!class_exists('Memcached'))
+        {
+            self::markTestSkipped('Memcached is required for this test.');
+        }
+    }
+
     /** @test
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {
+        $this->_memcachedRequired();
+
         $servers = [
             [
                 'host'   => '127.0.0.1',

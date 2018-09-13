@@ -23,6 +23,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 2.1.0
+
+This release adds compatibility with Laravel 5.7 (Illuminate).
+
+----------
+
 ## 2.0.7
 
 ### Improvement
@@ -33,6 +39,7 @@ For example if you request `/test?a=1&b=2`,
 the cache will know that it yields the same response as `/test?b=2&a=1`.
 
 ----------
+
 ## 2.0.6
 
 ### Fixed
