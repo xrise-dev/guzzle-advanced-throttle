@@ -14,10 +14,7 @@ A Guzzle middleware that can throttle requests according to (multiple) defined r
 It is also possible to define a caching strategy, 
 e.g. get the response from cache when the rate limit is exceeded or always get a cached value to spare your rate limits.
 
-Using [wildcards](#wildcards) in host names is also supported (v2.0.0+).
-
-> **Please be aware that the format of the configuration changed since 2.0.0!**  
-> Check out [Usage](#usage)
+Using [wildcards](#wildcards) in host names is also supported.
 
 ## Install
 
