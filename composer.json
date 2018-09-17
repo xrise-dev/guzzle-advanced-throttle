@@ -51,10 +51,5 @@
     "psr-4": {
       "hamburgscleanest\\GuzzleAdvancedThrottle\\Tests\\": "tests"
     }
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "master"
-    }
   }
 }
