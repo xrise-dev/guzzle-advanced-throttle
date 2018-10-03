@@ -23,6 +23,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 2.0.8
+
+### Fixed
+- Fixed a problem when generating the cache key for a request without parameters
+
+----------
+
 ## 2.0.7
 
 ### Improvement

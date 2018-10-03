@@ -74,6 +74,11 @@ class RequestHelper
      */
     private static function _decodeJSON(string $json) : string
     {
-        return http_build_query(\GuzzleHttp\json_decode($json, true), '', '&');
+        if (empty($json))
+        {
+            return '';
+        }
+
+        return \http_build_query(\GuzzleHttp\json_decode($json, true), '', '&');
     }
 }
