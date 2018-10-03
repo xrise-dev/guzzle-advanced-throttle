@@ -23,6 +23,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 3.0.1
+
+### Fixed
+- Fixed a problem when generating the cache key for a request without parameters
+
+----------
+
 ## 3.0.0
 
 This release adds compatibility with Laravel 5.7 (Illuminate).
