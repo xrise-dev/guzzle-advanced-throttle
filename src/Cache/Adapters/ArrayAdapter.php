@@ -33,6 +33,7 @@ class ArrayAdapter extends BaseAdapter
         }
 
         $this->_ttl = $config->get('cache.ttl', self::DEFAULT_TTL);
+        $this->_allowEmptyValues = $config->get('cache.allow_empty', $this->_allowEmptyValues);
     }
 
     /**
@@ -82,6 +83,7 @@ class ArrayAdapter extends BaseAdapter
     protected function _getResponse(string $host, string $path, string $key) : ?ResponseInterface
     {
         $response = $this->_storage[self::STORAGE_KEY][$host][$path][$key] ?? null;
+
         if ($response !== null)
         {
             if ($response[self::EXPIRATION_KEY] > \time())

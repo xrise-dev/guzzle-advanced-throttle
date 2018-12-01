@@ -24,6 +24,7 @@ class CachableTest extends TestCase
      */
     public function dont_cache_error_responses() : void
     {
+        $responseBody = 'test';
         $host = 'www.test.com';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -33,7 +34,7 @@ class CachableTest extends TestCase
             ]
         ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(500), new Response()]);
+        $stack = new MockHandler([new Response(500, [], $responseBody), new Response(200, [], $responseBody)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $client->request('GET', '/');
@@ -50,6 +51,7 @@ class CachableTest extends TestCase
      */
     public function respects_request_parameters() : void
     {
+        $response = new Response(200, [], 'test');
         $host = 'www.test.com';
         $query = 'test';
         $ruleset = new RequestLimitRuleset([
@@ -60,7 +62,7 @@ class CachableTest extends TestCase
             ]
         ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(), new Response(), new Response()]);
+        $stack = new MockHandler([$response, $response, $response]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $client->request('GET', 'test?query=' . $query);
@@ -78,6 +80,7 @@ class CachableTest extends TestCase
      */
     public function respects_body_parameters() : void
     {
+        $response = new Response(200, [], 'test');
         $host = 'www.test.com';
         $params = ['some_param' => 'test'];
         $ruleset = new RequestLimitRuleset([
@@ -88,7 +91,7 @@ class CachableTest extends TestCase
             ]
         ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(), new Response(), new Response()]);
+        $stack = new MockHandler([$response, $response, $response]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $client->request('POST', 'test', ['form_params' => $params]);

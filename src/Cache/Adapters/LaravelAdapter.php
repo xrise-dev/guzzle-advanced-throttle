@@ -36,6 +36,7 @@ class LaravelAdapter extends BaseAdapter
         $cacheRepository = new Repository($cacheConfig);
         $this->_cacheManager = CacheConfigHelper::getCacheManager($cacheRepository);
         $this->_ttl = $cacheRepository->get('ttl', self::DEFAULT_TTL);
+        $this->_allowEmptyValues = $cacheRepository->get('allow_empty', $this->_allowEmptyValues);
     }
 
     /**

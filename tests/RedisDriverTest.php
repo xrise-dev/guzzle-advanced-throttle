@@ -77,12 +77,15 @@ class RedisDriverTest extends TestCase
                 ]
             ]));
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
+        $body1 = 'test1';
+        $body2 = 'test2';
+        $body3 = 'test3';
+        $stack = new MockHandler([new Response(200, [], $body1), new Response(200, [], $body2), new Response(200, [], $body3)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
-        $responseOne = $client->request('GET', '/')->getProtocolVersion();
-        $responseTwo = $client->request('GET', '/')->getProtocolVersion();
-        $responseThree = $client->request('GET', '/')->getProtocolVersion();
+        $responseOne = (string) $client->request('GET', '/')->getBody();
+        $responseTwo = (string) $client->request('GET', '/')->getBody();
+        $responseThree = (string) $client->request('GET', '/')->getBody();
 
         static::assertNotEquals($responseOne, $responseTwo);
         static::assertEquals($responseTwo, $responseThree);

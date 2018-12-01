@@ -119,7 +119,11 @@ Responses with an error status code `4xx` or `5xx` will not be cached (even with
 
 ##### `array` (default)
 
-Works out of the box.
+Works out of the box. However it `does not persist` anything. 
+This one will only work within the same scope.
+It's set as a default because it doesn't need extra configuration.
+
+The recommended adapter is the `laravel` one.
 
 ----------
 
@@ -129,9 +133,7 @@ You need to provide a config (`Illuminate\Config\Repository`) for this adapter.
 
 ----------
 
-##### Custom (Implements `hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface`)
-
-> Available in version 2.0.5 and higher
+##### `custom` (Implements `hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface`)
 
 When you create a new implementation, pass the class name to the `RequestLimitRuleset::create` method. 
 You'll also need to implement any sort of configuration parsing your instance needs.
@@ -155,6 +157,19 @@ $stack->push($throttle());
 
 #### Laravel Drivers
 
+##### General settings
+
+These values can be set for every adapter.
+
+``` php
+    'cache' => [
+        'ttl' => 900, // How long should responses be cached for (in seconds)?
+        'allow_empty' => false // When this is set to true, empty responses will also be cached.
+    ]
+```
+
+----------
+
 ##### File
 
 ``` php
@@ -162,7 +177,8 @@ $stack->push($throttle());
         'driver'  => 'file',
         'options' => [
             'path' => './cache'
-        ]
+        ],
+        ...
     ]
 ```
 
@@ -182,7 +198,8 @@ $stack->push($throttle());
                     'database' => 0,
                 ],
             ]
-        ]
+        ],
+        ...
     ]
 ```
 
@@ -201,7 +218,8 @@ $stack->push($throttle());
                     'weight' => 100,
                 ],
             ]
-        ]
+        ],
+        ...
     ]
 ```
 
@@ -279,8 +297,6 @@ $rules = new RequestLimitRuleset(
 ----------
 
 #### Custom caching strategy
-
-> Available in version 2.0.5 and higher
 
 Your custom caching strategy must implement `CacheStrategy`.
 It is suggested you use `Cacheable` for a parent class.

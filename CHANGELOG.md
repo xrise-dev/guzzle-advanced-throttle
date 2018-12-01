@@ -23,6 +23,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 3.1.0
+
+### Laravel storage adapters
+
+With this version empty responses won't be cached anymore by default.  
+You can enable caching for empty responses in the config by setting `allow_empty` to `true`.
+
+Check out the [docs](https://github.com/hamburgscleanest/guzzle-advanced-throttle#laravel-drivers) for more information on how to set it.
+
+----------
+
 ## 3.0.1
 
 ### Fixed

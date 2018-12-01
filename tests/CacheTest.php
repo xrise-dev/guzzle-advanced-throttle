@@ -30,12 +30,15 @@ class CacheTest extends TestCase
             ]
         ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
+        $body1 = 'test1';
+        $body2 = 'test2';
+        $body3 = 'test3';
+        $stack = new MockHandler([new Response(200, [], $body1), new Response(200, [], $body2), new Response(200, [], $body3)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
-        $responseOne = $client->request('GET', '/')->getProtocolVersion();
-        $responseTwo = $client->request('GET', '/')->getProtocolVersion();
-        $responseThree = $client->request('GET', '/')->getProtocolVersion();
+        $responseOne = (string) $client->request('GET', '/')->getBody();
+        $responseTwo = (string) $client->request('GET', '/')->getBody();
+        $responseThree = (string) $client->request('GET', '/')->getBody();
 
         static::assertNotEquals($responseOne, $responseTwo);
         static::assertEquals($responseTwo, $responseThree);
@@ -54,7 +57,7 @@ class CacheTest extends TestCase
             ]
         ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response()]);
+        $stack = new MockHandler([new Response(200, [], 'test')]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $this->expectException(TooManyRequestsHttpException::class);
@@ -74,15 +77,18 @@ class CacheTest extends TestCase
             ]
         ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
+        $body1 = 'test1';
+        $body2 = 'test2';
+        $body3 = 'test3';
+        $stack = new MockHandler([new Response(200, [], $body1), new Response(200, [], $body2), new Response(200, [], $body3)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $responses = [];
-        $responses[] = $client->request('GET', '?a=1&b=2&c=3')->getProtocolVersion();
-        $responses[] = $client->request('GET', '?b=2&a=1&c=3')->getProtocolVersion();
-        $responses[] = $client->request('GET', '?c=3&b=2&a=1')->getProtocolVersion();
+        $responses[] = (string) $client->request('GET', '?a=1&b=2&c=3')->getBody();
+        $responses[] = (string) $client->request('GET', '?b=2&a=1&c=3')->getBody();
+        $responses[] = (string) $client->request('GET', '?c=3&b=2&a=1')->getBody();
 
-        static::assertEquals(['1', '1', '1'], $responses);
+        static::assertEquals([$body1, $body1, $body1], $responses);
     }
 
     /** @test
@@ -98,13 +104,15 @@ class CacheTest extends TestCase
             ]
         ], 'cache');
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
+        $body1 = 'test1';
+        $body2 = 'test2';
+        $body3 = 'test3';
+        $stack = new MockHandler([new Response(200, [], $body1), new Response(200, [], $body2), new Response(200, [], $body3)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
-        $responses = [];
-        $responses[] = $client->request('GET', '?a=1&b=2&c=3')->getProtocolVersion();
+        $client->request('GET', '?a=1&b=2&c=3');
 
         $this->expectException(TooManyRequestsHttpException::class);
-        $responses[] = $client->request('GET', '?b=1&a=2&c=3')->getProtocolVersion();
+        $client->request('GET', '?b=1&a=2&c=3');
     }
 }

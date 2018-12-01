@@ -26,6 +26,7 @@ class LaravelAdapterTest extends TestCase
     }
 
     /** @test
+     * @throws \Exception
      */
     public function stores_and_retrieves_data() : void
     {
@@ -59,14 +60,15 @@ class LaravelAdapterTest extends TestCase
     public function stores_and_retrieves_response() : void
     {
         $request = new Request('GET', 'www.test.de');
-        $response = new Response(200, [], null, '1337');
+        $responseBody = 'test';
+        $response = new Response(200, [], $responseBody);
 
-        $arrayAdapter = new LaravelAdapter($this->_getConfig());
-        $arrayAdapter->saveResponse($request, $response);
+        $laravelAdapter = new LaravelAdapter($this->_getConfig());
+        $laravelAdapter->saveResponse($request, $response);
 
-        $storedResponse = $arrayAdapter->getResponse($request);
+        $storedResponse = (string) $laravelAdapter->getResponse($request)->getBody();
 
-        static::assertEquals($response, $storedResponse);
+        static::assertEquals($responseBody, $storedResponse);
     }
 
     /** @test
@@ -85,5 +87,50 @@ class LaravelAdapterTest extends TestCase
         $storedResponse = $laravelAdapter->getResponse($request);
 
         static::assertNull($storedResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function does_not_store_empty_values() : void
+    {
+        $request = new Request('GET', 'www.test.com');
+        $nullResponse = new Response(200, [], null);
+
+        $laravelAdapter = new LaravelAdapter($this->_getConfig());
+        $laravelAdapter->saveResponse($request, $nullResponse);
+
+        static::assertNull($laravelAdapter->getResponse($request));
+
+        $emptyResponse = new Response(200, [], '');
+
+        $laravelAdapter = new LaravelAdapter($this->_getConfig());
+        $laravelAdapter->saveResponse($request, $emptyResponse);
+
+        static::assertNull($laravelAdapter->getResponse($request));
+    }
+
+    /**
+     * @test
+     */
+    public function stores_empty_values_when_allowed() : void
+    {
+        $request = new Request('GET', 'www.test.com');
+        $nullResponse = new Response(200, [], null);
+        $config = $this->_getConfig();
+        $config->set('cache.allow_empty', true);
+
+        $laravelAdapter = new LaravelAdapter($config);
+        $laravelAdapter->saveResponse($request, $nullResponse);
+
+        static::assertEmpty((string) $laravelAdapter->getResponse($request)->getBody());
+
+        $emptyResponse = new Response(200, [], '');
+
+        $laravelAdapter = new LaravelAdapter($config);
+        $laravelAdapter->saveResponse($request, $emptyResponse);
+
+        static::assertEmpty((string) $laravelAdapter->getResponse($request)->getBody());
+
     }
 }

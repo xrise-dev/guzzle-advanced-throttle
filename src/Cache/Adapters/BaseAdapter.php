@@ -20,6 +20,8 @@ abstract class BaseAdapter implements StorageInterface
     protected const STORAGE_KEY = 'requests';
     /** @var int Time To Live in minutes */
     protected $_ttl = self::DEFAULT_TTL;
+    /** @var bool When set to 'true' empty responses will be cached. */
+    protected $_allowEmptyValues = false;
 
     /**
      * @param RequestInterface $request
@@ -28,6 +30,11 @@ abstract class BaseAdapter implements StorageInterface
      */
     final public function saveResponse(RequestInterface $request, ResponseInterface $response) : void
     {
+        if (!$this->_allowEmptyValues && $response->getBody()->getSize() === 0)
+        {
+            return;
+        }
+
         [$host, $path] = RequestHelper::getHostAndPath($request);
 
         $this->_saveResponse($response, $host, $path, RequestHelper::getStorageKey($request));

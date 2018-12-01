@@ -47,12 +47,12 @@ class FileDriverTest extends TestCase
                 ]
             ]));
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response(200, [], null, '1'), new Response(200, [], null, '2'), new Response(200, [], null, '3')]);
+        $stack = new MockHandler([new Response(200, [], 'test1'), new Response(200, [], 'test2'), new Response(200, [], 'test3')]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
-        $responseOne = $client->request('GET', '/')->getProtocolVersion();
-        $responseTwo = $client->request('GET', '/')->getProtocolVersion();
-        $responseThree = $client->request('GET', '/')->getProtocolVersion();
+        $responseOne = $client->request('GET', '/');
+        $responseTwo = $client->request('GET', '/');
+        $responseThree = $client->request('GET', '/');
 
         static::assertNotEquals($responseOne, $responseTwo);
         static::assertEquals($responseTwo, $responseThree);
@@ -84,7 +84,7 @@ class FileDriverTest extends TestCase
                 ]
             ]));
         $throttle = new ThrottleMiddleware($ruleset);
-        $stack = new MockHandler([new Response()]);
+        $stack = new MockHandler([new Response(200, [], 'test')]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
         $this->expectException(TooManyRequestsHttpException::class);
