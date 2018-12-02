@@ -25,6 +25,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## 3.1.0
 
+### Fixed
+#### Changed the cached representation of the response.
+This should solve the issue where one had to use `(string) $response->getBody()` instead of `$response->getBody()->getContents()`.
+
 ### Laravel storage adapters
 
 You can disable caching for empty responses in the config now by setting `allow_empty` to `false`.
