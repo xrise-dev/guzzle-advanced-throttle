@@ -61,7 +61,7 @@ class Cacheable implements CacheStrategy
      * @param RequestInterface $request
      * @return null|ResponseInterface
      */
-    protected function _getResponse(RequestInterface $request) : ? ResponseInterface
+    protected function _getResponse(RequestInterface $request) : ?ResponseInterface
     {
         return $this->_storage->getResponse($request);
     }

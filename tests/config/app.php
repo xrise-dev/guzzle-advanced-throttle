@@ -14,6 +14,6 @@ return [
             ]
         ],
         'ttl'         => 900,
-        'allow_empty' => false
+        'allow_empty' => true
     ]
 ];

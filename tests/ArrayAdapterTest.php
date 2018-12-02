@@ -76,14 +76,14 @@ class ArrayAdapterTest extends TestCase
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);
 
-        $arrayAdapter = new ArrayAdapter();
+        $arrayAdapter = new ArrayAdapter(new Repository(['cache' => ['allow_empty' => false]]));
         $arrayAdapter->saveResponse($request, $nullResponse);
 
         static::assertNull($arrayAdapter->getResponse($request));
 
         $emptyResponse = new Response(200, [], '');
 
-        $arrayAdapter = new ArrayAdapter();
+        $arrayAdapter = new ArrayAdapter(new Repository(['cache' => ['allow_empty' => false]]));
         $arrayAdapter->saveResponse($request, $emptyResponse);
 
         static::assertNull($arrayAdapter->getResponse($request));

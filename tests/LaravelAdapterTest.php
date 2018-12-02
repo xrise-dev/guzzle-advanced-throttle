@@ -57,23 +57,6 @@ class LaravelAdapterTest extends TestCase
     /** @test
      * @throws \Exception
      */
-    public function stores_and_retrieves_response() : void
-    {
-        $request = new Request('GET', 'www.test.de');
-        $responseBody = 'test';
-        $response = new Response(200, [], $responseBody);
-
-        $laravelAdapter = new LaravelAdapter($this->_getConfig());
-        $laravelAdapter->saveResponse($request, $response);
-
-        $storedResponse = (string) $laravelAdapter->getResponse($request)->getBody();
-
-        static::assertEquals($responseBody, $storedResponse);
-    }
-
-    /** @test
-     * @throws \Exception
-     */
     public function stored_value_gets_invalidated_when_expired() : void
     {
         $request = new Request('GET', 'www.test.com');
@@ -96,15 +79,17 @@ class LaravelAdapterTest extends TestCase
     {
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);
+        $config = $this->_getConfig();
+        $config->set('cache.allow_empty', false);
 
-        $laravelAdapter = new LaravelAdapter($this->_getConfig());
+        $laravelAdapter = new LaravelAdapter($config);
         $laravelAdapter->saveResponse($request, $nullResponse);
 
         static::assertNull($laravelAdapter->getResponse($request));
 
         $emptyResponse = new Response(200, [], '');
 
-        $laravelAdapter = new LaravelAdapter($this->_getConfig());
+        $laravelAdapter = new LaravelAdapter($config);
         $laravelAdapter->saveResponse($request, $emptyResponse);
 
         static::assertNull($laravelAdapter->getResponse($request));

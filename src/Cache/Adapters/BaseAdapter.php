@@ -20,8 +20,8 @@ abstract class BaseAdapter implements StorageInterface
     protected const STORAGE_KEY = 'requests';
     /** @var int Time To Live in minutes */
     protected $_ttl = self::DEFAULT_TTL;
-    /** @var bool When set to 'true' empty responses will be cached. */
-    protected $_allowEmptyValues = false;
+    /** @var bool When set to 'false' empty responses won't be cached. */
+    protected $_allowEmptyValues = true;
 
     /**
      * @param RequestInterface $request

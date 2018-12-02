@@ -164,7 +164,7 @@ These values can be set for every adapter.
 ``` php
     'cache' => [
         'ttl' => 900, // How long should responses be cached for (in seconds)?
-        'allow_empty' => false // When this is set to true, empty responses will also be cached.
+        'allow_empty' => true // When this is set to false, empty responses won't be cached.
     ]
 ```
 
@@ -284,7 +284,12 @@ $rules = new RequestLimitRuleset(
 
 #### With forced caching - `force-cache`
 
-Always use cached responses when available to spare your rate limits. As long as there is a response in cache for the current request it will return the cached response. It will only actually send the request when it is not cached. If there is no cached response and the request limits are exceeded, it will throw `429 - Too Many Requests`.
+Always use cached responses when available to spare your rate limits. 
+As long as there is a response in cache for the current request it will return the cached response. 
+It will only actually send the request when it is not cached. 
+If there is no cached response and the request limits are exceeded, it will throw `429 - Too Many Requests`.
+
+> You might want to disable the caching of empty responses with this option (see [General Driver Settings](https://github.com/hamburgscleanest/guzzle-advanced-throttle#laravel-drivers)).
 
 ``` php
 $rules = new RequestLimitRuleset(
@@ -319,8 +324,6 @@ $throttle = new ThrottleMiddleware($rules);
 ----------
 
 ### Wildcards
-
-> Available in version 2.x.x and higher
 
 If you want to define the same rules for multiple different hosts, you can use wildcards.
 A possible use case can be subdomains:

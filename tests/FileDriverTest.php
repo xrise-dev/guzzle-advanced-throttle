@@ -50,9 +50,11 @@ class FileDriverTest extends TestCase
         $stack = new MockHandler([new Response(200, [], 'test1'), new Response(200, [], 'test2'), new Response(200, [], 'test3')]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
-        $responseOne = $client->request('GET', '/');
-        $responseTwo = $client->request('GET', '/');
-        $responseThree = $client->request('GET', '/');
+        $responseOne = (string) $client->request('GET', '/')->getBody();
+        $responseTwo = (string) $client->request('GET', '/')->getBody();
+        $responseThree = (string) $client->request('GET', '/')->getBody();
+
+        dd($responseOne, $responseTwo, $responseThree);
 
         static::assertNotEquals($responseOne, $responseTwo);
         static::assertEquals($responseTwo, $responseThree);
