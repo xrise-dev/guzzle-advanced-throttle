@@ -4,6 +4,8 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
 use DateInterval;
 use DateTime;
+use GuzzleHttp\Psr7\Response;
+use hamburgscleanest\GuzzleAdvancedThrottle\Cache\CachedResponse;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Config\Repository;
@@ -14,6 +16,7 @@ use Illuminate\Config\Repository;
  */
 class ArrayAdapter extends BaseAdapter
 {
+
     /** @var string */
     private const RESPONSE_KEY = 'response';
     /** @var string */
@@ -69,7 +72,7 @@ class ArrayAdapter extends BaseAdapter
     protected function _saveResponse(ResponseInterface $response, string $host, string $path, string $key) : void
     {
         $this->_storage[self::STORAGE_KEY][$host][$path][$key] = [
-            self::RESPONSE_KEY   => $response,
+            self::RESPONSE_KEY   => new CachedResponse($response),
             self::EXPIRATION_KEY => (new DateTime())->add(new DateInterval('PT' . $this->_ttl . 'M'))->getTimestamp()
         ];
     }
@@ -78,9 +81,9 @@ class ArrayAdapter extends BaseAdapter
      * @param string $host
      * @param string $path
      * @param string $key
-     * @return null|ResponseInterface
+     * @return null|Response
      */
-    protected function _getResponse(string $host, string $path, string $key) : ?ResponseInterface
+    protected function _getResponse(string $host, string $path, string $key) : ?Response
     {
         $response = $this->_storage[self::STORAGE_KEY][$host][$path][$key] ?? null;
 
@@ -88,7 +91,10 @@ class ArrayAdapter extends BaseAdapter
         {
             if ($response[self::EXPIRATION_KEY] > \time())
             {
-                return $response[self::RESPONSE_KEY];
+                /** @var CachedResponse $cachedResponse */
+                $cachedResponse = $response[self::RESPONSE_KEY];
+
+                return $cachedResponse ? $cachedResponse->getResponse() : null;
             }
 
             $this->_invalidate($host, $path, $key);

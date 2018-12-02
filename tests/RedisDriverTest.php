@@ -44,6 +44,7 @@ class RedisDriverTest extends TestCase
     }
 
     /** @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_cached() : void
     {
@@ -92,6 +93,7 @@ class RedisDriverTest extends TestCase
     }
 
     /** @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function throw_too_many_requests_when_nothing_in_cache() : void
     {

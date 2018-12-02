@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
+use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use hamburgscleanest\GuzzleAdvancedThrottle\Helpers\RequestHelper;
 use Psr\Http\Message\RequestInterface;
@@ -63,7 +64,7 @@ abstract class BaseAdapter implements StorageInterface
      * @param string $host
      * @param string $path
      * @param string $key
-     * @return null|ResponseInterface
+     * @return null|Response
      */
-    abstract protected function _getResponse(string $host, string $path, string $key) : ?ResponseInterface;
+    abstract protected function _getResponse(string $host, string $path, string $key) : ?Response;
 }

@@ -54,7 +54,7 @@ class FileDriverTest extends TestCase
         $responseTwo = (string) $client->request('GET', '/')->getBody();
         $responseThree = (string) $client->request('GET', '/')->getBody();
 
-        dd($responseOne, $responseTwo, $responseThree);
+        // dd($responseOne, $responseTwo, $responseThree);
 
         static::assertNotEquals($responseOne, $responseTwo);
         static::assertEquals($responseTwo, $responseThree);
