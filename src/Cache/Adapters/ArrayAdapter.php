@@ -91,7 +91,7 @@ class ArrayAdapter extends BaseAdapter
         {
             if ($response[self::EXPIRATION_KEY] > \time())
             {
-                /** @var CachedResponse $cachedResponse */
+                /** @var CachedResponse|null $cachedResponse */
                 $cachedResponse = $response[self::RESPONSE_KEY];
 
                 return $cachedResponse ? $cachedResponse->getResponse() : null;

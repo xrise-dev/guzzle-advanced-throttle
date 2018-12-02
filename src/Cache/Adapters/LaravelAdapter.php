@@ -112,7 +112,7 @@ class LaravelAdapter extends BaseAdapter
      */
     protected function _getResponse(string $host, string $path, string $key) : ?Response
     {
-        /** @var CachedResponse $cachedResponse */
+        /** @var CachedResponse|null $cachedResponse */
         $cachedResponse = $this->_cacheManager->get($this->_buildResponseKey($host, $path, $key));
 
         return $cachedResponse ? $cachedResponse->getResponse() : null;
