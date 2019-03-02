@@ -65,6 +65,8 @@ class CacheTest extends TestCase
     }
 
     /** @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function order_of_parameters_is_irrelevant_when_values_are_the_same() : void
     {
@@ -92,6 +94,8 @@ class CacheTest extends TestCase
     }
 
     /** @test
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function unordered_parameters_with_different_values_are_not_the_same() : void
     {

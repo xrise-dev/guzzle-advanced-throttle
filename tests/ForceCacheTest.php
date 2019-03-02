@@ -17,6 +17,8 @@ class ForceCacheTest extends TestCase
 {
 
     /** @test
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requests_are_always_cached() : void
     {
@@ -35,13 +37,8 @@ class ForceCacheTest extends TestCase
         $stack = new MockHandler([new Response(200, [], $body1), new Response(200, [], $body2), new Response(200, [], $body3)]);
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
-        $responseOne = (string) $client->request('GET', '/')->getBody();
-        $responseTwo = (string) $client->request('GET', '/')->getBody();
-        $responseThree = (string) $client->request('GET', '/')->getBody();
-
-        static::assertEquals($responseOne, $body1);
-        static::assertEquals($responseTwo, $body1);
-        static::assertEquals($responseThree, $body1);
+        static::assertEquals((string) $client->request('GET', '/')->getBody(), $body1);
+        static::assertEquals((string) $client->request('GET', '/')->getBody(), $body1);
+        static::assertEquals((string) $client->request('GET', '/')->getBody(), $body1);
     }
-
 }

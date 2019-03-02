@@ -70,6 +70,7 @@ class ArrayAdapterTest extends TestCase
 
     /**
      * @test
+     * @throws \Exception
      */
     public function does_not_store_empty_values() : void
     {
@@ -91,6 +92,7 @@ class ArrayAdapterTest extends TestCase
 
     /**
      * @test
+     * @throws \Exception
      */
     public function stores_empty_values_when_allowed() : void
     {

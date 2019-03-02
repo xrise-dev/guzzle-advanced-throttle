@@ -53,7 +53,7 @@ class LaravelAdapter extends BaseAdapter
         $this->_cacheManager->put(
             $this->_buildKey($host, $key),
             RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds),
-            $remainingSeconds / 60
+            $remainingSeconds
         );
     }
 

@@ -60,7 +60,7 @@ class LaravelAdapterTest extends TestCase
     public function stored_value_gets_invalidated_when_expired() : void
     {
         $request = new Request('GET', 'www.test.com');
-        $response = new Response(200, [], null, '1337');
+        $response = new Response(200, [], null);
 
         $config = $this->_getConfig();
         $config->set('cache.ttl', 0);
@@ -74,6 +74,7 @@ class LaravelAdapterTest extends TestCase
 
     /**
      * @test
+     * @throws \Exception
      */
     public function does_not_store_empty_values() : void
     {

@@ -42,15 +42,10 @@ class LaravelDriverTest extends TestCase
     {
         $mockDriver = new MockDriver('mock');
 
-        static::assertArraySubset(
-            [
-                'cache.default'     => 'mock',
-                'cache.stores.mock' => [
-                    'driver' => 'mock'
-                ],
-                'cache.prefix'      => 'throttle_cache'
-            ],
-            $mockDriver->getContainer()->offsetGet('config')
-        );
+        $config = $mockDriver->getContainer()->offsetGet('config');
+
+        static::assertEquals('mock', $config['cache.default']);
+        static::assertEquals(['driver' => 'mock'], $config['cache.stores.mock']);
+        static::assertEquals('throttle_cache', $config['cache.prefix']);
     }
 }

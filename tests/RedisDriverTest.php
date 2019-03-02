@@ -45,6 +45,7 @@ class RedisDriverTest extends TestCase
 
     /** @test
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function requests_are_cached() : void
     {
