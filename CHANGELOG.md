@@ -23,6 +23,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 4.0.1
+
+Simplified and hardened error status code detection.
+
+----------
+
 ## 4.0.0
 
 ### Added

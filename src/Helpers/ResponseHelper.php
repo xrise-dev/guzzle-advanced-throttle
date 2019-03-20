@@ -19,6 +19,6 @@ class ResponseHelper
      */
     public static function hasErrorStatusCode(ResponseInterface $response) : bool
     {
-        return \in_array(+ \mb_substr($response->getStatusCode(), 0, 1), [4, 5], true);
+        return $response->getStatusCode() > 299;
     }
 }
