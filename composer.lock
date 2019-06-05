@@ -440,16 +440,16 @@
         },
         {
             "name": "illuminate/database",
-            "version": "v5.8.19",
+            "version": "v5.8.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "44740cedfbd90c5fc9710ab572adf40ab0b4c11c"
+                "reference": "0912ab85c15a56a9b2d917592c14daa34330d70c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/44740cedfbd90c5fc9710ab572adf40ab0b4c11c",
-                "reference": "44740cedfbd90c5fc9710ab572adf40ab0b4c11c",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/0912ab85c15a56a9b2d917592c14daa34330d70c",
+                "reference": "0912ab85c15a56a9b2d917592c14daa34330d70c",
                 "shasum": ""
             },
             "require": {
@@ -496,7 +496,7 @@
                 "orm",
                 "sql"
             ],
-            "time": "2019-05-27T13:28:29+00:00"
+            "time": "2019-06-04T13:01:08+00:00"
         },
         {
             "name": "illuminate/filesystem",
