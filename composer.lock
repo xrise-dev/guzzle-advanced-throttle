@@ -500,7 +500,7 @@
         },
         {
             "name": "illuminate/filesystem",
-            "version": "v5.8.28",
+            "version": "v5.8.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/filesystem.git",
