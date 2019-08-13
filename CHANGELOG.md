@@ -23,6 +23,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 4.0.3
+
+### Security
+Updated external dependencies.
+
+----------
+
 ## 4.0.2
 
 ### Security
