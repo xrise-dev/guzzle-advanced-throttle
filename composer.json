@@ -30,12 +30,12 @@
     "require": {
         "php": "^7.2",
         "guzzlehttp/guzzle": "~6.3.0",
-        "illuminate/cache": "^5.8.2",
-        "illuminate/container": "^5.8.2",
-        "illuminate/config": "^5.8.2",
-        "illuminate/filesystem": "^5.8.2",
-        "illuminate/redis": "^5.8.2",
-        "illuminate/database": "^5.8.2",
+        "illuminate/cache": "^5.8.2|^6.0.0",
+        "illuminate/container": "^5.8.2|^6.0.0",
+        "illuminate/config": "^5.8.2|^6.0.0",
+        "illuminate/filesystem": "^5.8.2|^6.0.0",
+        "illuminate/redis": "^5.8.2|^6.0.0",
+        "illuminate/database": "^5.8.2|^6.0.0",
         "predis/predis": "^1.1",
         "symfony/http-kernel": "~3|~4"
     },
