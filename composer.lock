@@ -311,7 +311,7 @@
         },
         {
             "name": "illuminate/config",
-            "version": "v5.8.34",
+            "version": "v5.8.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/config.git",
