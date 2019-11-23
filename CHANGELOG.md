@@ -23,6 +23,16 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 4.1.1
+
+### Security
+This fixes a security vulnerabilities in `symfony/http-foundation` and `symfony/http-kernel`:  
+
+- https://github.com/FriendsOfPHP/security-advisories/blob/master/symfony/http-foundation/CVE-2019-18888.yaml
+- https://github.com/FriendsOfPHP/security-advisories/blob/master/symfony/http-kernel/CVE-2019-18887.yaml
+
+----------
+
 ## 4.1.0
 
 ### Compatibility
