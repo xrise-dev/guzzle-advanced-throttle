@@ -46,7 +46,7 @@ class RequestLimiter
         $this->_maxRequestCount = $maxRequests ?? self::DEFAULT_MAX_REQUESTS;
         $requestInterval = $requestIntervalSeconds ?? self::DEFAULT_REQUEST_INTERVAL;
 
-        $this->_storageKey = $maxRequests . '_' . $requestInterval;
+        $this->_storageKey = $this->_maxRequestCount . '_' . $requestInterval;
         $this->_restoreState($requestInterval);
     }
 
@@ -54,13 +54,12 @@ class RequestLimiter
      * @param int $requestIntervalSeconds
      * @throws \Exception
      */
-    private function _restoreState(int $requestIntervalSeconds) : void
+    private function _restoreState(int $requestIntervalSeconds): void
     {
         $this->_timekeeper = new TimeKeeper($requestIntervalSeconds);
 
         $requestInfo = $this->_storage->get($this->_host, $this->_storageKey);
-        if ($requestInfo === null)
-        {
+        if ($requestInfo === null) {
             return;
         }
 
@@ -75,7 +74,7 @@ class RequestLimiter
      * @return RequestLimiter
      * @throws \Exception
      */
-    public static function createFromRule(string $host, array $rule, StorageInterface $storage = null) : self
+    public static function createFromRule(string $host, array $rule, StorageInterface $storage = null): self
     {
         return new static($host, $rule['max_requests'] ?? null, $rule['request_interval'] ?? null, $storage);
     }
@@ -88,7 +87,7 @@ class RequestLimiter
      * @return RequestLimiter
      * @throws \Exception
      */
-    public static function create(string $host, ?int $maxRequests = self::DEFAULT_MAX_REQUESTS, ?int $requestIntervalSeconds = self::DEFAULT_REQUEST_INTERVAL, StorageInterface $storage = null) : self
+    public static function create(string $host, ?int $maxRequests = self::DEFAULT_MAX_REQUESTS, ?int $requestIntervalSeconds = self::DEFAULT_REQUEST_INTERVAL, StorageInterface $storage = null): self
     {
         return new static($host, $maxRequests, $requestIntervalSeconds, $storage);
     }
@@ -99,15 +98,13 @@ class RequestLimiter
      * @return bool
      * @throws \Exception
      */
-    public function canRequest(RequestInterface $request, array $options = []) : bool
+    public function canRequest(RequestInterface $request, array $options = []): bool
     {
-        if (!$this->matches($this->_getHostFromRequestAndOptions($request, $options)))
-        {
+        if (!$this->matches($this->_getHostFromRequestAndOptions($request, $options))) {
             return true;
         }
 
-        if ($this->getCurrentRequestCount() >= $this->_maxRequestCount)
-        {
+        if ($this->getCurrentRequestCount() >= $this->_maxRequestCount) {
             return false;
         }
 
@@ -121,7 +118,7 @@ class RequestLimiter
      * @param string $host
      * @return bool
      */
-    public function matches(string $host) : bool
+    public function matches(string $host): bool
     {
         return $this->_host === $host || Wildcard::matches($this->_host, $host);
     }
@@ -131,7 +128,7 @@ class RequestLimiter
      * @param array $options
      * @return string
      */
-    private function _getHostFromRequestAndOptions(RequestInterface $request, array $options = []) : string
+    private function _getHostFromRequestAndOptions(RequestInterface $request, array $options = []): string
     {
         $uri = $options['base_uri'] ?? $request->getUri();
 
@@ -142,15 +139,13 @@ class RequestLimiter
      * @param Uri $uri
      * @return string
      */
-    private function _buildHostUrl(Uri $uri) : string
+    private function _buildHostUrl(Uri $uri): string
     {
         $host = $uri->getHost();
         $scheme = $uri->getScheme();
-        if (!empty($host) && !empty($scheme))
-        {
+        if (!empty($host) && !empty($scheme)) {
             $host = $scheme . '://' . $host;
-        } else
-        {
+        } else {
             $host = $uri->getPath();
         }
 
@@ -161,11 +156,10 @@ class RequestLimiter
      * Increment the request counter.
      * @throws \Exception
      */
-    private function _increment() : void
+    private function _increment(): void
     {
         $this->_requestCount++;
-        if ($this->_requestCount === 1)
-        {
+        if ($this->_requestCount === 1) {
             $this->_timekeeper->start();
         }
     }
@@ -173,7 +167,7 @@ class RequestLimiter
     /**
      * Save timer in storage
      */
-    private function _save() : void
+    private function _save(): void
     {
         $this->_storage->save(
             $this->_host,
@@ -187,7 +181,7 @@ class RequestLimiter
     /**
      * @return int
      */
-    public function getRemainingSeconds() : int
+    public function getRemainingSeconds(): int
     {
         return $this->_timekeeper->getRemainingSeconds();
     }
@@ -195,10 +189,9 @@ class RequestLimiter
     /**
      * @return int
      */
-    public function getCurrentRequestCount() : int
+    public function getCurrentRequestCount(): int
     {
-        if ($this->_timekeeper->isExpired())
-        {
+        if ($this->_timekeeper->isExpired()) {
             $this->_timekeeper->reset();
             $this->_requestCount = 0;
         }

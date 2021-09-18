@@ -1,5 +1,3 @@
-
-
 # hamburgscleanest/guzzle-advanced-throttle
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
@@ -386,7 +384,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-downloads]: https://img.shields.io/packagist/dt/hamburgscleanest/guzzle-advanced-throttle.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/hamburgscleanest/guzzle-advanced-throttle
-[link-travis]: https://travis-ci.org/hamburgscleanest/guzzle-advanced-throttle
+[link-travis]: https://app.travis-ci.com/github/hamburgscleanest/guzzle-advanced-throttle
 [link-scrutinizer]: https://scrutinizer-ci.com/g/hamburgscleanest/guzzle-advanced-throttle/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/hamburgscleanest/guzzle-advanced-throttle
 [link-downloads]: https://packagist.org/packages/hamburgscleanest/guzzle-advanced-throttle
