@@ -21,7 +21,7 @@ Using [wildcards](#wildcards) in host names is also supported.
 Via Composer
 
 ``` bash
-$ composer require hamburgscleanest/guzzle-advanced-throttle
+composer require hamburgscleanest/guzzle-advanced-throttle
 ```
 
 ## Usage
@@ -34,9 +34,7 @@ Let's say you wanted to implement the following rules:
 >
 > **100** requests every **2 minutes**
 
-
 ----------
-
 
 1. First you have to define the rules in a `hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset`:
 
@@ -60,16 +58,16 @@ be `https://www.google.com` not `https://www.google.com/`.
 
 ----------
 
-
 2. Your handler stack might look like this:
+
 ``` php
  $stack = new HandlerStack();
  $stack->setHandler(new CurlHandler());
 ```
 
-
 ----------
-3. Push `hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware` to the stack. 
+
+3. Push `hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware` to the stack.
 
 > It should always be the first middleware on the stack.
 
@@ -82,8 +80,11 @@ be `https://www.google.com` not `https://www.google.com/`.
  // OR: alternatively call the handle method directly
  $stack->push($throttle->handle());
 ```
+
 ----------
+
 5. Pass the stack to the client
+
 ``` php
 $client = new Client(['base_uri' => 'https://www.google.com', 'handler' => $stack]);
 ```
@@ -135,6 +136,7 @@ You'll also need to implement any sort of configuration parsing your instance ne
 Please see `LaravelAdapter` for an example.
 
 ###### Usage:
+
 ``` php
 $rules = new RequestLimitRuleset(
     [ ... ], 
@@ -305,6 +307,7 @@ This will give a good head start, see `ForceCache` and `Cache` for ideas.
 To use your custom caching strategy, you'll need to pass the fully qualified cache name to `RequestLimitRuleset`.
 
 ##### Usage
+
 ```php
 $rules = new RequestLimitRuleset([ ... ], 
                                 MyCustomCacheStrategy::class, 
@@ -314,7 +317,6 @@ $rules = new RequestLimitRuleset([ ... ],
 $throttle = new ThrottleMiddleware($rules);
 ...                                
 ```
-
 
 ----------
 
@@ -347,7 +349,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Testing
 
 ``` bash
-$ composer test
+composer test
 ```
 
 ----------
