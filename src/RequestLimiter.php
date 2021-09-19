@@ -43,7 +43,7 @@ class RequestLimiter
     public function __construct(string $host, ?int $maxRequests = self::DEFAULT_MAX_REQUESTS, ?int $requestIntervalSeconds = self::DEFAULT_REQUEST_INTERVAL, StorageInterface $storage = null)
     {
         $this->_storage = $storage ?? new ArrayAdapter();
-        $this->_host = $host;
+        $this->_host = \rtrim($host, '/');
         $this->_maxRequestCount = $maxRequests ?? self::DEFAULT_MAX_REQUESTS;
         $requestInterval = $requestIntervalSeconds ?? self::DEFAULT_REQUEST_INTERVAL;
 
