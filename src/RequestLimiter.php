@@ -5,6 +5,7 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle;
 use GuzzleHttp\Psr7\Uri;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
+use Illuminate\Support\Str;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -120,7 +121,7 @@ class RequestLimiter
      */
     public function matches(string $host): bool
     {
-        return $this->_host === $host || Wildcard::matches($this->_host, $host);
+        return $host === $this->_host || Str::startsWith($host, $this->_host) || Wildcard::matches($this->_host, $host);
     }
 
     /**
@@ -141,12 +142,11 @@ class RequestLimiter
      */
     private function _buildHostUrl(Uri $uri): string
     {
-        $host = $uri->getHost();
+        $host = $uri->getHost() . $uri->getPath();
         $scheme = $uri->getScheme();
-        if (!empty($host) && !empty($scheme)) {
-            $host = $scheme . '://' . $host;
-        } else {
-            $host = $uri->getPath();
+
+        if (!empty($scheme)) {
+            return $scheme . '://' . $host;
         }
 
         return $host;
