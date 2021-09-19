@@ -8,7 +8,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Added
 
-- Nothing 
+- Nothing
 
 ### Deprecated
 
@@ -32,23 +32,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Added
 
-- PHP 8 support
-
-### Deprecated
-
-- Nothing
-
-### Fixed
-
-- Nothing
+- PHP 7.4 support
+- PHP 8.0 support
 
 ### Removed
 
-- PHP 7 support
-
-### Security
-
-- Nothing
+- PHP 7.1 support
+- PHP 7.2 support
 
 ----------
 
