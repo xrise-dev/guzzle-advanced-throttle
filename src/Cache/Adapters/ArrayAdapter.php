@@ -2,11 +2,11 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
-use DateInterval;
 use DateTimeImmutable;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\CachedResponse;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
+use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Config\Repository;
 
@@ -43,7 +43,7 @@ class ArrayAdapter extends BaseAdapter
     {
         $this->_storage[self::STORAGE_KEY][$host][$path][$key] = [
             self::RESPONSE_KEY   => new CachedResponse($response),
-            self::EXPIRATION_KEY => (new DateTimeImmutable())->add(new DateInterval('PT' . $this->_ttl . 'M'))->getTimestamp()
+            self::EXPIRATION_KEY => SystemClock::create()->advanceMinutes($this->_ttl)->now()->getTimestamp()
         ];
     }
 

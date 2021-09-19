@@ -2,11 +2,11 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
-use DateTimeImmutable;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\LaravelAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
+use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +26,7 @@ class LaravelAdapterTest extends TestCase
         $host = 'test';
         $key = 'my_key';
         $requestCount = 12;
-        $expiresAt = new DateTimeImmutable();
+        $expiresAt = SystemClock::create()->now();
         $remainingSeconds = 120;
 
         $laravelAdapter = new LaravelAdapter($this->_getConfig());

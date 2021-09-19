@@ -3,17 +3,12 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use DateInterval;
-use DateTimeImmutable;
+use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
 use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class TimeKeeperTests
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
- */
 class TimeKeeperTest extends TestCase
 {
-
     /** @test */
     public function can_be_created_statically(): void
     {
@@ -28,7 +23,7 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
 
-        $minutesNow = + (new DateTimeImmutable())->format('i');
+        $minutesNow = +SystemClock::create()->now()->format('i');
         $timeKeeper->start();
 
         $minutesExpiration = +$timeKeeper->getExpiration()->format('i');
@@ -42,7 +37,7 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
 
-        $myExpiration = (new DateTimeImmutable())->add(new DateInterval('PT120S'));
+        $myExpiration = SystemClock::create()->advanceSeconds(120)->now();
         $timeKeeper->setExpiration($myExpiration);
 
         static::assertEquals($myExpiration, $timeKeeper->getExpiration());
@@ -64,7 +59,7 @@ class TimeKeeperTest extends TestCase
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
         static::assertFalse($timeKeeper->isExpired());
-        $timeKeeper->setExpiration((new DateTimeImmutable())->sub(new DateInterval('P1D')));
+        $timeKeeper->setExpiration(SystemClock::create()->now()->sub(new DateInterval('P1D')));
         static::assertTrue($timeKeeper->isExpired());
     }
 
@@ -74,7 +69,7 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
-        $timeKeeper->setExpiration((new DateTimeImmutable())->sub(new DateInterval('P1D')));
+        $timeKeeper->setExpiration(SystemClock::create()->now()->sub(new DateInterval('P1D')));
         static::assertEquals(60, $timeKeeper->getRemainingSeconds());
     }
 

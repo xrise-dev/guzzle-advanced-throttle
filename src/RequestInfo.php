@@ -13,7 +13,7 @@ class RequestInfo
     public function __construct(int $requestCount, int $expirationTimestamp, int $remainingSeconds)
     {
         $this->requestCount = $requestCount;
-        $this->expiresAt = (new DateTimeImmutable())->setTimestamp($expirationTimestamp);
+        $this->expiresAt = SystemClock::fromTimestamp($expirationTimestamp)->now();
         $this->remainingSeconds = $remainingSeconds;
     }
 

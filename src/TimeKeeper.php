@@ -1,9 +1,7 @@
 <?php
 
-
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
-use DateInterval;
 use DateTimeImmutable;
 
 class TimeKeeper
@@ -44,7 +42,7 @@ class TimeKeeper
             return false;
         }
 
-        return $this->_expiresAt <= new DateTimeImmutable();
+        return $this->_expiresAt <= SystemClock::create()->now();
     }
 
     public function reset(): void
@@ -57,6 +55,6 @@ class TimeKeeper
      */
     public function start(): void
     {
-        $this->_expiresAt = (new DateTimeImmutable())->add(new DateInterval('PT' . $this->_expirationIntervalSeconds . 'S'));
+        $this->_expiresAt = SystemClock::create()->advanceSeconds($this->_expirationIntervalSeconds)->now();
     }
 }

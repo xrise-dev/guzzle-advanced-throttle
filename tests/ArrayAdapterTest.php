@@ -2,10 +2,10 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
-use DateTimeImmutable;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
+use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +17,7 @@ class ArrayAdapterTest extends TestCase
         $host = 'test';
         $key = 'my_key';
         $requestCount = 12;
-        $expiresAt = new DateTimeImmutable();
+        $expiresAt = SystemClock::create()->now();
         $remainingSeconds = 120;
 
         $arrayAdapter = new ArrayAdapter();
