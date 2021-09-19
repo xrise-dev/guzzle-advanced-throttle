@@ -4,20 +4,13 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Helpers;
 
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Class ResponseHelper
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Helpers
- */
 class ResponseHelper
 {
-
     /**
      * Did the request return a 4xx or 5xx status code?
-     *
-     * @param ResponseInterface $response
-     * @return bool
+     * Note: Also handles 3xx redirect codes as errors atm.
      */
-    public static function hasErrorStatusCode(ResponseInterface $response) : bool
+    public static function hasErrorStatusCode(ResponseInterface $response): bool
     {
         return $response->getStatusCode() > 299;
     }

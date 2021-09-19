@@ -14,37 +14,30 @@ use PHPUnit\Framework\TestCase;
 class TimeKeeperTest extends TestCase
 {
 
-    /** @test
-     * @throws \Exception
-     */
-    public function can_be_created_statically() : void
+    /** @test */
+    public function can_be_created_statically(): void
     {
         $timeKeeper = TimeKeeper::create(60);
 
         static::assertInstanceOf(TimeKeeper::class, $timeKeeper);
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function sets_correct_expiration_date() : void
+    /** @test */
+    public function sets_correct_expiration_date(): void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
 
-        $minutesNow = +(new DateTime())->format('i');
+        $minutesNow = + (new DateTime())->format('i');
         $timeKeeper->start();
 
         $minutesExpiration = +$timeKeeper->getExpiration()->format('i');
 
-
         static::assertEquals($minutesNow + 1, $minutesExpiration);
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function expiration_date_can_be_set_manually() : void
+    /** @test */
+    public function expiration_date_can_be_set_manually(): void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -55,10 +48,8 @@ class TimeKeeperTest extends TestCase
         static::assertEquals($myExpiration, $timeKeeper->getExpiration());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function remaining_time_is_correct() : void
+    /** @test */
+    public function remaining_time_is_correct(): void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -66,10 +57,8 @@ class TimeKeeperTest extends TestCase
         static::assertEquals($interval, $timeKeeper->getRemainingSeconds());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function is_expired_is_correct() : void
+    /** @test */
+    public function is_expired_is_correct(): void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -79,10 +68,8 @@ class TimeKeeperTest extends TestCase
         static::assertTrue($timeKeeper->isExpired());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function remaining_time_is_correct_when_expired() : void
+    /** @test */
+    public function remaining_time_is_correct_when_expired(): void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
@@ -91,10 +78,8 @@ class TimeKeeperTest extends TestCase
         static::assertEquals(60, $timeKeeper->getRemainingSeconds());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function resets_correctly() : void
+    /** @test */
+    public function resets_correctly(): void
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);

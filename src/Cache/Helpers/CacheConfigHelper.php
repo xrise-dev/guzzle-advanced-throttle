@@ -12,13 +12,8 @@ use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
 
-/**
- * Class CacheConfigHelper
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers
- */
 class CacheConfigHelper
 {
-
     /** @var array */
     private const DRIVERS = [
         'file'      => FileDriver::class,
@@ -26,24 +21,12 @@ class CacheConfigHelper
         'memcached' => MemcachedDriver::class
     ];
 
-    /**
-     * @param Repository $config
-     * @return CacheManager
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownLaravelDriverException
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException
-     */
-    public static function getCacheManager(Repository $config) : CacheManager
+    public static function getCacheManager(Repository $config): CacheManager
     {
         return new CacheManager(self::getContainer($config));
     }
 
-    /**
-     * @param Repository $config
-     * @return Container
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownLaravelDriverException
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException
-     */
-    public static function getContainer(Repository $config) : Container
+    public static function getContainer(Repository $config): Container
     {
         $driverName = self::getDriver($config);
         $driverClass = self::_getDriverClass($driverName);
@@ -54,31 +37,19 @@ class CacheConfigHelper
         return $driverClass->getContainer();
     }
 
-    /**
-     * @param Repository $config
-     * @return string
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheDriverNotSetException
-     */
-    public static function getDriver(Repository $config) : string
+    public static function getDriver(Repository $config): string
     {
         $driver = $config->get('driver');
-        if ($driver === null)
-        {
+        if ($driver === null) {
             throw new LaravelCacheDriverNotSetException();
         }
 
         return $driver;
     }
 
-    /**
-     * @param string $driverName
-     * @return string
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\UnknownLaravelDriverException
-     */
-    private static function _getDriverClass(string $driverName) : string
+    private static function _getDriverClass(string $driverName): string
     {
-        if (!isset(self::DRIVERS[$driverName]))
-        {
+        if (!isset(self::DRIVERS[$driverName])) {
             throw new UnknownLaravelDriverException($driverName, self::DRIVERS);
         }
 

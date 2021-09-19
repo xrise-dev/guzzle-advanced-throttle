@@ -10,28 +10,18 @@ use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Config\Repository;
 
-/**
- * Class ArrayAdapter
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters
- */
 class ArrayAdapter extends BaseAdapter
 {
-
     /** @var string */
     private const RESPONSE_KEY = 'response';
     /** @var string */
     private const EXPIRATION_KEY = 'expires_at';
-    /** @var array */
-    private $_storage = [];
 
-    /**
-     * StorageInterface constructor.
-     * @param Repository|null $config
-     */
+    private array $_storage = [];
+
     public function __construct(?Repository $config = null)
     {
-        if ($config === null)
-        {
+        if ($config === null) {
             return;
         }
 
@@ -39,37 +29,17 @@ class ArrayAdapter extends BaseAdapter
         $this->_allowEmptyValues = $config->get('cache.allow_empty', $this->_allowEmptyValues);
     }
 
-    /**
-     * @param string $host
-     * @param string $key
-     * @param int $requestCount
-     * @param \DateTime $expiresAt
-     * @param int $remainingSeconds
-     */
-    public function save(string $host, string $key, int $requestCount, DateTime $expiresAt, int $remainingSeconds) : void
+    public function save(string $host, string $key, int $requestCount, DateTime $expiresAt, int $remainingSeconds): void
     {
         $this->_storage[$host][$key] = RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds);
     }
 
-    /**
-     * @param string $host
-     * @param string $key
-     * @return RequestInfo|null
-     */
-    public function get(string $host, string $key) : ?RequestInfo
+    public function get(string $host, string $key): ?RequestInfo
     {
         return $this->_storage[$host][$key] ?? null;
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @param string $host
-     * @param string $path
-     * @param string $key
-     * @param int $expiresAt
-     * @throws \Exception
-     */
-    protected function _saveResponse(ResponseInterface $response, string $host, string $path, string $key) : void
+    protected function _saveResponse(ResponseInterface $response, string $host, string $path, string $key): void
     {
         $this->_storage[self::STORAGE_KEY][$host][$path][$key] = [
             self::RESPONSE_KEY   => new CachedResponse($response),
@@ -77,20 +47,12 @@ class ArrayAdapter extends BaseAdapter
         ];
     }
 
-    /**
-     * @param string $host
-     * @param string $path
-     * @param string $key
-     * @return null|Response
-     */
-    protected function _getResponse(string $host, string $path, string $key) : ?Response
+    protected function _getResponse(string $host, string $path, string $key): ?Response
     {
         $response = $this->_storage[self::STORAGE_KEY][$host][$path][$key] ?? null;
 
-        if ($response !== null)
-        {
-            if ($response[self::EXPIRATION_KEY] > \time())
-            {
+        if ($response !== null) {
+            if ($response[self::EXPIRATION_KEY] > \time()) {
                 /** @var CachedResponse|null $cachedResponse */
                 $cachedResponse = $response[self::RESPONSE_KEY];
 
@@ -103,12 +65,7 @@ class ArrayAdapter extends BaseAdapter
         return null;
     }
 
-    /**
-     * @param string $host
-     * @param string $path
-     * @param string $key
-     */
-    private function _invalidate(string $host, string $path, string $key) : void
+    private function _invalidate(string $host, string $path, string $key): void
     {
         unset($this->_storage[self::STORAGE_KEY][$host][$path][$key]);
     }
