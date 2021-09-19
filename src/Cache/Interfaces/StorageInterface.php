@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces;
 
-use DateTime;
+use DateTimeImmutable;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use Illuminate\Config\Repository;
 use Psr\Http\Message\RequestInterface;
@@ -12,7 +12,7 @@ interface StorageInterface
 {
     public function __construct(?Repository $config = null);
 
-    public function save(string $host, string $key, int $requestCount, DateTime $expiresAt, int $remainingSeconds): void;
+    public function save(string $host, string $key, int $requestCount, DateTimeImmutable $expiresAt, int $remainingSeconds): void;
 
     public function get(string $host, string $key): ?RequestInfo;
 

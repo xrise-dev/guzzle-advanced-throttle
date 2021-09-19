@@ -7,12 +7,11 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A Guzzle middleware that can throttle requests according to (multiple) defined rules.
+A Guzzle middleware that throttles requests according to (multiple) defined rules.
 
-It is also possible to define a caching strategy,
-e.g. get the response from cache when the rate limit is exceeded or always get a cached value to spare your rate limits.
+It is also possible to define a caching strategy. For example, the response can be read from a cache when exceeding rate limits. The cached value can also be preferred to spare your rate limits (`force-cache`).
 
-Using [wildcards](#wildcards) in host names is also supported.
+Using [wildcards](#wildcards) in hostnames is also supported.
 
 ## Install
 
@@ -34,7 +33,7 @@ Let's say you wanted to implement the following rules:
 
 ----------
 
-1. First you have to define the rules in a `hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset`:
+1. First, you have to define the rules in a `hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset`:
 
 ``` php
 $rules = new RequestLimitRuleset([
@@ -102,7 +101,8 @@ $response = $client->get('https://www.google.com/test');
 
 #### Beforehand
 
-Responses with an error status code `4xx` or `5xx` will not be cached (even with `force-cache` enabled)! 
+Responses with an error status code `4xx` or `5xx` are not cached (even with `force-cache` enabled)!
+Note: Currently, also redirect responses (`3xx`) are not cached.
 
 ----------
 
@@ -110,9 +110,7 @@ Responses with an error status code `4xx` or `5xx` will not be cached (even with
 
 ##### `array` (default)
 
-Works out of the box. However it `does not persist` anything. 
-This one will only work within the same scope.
-It's set as a default because it doesn't need extra configuration.
+This adapter works out of the box. However, it `does not persist` anything. This one only works within the same scope. It's set as a default because it doesn't need extra configuration.
 
 The recommended adapter is the `laravel` one.
 
@@ -126,11 +124,11 @@ You need to provide a config (`Illuminate\Config\Repository`) for this adapter.
 
 ##### `custom` (Implements `hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface`)
 
-When you create a new implementation, pass the class name to the `RequestLimitRuleset::create` method. 
+When you create a new implementation, pass the class name to the `RequestLimitRuleset::create` method.
 You'll also need to implement any sort of configuration parsing your instance needs.
 Please see `LaravelAdapter` for an example.
 
-###### Usage:
+###### Usage
 
 ``` php
 $rules = new RequestLimitRuleset(
@@ -234,7 +232,7 @@ $rules = new RequestLimitRuleset(
 
 ----------
 
-##### The adapters can be defined in the rule set.
+##### The adapters can be defined in the ruleset
 
 ``` php
 $rules = new RequestLimitRuleset(
@@ -248,7 +246,7 @@ $rules = new RequestLimitRuleset(
 
 #### Without caching - `no-cache`
 
-Just throttle the requests. No caching is done. When the limit is exceeded, a `429 - Too Many Requests` exception will be thrown.
+Just throttle the requests. The responses are not cached. Exceeding the rate limits results in a `429 - Too Many Requests` exception.
 
 ``` php
 $rules = new RequestLimitRuleset(
@@ -262,7 +260,7 @@ $rules = new RequestLimitRuleset(
 
 #### With caching (default) - `cache`
 
-Use cached responses when your defined rate limit is exceeded. The middleware will try to fallback to a cached response before throwing `429 - Too Many Requests`.
+The middleware tries to fall back to a cached value when the rate limits are exceeded before throwing a `429 - Too Many Requests` exception.
 
 ``` php
 $rules = new RequestLimitRuleset(
@@ -276,10 +274,10 @@ $rules = new RequestLimitRuleset(
 
 #### With forced caching - `force-cache`
 
-Always use cached responses when available to spare your rate limits. 
-As long as there is a response in cache for the current request it will return the cached response. 
-It will only actually send the request when it is not cached. 
-If there is no cached response and the request limits are exceeded, it will throw `429 - Too Many Requests`.
+Always use cached responses when available to spare your rate limits.
+As long as there is a response in the cache for the current request, it returns the cached response.
+It will only actually send the request when no response is in the cache.
+Otherwise, it throws a `429 - Too Many Requests` exception.
 
 > You might want to disable the caching of empty responses with this option (see [General Driver Settings](https://github.com/hamburgscleanest/guzzle-advanced-throttle#laravel-drivers)).
 
@@ -295,11 +293,9 @@ $rules = new RequestLimitRuleset(
 
 #### Custom caching strategy
 
-Your custom caching strategy must implement `CacheStrategy`.
-It is suggested you use `Cacheable` for a parent class.
-This will give a good head start, see `ForceCache` and `Cache` for ideas.
+The custom caching strategy must implement the `CacheStrategy` interface. It is advised to use the `Cacheable` abstraction to implement base functionality. For reference implementations, please check `ForceCache` and `Cache`.
 
-To use your custom caching strategy, you'll need to pass the fully qualified cache name to `RequestLimitRuleset`.
+To use the new caching strategy, you'll need to pass the fully qualified class name to `RequestLimitRuleset`.
 
 ##### Usage
 
@@ -331,7 +327,7 @@ $rules = new RequestLimitRuleset([
     ]);
 ```
 
-This `host` will match `https://www.en.mysite.com`, `https://www.de.mysite.com`, `https://www.fr.mysite.com`, etc.
+This `host` matches `https://www.en.mysite.com`, `https://www.de.mysite.com`, `https://www.fr.mysite.com`, etc.
 
 ----------
 
@@ -357,7 +353,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT
 
 ## Security
 
-If you discover any security related issues, please email chroma91@gmail.com instead of using the issue tracker.
+If you discover any security-related issues, please email [chroma91@gmail.com](mailto:chroma91@gmail.com) instead of using the issue tracker.
 
 ----------
 

@@ -9,7 +9,7 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Interfaces\StorageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class Cacheable implements CacheStrategy
+abstract class Cacheable implements CacheStrategy
 {
     private StorageInterface $_storage;
 

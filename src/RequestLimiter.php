@@ -128,6 +128,7 @@ class RequestLimiter
 
     public function getCurrentRequestCount(): int
     {
+        // FIXME: This side effect should be cleaned up.
         if ($this->_timekeeper->isExpired()) {
             $this->_timekeeper->reset();
             $this->_requestCount = 0;

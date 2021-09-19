@@ -3,7 +3,7 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use DateInterval;
-use DateTime;
+use DateTimeImmutable;
 use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use PHPUnit\Framework\TestCase;
 
@@ -28,7 +28,7 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
 
-        $minutesNow = + (new DateTime())->format('i');
+        $minutesNow = + (new DateTimeImmutable())->format('i');
         $timeKeeper->start();
 
         $minutesExpiration = +$timeKeeper->getExpiration()->format('i');
@@ -42,7 +42,7 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
 
-        $myExpiration = (new DateTime())->add(new DateInterval('PT120S'));
+        $myExpiration = (new DateTimeImmutable())->add(new DateInterval('PT120S'));
         $timeKeeper->setExpiration($myExpiration);
 
         static::assertEquals($myExpiration, $timeKeeper->getExpiration());
@@ -64,7 +64,7 @@ class TimeKeeperTest extends TestCase
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
         static::assertFalse($timeKeeper->isExpired());
-        $timeKeeper->setExpiration((new DateTime())->sub(new DateInterval('P1D')));
+        $timeKeeper->setExpiration((new DateTimeImmutable())->sub(new DateInterval('P1D')));
         static::assertTrue($timeKeeper->isExpired());
     }
 
@@ -74,7 +74,7 @@ class TimeKeeperTest extends TestCase
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
-        $timeKeeper->setExpiration((new DateTime())->sub(new DateInterval('P1D')));
+        $timeKeeper->setExpiration((new DateTimeImmutable())->sub(new DateInterval('P1D')));
         static::assertEquals(60, $timeKeeper->getRemainingSeconds());
     }
 

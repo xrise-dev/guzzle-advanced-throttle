@@ -4,12 +4,12 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
 use DateInterval;
-use DateTime;
+use DateTimeImmutable;
 
 class TimeKeeper
 {
     private int $_expirationIntervalSeconds;
-    private DateTime|null $_expiresAt = null;
+    private DateTimeImmutable|null $_expiresAt = null;
 
     public function __construct(int $intervalInSeconds)
     {
@@ -21,12 +21,12 @@ class TimeKeeper
         return new static($intervalInSeconds);
     }
 
-    public function getExpiration(): ?DateTime
+    public function getExpiration(): ?DateTimeImmutable
     {
         return $this->_expiresAt;
     }
 
-    public function setExpiration(DateTime $expiresAt): self
+    public function setExpiration(DateTimeImmutable $expiresAt): self
     {
         $this->_expiresAt = $expiresAt;
 
@@ -44,7 +44,7 @@ class TimeKeeper
             return false;
         }
 
-        return $this->_expiresAt <= new DateTime();
+        return $this->_expiresAt <= new DateTimeImmutable();
     }
 
     public function reset(): void
@@ -57,6 +57,6 @@ class TimeKeeper
      */
     public function start(): void
     {
-        $this->_expiresAt = (new DateTime())->add(new DateInterval('PT' . $this->_expirationIntervalSeconds . 'S'));
+        $this->_expiresAt = (new DateTimeImmutable())->add(new DateInterval('PT' . $this->_expirationIntervalSeconds . 'S'));
     }
 }

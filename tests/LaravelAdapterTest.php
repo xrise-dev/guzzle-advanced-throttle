@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
-use DateTime;
+use DateTimeImmutable;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\LaravelAdapter;
@@ -10,30 +10,23 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetE
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class LaravelAdapterTest
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
- */
 class LaravelAdapterTest extends TestCase
 {
-
     /** @test */
-    public function throws_an_exception_when_config_is_not_set() : void
+    public function throws_an_exception_when_config_is_not_set(): void
     {
         $this->expectException(LaravelCacheConfigNotSetException::class);
 
         new LaravelAdapter();
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function stores_and_retrieves_data() : void
+    /** @test */
+    public function stores_and_retrieves_data(): void
     {
         $host = 'test';
         $key = 'my_key';
         $requestCount = 12;
-        $expiresAt = new DateTime();
+        $expiresAt = new DateTimeImmutable();
         $remainingSeconds = 120;
 
         $laravelAdapter = new LaravelAdapter($this->_getConfig());
@@ -46,18 +39,13 @@ class LaravelAdapterTest extends TestCase
         static::assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
     }
 
-    /**
-     * @return Repository
-     */
-    private function _getConfig() : Repository
+    private function _getConfig(): Repository
     {
         return new Repository(require 'config/app.php');
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function stored_value_gets_invalidated_when_expired() : void
+    /** @test */
+    public function stored_value_gets_invalidated_when_expired(): void
     {
         $request = new Request('GET', 'www.test.com');
         $response = new Response(200, [], null);
@@ -72,11 +60,8 @@ class LaravelAdapterTest extends TestCase
         static::assertNull($storedResponse);
     }
 
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function does_not_store_empty_values() : void
+    /** @test */
+    public function does_not_store_empty_values(): void
     {
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);
@@ -96,10 +81,8 @@ class LaravelAdapterTest extends TestCase
         static::assertNull($laravelAdapter->getResponse($request));
     }
 
-    /**
-     * @test
-     */
-    public function stores_empty_values_when_allowed() : void
+    /** @test */
+    public function stores_empty_values_when_allowed(): void
     {
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);
@@ -117,6 +100,5 @@ class LaravelAdapterTest extends TestCase
         $laravelAdapter->saveResponse($request, $emptyResponse);
 
         static::assertEmpty((string) $laravelAdapter->getResponse($request)->getBody());
-
     }
 }

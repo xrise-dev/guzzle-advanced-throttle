@@ -2,29 +2,22 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
-use DateTime;
+use DateTimeImmutable;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class ArrayAdapterTest
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
- */
 class ArrayAdapterTest extends TestCase
 {
-
-    /** @test
-     * @throws \Exception
-     */
-    public function stores_and_retrieves_data() : void
+    /** @test */
+    public function stores_and_retrieves_data(): void
     {
         $host = 'test';
         $key = 'my_key';
         $requestCount = 12;
-        $expiresAt = new DateTime();
+        $expiresAt = new DateTimeImmutable();
         $remainingSeconds = 120;
 
         $arrayAdapter = new ArrayAdapter();
@@ -37,10 +30,8 @@ class ArrayAdapterTest extends TestCase
         static::assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function stores_and_retrieves_response() : void
+    /** @test */
+    public function stores_and_retrieves_response(): void
     {
         $responseBody = 'test';
         $request = new Request('GET', 'www.test.de');
@@ -54,10 +45,8 @@ class ArrayAdapterTest extends TestCase
         static::assertEquals($responseBody, (string) $storedResponse->getBody());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function stored_value_gets_invalidated_when_expired() : void
+    /** @test */
+    public function stored_value_gets_invalidated_when_expired(): void
     {
         $request = new Request('GET', 'www.test.com');
         $response = new Response(200, [], 'test');
@@ -68,11 +57,8 @@ class ArrayAdapterTest extends TestCase
         static::assertNull($arrayAdapter->getResponse($request));
     }
 
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function does_not_store_empty_values() : void
+    /** @test */
+    public function does_not_store_empty_values(): void
     {
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);
@@ -90,11 +76,8 @@ class ArrayAdapterTest extends TestCase
         static::assertNull($arrayAdapter->getResponse($request));
     }
 
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function stores_empty_values_when_allowed() : void
+    /** @test */
+    public function stores_empty_values_when_allowed(): void
     {
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);

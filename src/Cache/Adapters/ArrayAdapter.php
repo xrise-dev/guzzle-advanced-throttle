@@ -3,7 +3,7 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
 use DateInterval;
-use DateTime;
+use DateTimeImmutable;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\CachedResponse;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
@@ -29,7 +29,7 @@ class ArrayAdapter extends BaseAdapter
         $this->_allowEmptyValues = $config->get('cache.allow_empty', $this->_allowEmptyValues);
     }
 
-    public function save(string $host, string $key, int $requestCount, DateTime $expiresAt, int $remainingSeconds): void
+    public function save(string $host, string $key, int $requestCount, DateTimeImmutable $expiresAt, int $remainingSeconds): void
     {
         $this->_storage[$host][$key] = RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds);
     }
@@ -43,7 +43,7 @@ class ArrayAdapter extends BaseAdapter
     {
         $this->_storage[self::STORAGE_KEY][$host][$path][$key] = [
             self::RESPONSE_KEY   => new CachedResponse($response),
-            self::EXPIRATION_KEY => (new DateTime())->add(new DateInterval('PT' . $this->_ttl . 'M'))->getTimestamp()
+            self::EXPIRATION_KEY => (new DateTimeImmutable())->add(new DateInterval('PT' . $this->_ttl . 'M'))->getTimestamp()
         ];
     }
 

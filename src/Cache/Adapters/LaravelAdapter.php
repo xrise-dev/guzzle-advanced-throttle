@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
-use DateTime;
+use DateTimeImmutable;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\CachedResponse;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\CacheConfigHelper;
@@ -28,7 +28,7 @@ class LaravelAdapter extends BaseAdapter
         $this->_allowEmptyValues = $cacheRepository->get('allow_empty', $this->_allowEmptyValues);
     }
 
-    public function save(string $host, string $key, int $requestCount, DateTime $expiresAt, int $remainingSeconds): void
+    public function save(string $host, string $key, int $requestCount, DateTimeImmutable $expiresAt, int $remainingSeconds): void
     {
         $this->_cacheManager->put(
             $this->_buildKey($host, $key),

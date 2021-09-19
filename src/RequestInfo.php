@@ -2,18 +2,18 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
-use DateTime;
+use DateTimeImmutable;
 
 class RequestInfo
 {
     public int $requestCount;
-    public DateTime $expiresAt;
+    public DateTimeImmutable $expiresAt;
     public int $remainingSeconds;
 
     public function __construct(int $requestCount, int $expirationTimestamp, int $remainingSeconds)
     {
         $this->requestCount = $requestCount;
-        $this->expiresAt = (new DateTime())->setTimestamp($expirationTimestamp);
+        $this->expiresAt = (new DateTimeImmutable())->setTimestamp($expirationTimestamp);
         $this->remainingSeconds = $remainingSeconds;
     }
 
