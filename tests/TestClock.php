@@ -1,11 +1,12 @@
 <?php
 
-namespace hamburgscleanest\GuzzleAdvancedThrottle;
+namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
 use DateTimeImmutable;
 use hamburgscleanest\GuzzleAdvancedThrottle\Interfaces\Clock;
+use hamburgscleanest\GuzzleAdvancedThrottle\TimeTravel;
 
-class SystemClock implements Clock
+class TestClock implements Clock
 {
     use TimeTravel;
 

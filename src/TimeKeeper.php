@@ -31,18 +31,29 @@ class TimeKeeper
         return $this;
     }
 
+    private function _getTimeDiff(): int
+    {
+        if ($this->_expiresAt === null) {
+            return 0;
+        }
+
+        return $this->_expiresAt->getTimestamp() - SystemClock::create()->now()->getTimestamp();
+    }
+
     public function getRemainingSeconds(): int
     {
-        return $this->_expiresAt === null || $this->isExpired() ? $this->_expirationIntervalSeconds : $this->_expiresAt->getTimestamp() - \time();
+        if ($this->_expiresAt === null) {
+            return $this->_expirationIntervalSeconds;
+        }
+
+        $diff = $this->_getTimeDiff();
+
+        return $diff >= 0 ? $diff : $this->_expirationIntervalSeconds;
     }
 
     public function isExpired(): bool
     {
-        if ($this->_expiresAt === null) {
-            return false;
-        }
-
-        return $this->_expiresAt <= SystemClock::create()->now();
+        return $this->_getTimeDiff() <= 0;
     }
 
     public function reset(): void

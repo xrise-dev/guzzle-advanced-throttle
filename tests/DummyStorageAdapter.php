@@ -19,28 +19,15 @@ class DummyStorageAdapter implements StorageInterface
     {
     }
 
-    /**
-     * @param string $host
-     * @param string $key
-     * @return RequestInfo|null
-     */
     public function get(string $host, string $key): ?RequestInfo
     {
         return null;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @param ResponseInterface $response
-     */
     public function saveResponse(RequestInterface $request, ResponseInterface $response): void
     {
     }
 
-    /**
-     * @param RequestInterface $request
-     * @return ResponseInterface|null
-     */
     public function getResponse(RequestInterface $request): ?ResponseInterface
     {
         return null;
