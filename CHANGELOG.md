@@ -32,13 +32,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Added
 
-- PHP 7.4 support
-- PHP 8.0 support
+- PHP 8 support
 
 ### Removed
 
-- PHP 7.1 support
-- PHP 7.2 support
+- PHP 7 support
 
 ----------
 
