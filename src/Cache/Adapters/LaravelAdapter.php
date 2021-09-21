@@ -57,7 +57,6 @@ class LaravelAdapter extends BaseAdapter
 
     public function get(string $host, string $key): ?RequestInfo
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->_cacheManager->get($this->_buildKey($host, $key));
     }
 
