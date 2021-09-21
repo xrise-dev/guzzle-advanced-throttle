@@ -28,6 +28,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ----------
 
+## 5.0.1
+
+### Fixed
+
+- fix wrong method call in `LaravelAdapter`
+
+----------
+
 ## 5.0.0
 
 ### Added
