@@ -10,6 +10,8 @@ matrix:
 services:
 - redis
 - memcached
+before_install:
+  - pecl install uopz 
 install:
 - composer update
 script:
