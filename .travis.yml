@@ -12,6 +12,7 @@ services:
 - memcached
 before_install:
   - pecl install uopz 
+  - printf "\n" | pecl install memcached
 install:
 - composer update
 script:
