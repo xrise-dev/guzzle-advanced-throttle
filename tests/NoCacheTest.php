@@ -10,16 +10,10 @@ use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
-/**
- * Class NoCacheTest
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
- */
 class NoCacheTest extends TestCase
 {
-
-    /** @test
-     */
-    public function requests_are_not_cached() : void
+    /** @test */
+    public function requests_are_not_cached(): void
     {
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
@@ -40,5 +34,4 @@ class NoCacheTest extends TestCase
 
         $client->request('GET', '/');
     }
-
 }

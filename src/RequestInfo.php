@@ -2,42 +2,22 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
-use DateTime;
+use DateTimeImmutable;
 
-/**
- * Class RequestInfo
- * @package hamburgscleanest\GuzzleAdvancedThrottle
- */
 class RequestInfo
 {
+    public int $requestCount;
+    public DateTimeImmutable $expiresAt;
+    public int $remainingSeconds;
 
-    /** @var int */
-    public $requestCount;
-    /** @var DateTime */
-    public $expiresAt;
-    /** @var int */
-    public $remainingSeconds;
-
-    /**
-     * RequestInfo constructor.
-     * @param int $requestCount
-     * @param int $expirationTimestamp
-     * @param int $remainingSeconds
-     */
     public function __construct(int $requestCount, int $expirationTimestamp, int $remainingSeconds)
     {
         $this->requestCount = $requestCount;
-        $this->expiresAt = (new DateTime())->setTimestamp($expirationTimestamp);
+        $this->expiresAt = SystemClock::fromTimestamp($expirationTimestamp)->now();
         $this->remainingSeconds = $remainingSeconds;
     }
 
-    /**
-     * @param int $requestCount
-     * @param int $expirationTimestamp
-     * @param int $remainingSeconds
-     * @return RequestInfo
-     */
-    public static function create(int $requestCount, int $expirationTimestamp, int $remainingSeconds) : RequestInfo
+    public static function create(int $requestCount, int $expirationTimestamp, int $remainingSeconds): RequestInfo
     {
         return new static($requestCount, $expirationTimestamp, $remainingSeconds);
     }

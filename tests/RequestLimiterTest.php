@@ -7,53 +7,54 @@ use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimiter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class RequestLimiterTests
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
- */
 class RequestLimiterTest extends TestCase
 {
-
-    /** @test
-     * @throws \Exception
-     */
-    public function can_be_created_statically() : void
+    /** @test */
+    public function can_be_created_statically(): void
     {
         $requestLimiter = RequestLimiter::create('www.test.com');
 
         static::assertInstanceOf(RequestLimiter::class, $requestLimiter);
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function can_be_created_from_rule() : void
+    /** @test */
+    public function can_be_created_from_rule(): void
     {
         $requestLimiter = RequestLimiter::createFromRule('www.test.com', []);
 
         static::assertInstanceOf(RequestLimiter::class, $requestLimiter);
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function can_request_is_correct() : void
+    /** @test */
+    public function can_request_is_correct(): void
     {
         $host = 'http://www.test.com';
+        $requestLimiter = RequestLimiter::create($host, 1);
+        $request = new Request('GET', $host . '/check');
+
+        static::assertTrue($requestLimiter->canRequest($request), 'first request is okay');
+        static::assertFalse($requestLimiter->canRequest($request), 'second request is blocked');
+
+        $otherRequest = new Request('GET', 'http://www.check.com');
+        static::assertTrue($requestLimiter->canRequest($otherRequest), 'other request is okay');
+    }
+
+    /** @test */
+    public function does_respect_base_uri(): void
+    {
+        $host = 'http://www.test.com/api';
         $requestLimiter = RequestLimiter::create($host, 1);
         $request = new Request('GET', $host . '/check');
 
         static::assertTrue($requestLimiter->canRequest($request));
         static::assertFalse($requestLimiter->canRequest($request));
 
-        $otherRequest = new Request('GET', 'http://www.check.com');
+        $otherRequest = new Request('GET', 'http://www.check.com/api');
         static::assertTrue($requestLimiter->canRequest($otherRequest));
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function remaining_seconds_are_correct() : void
+    /** @test */
+    public function remaining_seconds_are_correct(): void
     {
         $host = 'http://www.test.com';
         $requestLimiter = RequestLimiter::create($host, 20, 30);
@@ -62,10 +63,8 @@ class RequestLimiterTest extends TestCase
         static::assertEquals(30, $requestLimiter->getRemainingSeconds());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function current_request_count_is_correct() : void
+    /** @test */
+    public function current_request_count_is_correct(): void
     {
         $host = 'http://www.test.com';
         $requestLimiter = RequestLimiter::create($host, 1);
@@ -75,13 +74,11 @@ class RequestLimiterTest extends TestCase
         $requestLimiter->canRequest($request);
         static::assertEquals(1, $requestLimiter->getCurrentRequestCount());
         $requestLimiter->canRequest($request);
-        static::assertEquals(1, $requestLimiter->getCurrentRequestCount());
+        static::assertEquals(2, $requestLimiter->getCurrentRequestCount());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function current_request_count_is_correct_when_expired() : void
+    /** @test */
+    public function current_request_count_is_correct_when_expired(): void
     {
         $host = 'http://www.test.com';
         $requestLimiter = RequestLimiter::create($host, 1, 0);
@@ -90,10 +87,8 @@ class RequestLimiterTest extends TestCase
         static::assertEquals(0, $requestLimiter->getCurrentRequestCount());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function restores_state() : void
+    /** @test */
+    public function restores_state(): void
     {
         $host = 'http://www.test.com';
 
@@ -109,10 +104,8 @@ class RequestLimiterTest extends TestCase
         static::assertEquals($requestLimiterOne->getCurrentRequestCount(), $requestLimiterTwo->getCurrentRequestCount());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function matches_host_correctly() : void
+    /** @test */
+    public function matches_host_correctly(): void
     {
         $host = 'http://www.test.com';
 

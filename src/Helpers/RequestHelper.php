@@ -2,20 +2,13 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Helpers;
 
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Utils;
 use Psr\Http\Message\RequestInterface;
 
-/**
- * Class RequestHelper
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Helpers
- */
 class RequestHelper
 {
-
-    /**
-     * @param RequestInterface $request
-     * @return array
-     */
-    public static function getHostAndPath(RequestInterface $request) : array
+    public static function getHostAndPath(RequestInterface $request): array
     {
         $uri = $request->getUri();
 
@@ -25,15 +18,10 @@ class RequestHelper
         ];
     }
 
-    /**
-     * @param RequestInterface $request
-     * @return string
-     */
-    public static function getStorageKey(RequestInterface $request) : string
+    public static function getStorageKey(RequestInterface $request): string
     {
         $method = $request->getMethod();
-        if ($method !== 'GET')
-        {
+        if ($method !== 'GET') {
             $contentType = $request->getHeader('Content-Type')[0] ?? null;
             $params = $request->getBody()->getContents();
 
@@ -46,21 +34,12 @@ class RequestHelper
         return self::_getMethodAndParams($method, $request->getUri()->getQuery());
     }
 
-    /**
-     * @param string $method
-     * @param string $params
-     * @return string
-     */
-    private static function _getMethodAndParams(string $method, string $params) : string
+    private static function _getMethodAndParams(string $method, string $params): string
     {
         return $method . '_' . self::_sortParams($params);
     }
 
-    /**
-     * @param string $params
-     * @return string
-     */
-    private static function _sortParams(string $params) : string
+    private static function _sortParams(string $params): string
     {
         $paramArray = \explode('&', $params);
         \sort($paramArray);
@@ -68,17 +47,30 @@ class RequestHelper
         return \implode('&', $paramArray);
     }
 
-    /**
-     * @param string $json
-     * @return string
-     */
-    private static function _decodeJSON(string $json) : string
+    private static function _decodeJSON(string $json): string
     {
-        if (empty($json))
-        {
+        if (empty($json)) {
             return '';
         }
 
-        return \http_build_query(\GuzzleHttp\json_decode($json, true), '', '&');
+        return \http_build_query(Utils::jsonDecode($json, true), '', '&');
+    }
+
+    public static function getHostFromRequestAndOptions(RequestInterface $request, array $options = []): string
+    {
+        $requestUri = $request->getUri();
+
+        if (Uri::isAbsolute($requestUri)) {
+            return (string) $requestUri;
+        }
+
+        if (isset($options['base_uri'])) {
+            return $options['base_uri'] .
+                UrlHelper::removeTrailingSlash(
+                    UrlHelper::prependSlash($requestUri)
+                );
+        }
+
+        return (string) $requestUri;
     }
 }

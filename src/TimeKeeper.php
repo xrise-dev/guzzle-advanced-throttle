@@ -1,99 +1,76 @@
 <?php
 
-
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
-use DateInterval;
-use DateTime;
+use DateTimeImmutable;
 
-
-/**
- * Class TimeKeeper
- * @package hamburgscleanest\GuzzleAdvancedThrottle
- */
 class TimeKeeper
 {
+    private int $_expirationIntervalSeconds;
+    private DateTimeImmutable | null $_expiresAt = null;
 
-    /** @var int */
-    private $_expirationIntervalSeconds;
-
-    /** @var DateTime */
-    private $_expiresAt;
-
-    /**
-     * TimeKeeper constructor.
-     * @param int $intervalInSeconds
-     */
     public function __construct(int $intervalInSeconds)
     {
         $this->_expirationIntervalSeconds = $intervalInSeconds;
     }
 
-    /**
-     * @param int $intervalInSeconds
-     * @return TimeKeeper
-     */
-    public static function create(int $intervalInSeconds) : self
+    public static function create(int $intervalInSeconds): self
     {
         return new static($intervalInSeconds);
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getExpiration() : ? DateTime
+    public function getExpiration(): ?DateTimeImmutable
     {
         return $this->_expiresAt;
     }
 
-    /**
-     * @param DateTime $expiresAt
-     * @return TimeKeeper
-     */
-    public function setExpiration(DateTime $expiresAt) : self
+    public function setExpiration(DateTimeImmutable $expiresAt): self
     {
         $this->_expiresAt = $expiresAt;
 
         return $this;
     }
 
-    /**
-     * @return int
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
-     */
-    public function getRemainingSeconds() : int
+    private function _getTimeDiff(): ?int
     {
-        return $this->_expiresAt === null || $this->isExpired() ? $this->_expirationIntervalSeconds : $this->_expiresAt->getTimestamp() - \time();
+        if ($this->_expiresAt === null) {
+            return null;
+        }
+
+        return $this->_expiresAt->getTimestamp() - SystemClock::create()->now()->getTimestamp();
     }
 
-    /**
-     * @return bool
-     * @throws \hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\TimerNotStartedException
-     */
-    public function isExpired() : bool
+    public function getRemainingSeconds(): int
     {
-        if ($this->_expiresAt === null)
-        {
+        if ($this->_expiresAt === null) {
+            return $this->_expirationIntervalSeconds;
+        }
+
+        $diff = $this->_getTimeDiff();
+
+        return $diff !== null && $diff >= 0 ? $diff : $this->_expirationIntervalSeconds;
+    }
+
+    public function isExpired(): bool
+    {
+        $diff = $this->_getTimeDiff();
+        if ($diff === null) {
             return false;
         }
 
-        return $this->_expiresAt <= new DateTime();
+        return $diff <= 0;
     }
 
-    /**
-     *  Reset the request timer.
-     */
-    public function reset() : void
+    public function reset(): void
     {
         $this->_expiresAt = null;
     }
 
     /**
      * Initialize the expiration date for the request timer.
-     * @throws \Exception
      */
-    public function start() : void
+    public function start(): void
     {
-        $this->_expiresAt = (new DateTime())->add(new DateInterval('PT' . $this->_expirationIntervalSeconds . 'S'));
+        $this->_expiresAt = SystemClock::create()->advanceSeconds($this->_expirationIntervalSeconds)->now();
     }
 }

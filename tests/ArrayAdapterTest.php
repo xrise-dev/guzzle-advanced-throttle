@@ -2,45 +2,38 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Tests;
 
-use DateTime;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
+use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
+use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class ArrayAdapterTest
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Tests
- */
 class ArrayAdapterTest extends TestCase
 {
-
-    /** @test
-     * @throws \Exception
-     */
-    public function stores_and_retrieves_data() : void
+    /** @test */
+    public function stores_and_retrieves_data(): void
     {
         $host = 'test';
         $key = 'my_key';
         $requestCount = 12;
-        $expiresAt = new DateTime();
-        $remainingSeconds = 120;
+
+        $timeKeeper = new TimeKeeper(120);
+        $timeKeeper->start();
 
         $arrayAdapter = new ArrayAdapter();
-        $arrayAdapter->save($host, $key, $requestCount, $expiresAt, $remainingSeconds);
+        $arrayAdapter->save($host, $key, $requestCount, $timeKeeper);
 
         $requestInfo = $arrayAdapter->get($host, $key);
         static::assertNotNull($requestInfo);
-        static::assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
+        static::assertEquals($requestInfo->remainingSeconds, $timeKeeper->getRemainingSeconds());
         static::assertEquals($requestInfo->requestCount, $requestCount);
-        static::assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
+        static::assertEquals($requestInfo->expiresAt->format('Y-m-d H:i:s'), $timeKeeper->getExpiration()->format('Y-m-d H:i:s'));
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function stores_and_retrieves_response() : void
+    /** @test */
+    public function stores_and_retrieves_response(): void
     {
         $responseBody = 'test';
         $request = new Request('GET', 'www.test.de');
@@ -54,10 +47,8 @@ class ArrayAdapterTest extends TestCase
         static::assertEquals($responseBody, (string) $storedResponse->getBody());
     }
 
-    /** @test
-     * @throws \Exception
-     */
-    public function stored_value_gets_invalidated_when_expired() : void
+    /** @test */
+    public function stored_value_gets_invalidated_when_expired(): void
     {
         $request = new Request('GET', 'www.test.com');
         $response = new Response(200, [], 'test');
@@ -68,11 +59,8 @@ class ArrayAdapterTest extends TestCase
         static::assertNull($arrayAdapter->getResponse($request));
     }
 
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function does_not_store_empty_values() : void
+    /** @test */
+    public function does_not_store_empty_values(): void
     {
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);
@@ -90,11 +78,8 @@ class ArrayAdapterTest extends TestCase
         static::assertNull($arrayAdapter->getResponse($request));
     }
 
-    /**
-     * @test
-     * @throws \Exception
-     */
-    public function stores_empty_values_when_allowed() : void
+    /** @test */
+    public function stores_empty_values_when_allowed(): void
     {
         $request = new Request('GET', 'www.test.com');
         $nullResponse = new Response(200, [], null);

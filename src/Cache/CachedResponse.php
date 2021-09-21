@@ -5,29 +5,14 @@ namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Class CachedResponse
- * @package hamburgscleanest\GuzzleAdvancedThrottle\Cache
- */
 class CachedResponse
 {
+    private array $_headers;
+    private string $_body;
+    private string $_protocol;
+    private int $_statusCode;
+    private string $_reason;
 
-    /** @var array */
-    private $_headers;
-    /** @var string */
-    private $_body;
-    /** @var string */
-    private $_protocol;
-    /** @var int */
-    private $_statusCode;
-    /** @var string */
-    private $_reason;
-
-
-    /**
-     * CachedResponse constructor.
-     * @param ResponseInterface $response
-     */
     public function __construct(ResponseInterface $response)
     {
         $this->_headers = $response->getHeaders();
@@ -37,10 +22,7 @@ class CachedResponse
         $this->_reason = $response->getReasonPhrase();
     }
 
-    /**
-     * @return Response
-     */
-    public function getResponse() : Response
+    public function getResponse(): Response
     {
         return new Response(
             $this->_statusCode,
