@@ -32,7 +32,7 @@ class LaravelAdapter extends BaseAdapter
     {
         $expiration = $timeKeeper->getExpiration();
         if ($expiration === null) {
-            $this->_cacheManager->unset($this->_buildKey($host, $key));
+            $this->_cacheManager->forget($this->_buildKey($host, $key));
 
             return;
         }
