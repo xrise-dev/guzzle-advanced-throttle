@@ -8,11 +8,10 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Middleware\ThrottleMiddleware;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestLimitRuleset;
-use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use SlopeIt\ClockMock\ClockMock;
 
-use Mockery as m;
 
 class ThrottleMiddlewareTest extends TestCase
 {
@@ -88,15 +87,6 @@ class ThrottleMiddlewareTest extends TestCase
     /** @test */
     public function multiple_limits_are_handled_correctly(): void
     {
-        $testClock = new TestClock(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2021-09-20 12:00:00'));
-
-        /** @var \Mockery\MockInterface */
-        $mockClock = m::mock('overload:' . SystemClock::class);
-        $mockClock->shouldReceive('create')->andReturn($testClock);
-        $mockClock->shouldReceive('fromTimestamp')->andReturnUsing(function (int $timestamp) {
-            return TestClock::fromTimestamp($timestamp);
-        });
-
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
@@ -105,8 +95,8 @@ class ThrottleMiddlewareTest extends TestCase
                     'request_interval' => 60
                 ],
                 [
-                    'max_requests' => 2,
-                    'request_interval' => 120
+                    'max_requests' => 3,
+                    'request_interval' => 300
                 ]
             ]
         ]);
@@ -122,35 +112,46 @@ class ThrottleMiddlewareTest extends TestCase
         );
         $client = new Client(['base_uri' => $host, 'handler' => $throttle->handle()($stack)]);
 
+        // ----------------------------------------------------------------
+        ClockMock::freeze(new DateTimeImmutable('2021-09-21 12:00:00'));
+
         // 1st rule -> 1 in 1 min
 
-        // 1st req -> ok
-        $response = $client->request('GET', '/');
-        static::assertEquals(200, $response->getStatusCode());
+        $response = $client->request('GET', '/1');
+        static::assertEquals(200, $response->getStatusCode(), '[rule 1] request is okay');
 
-        // 2nd req -> fail
-        $this->expectException(TooManyRequestsHttpException::class);
-        $client->request('GET', '/');
+        // 2nd req -> fail (2 in 1 min)
+        try {
+            $client->request('GET', '/2');
+        } catch (TooManyRequestsHttpException $exception) {
+            $headers = $exception->getHeaders();
+            static::assertArrayHasKey('Retry-After', $headers);
+            static::assertEquals(60, $headers['Retry-After']);
+        }
 
-        // // -----------------------------------
-        // $testClock->advanceMinutes(1);
+        // ----------------------------------------------------------------
+        ClockMock::freeze(new DateTimeImmutable('2021-09-21 12:01:00'));
 
-        // // 2nd rule 2 in 2 min
+        // 2nd rule 3 in 5 min
 
-        // // 1st req -> ok (2 in total)
-        // $response = $client->request('GET', '/');
-        // static::assertEquals(200, $response->getStatusCode());
+        $response = $client->request('GET', '/3');
+        static::assertEquals(200, $response->getStatusCode(), '[rule 2] request is okay');
 
-        // // 2nd req -> fail (3rd in 2 min)
-        // $this->expectException(TooManyRequestsHttpException::class);
-        // $client->request('GET', '/');
+        // 2nd req -> fail (4th in 5 min)
+        try {
+            $client->request('GET', '/4');
+        } catch (TooManyRequestsHttpException $exception) {
+            $headers = $exception->getHeaders();
+            static::assertArrayHasKey('Retry-After', $headers);
+            static::assertEquals(240, $headers['Retry-After']);
+        }
 
-        // // ---------------------------------------
-        // $testClock->advanceMinutes(1);
+        // --------------------------------------------------------------
+        ClockMock::freeze(new DateTimeImmutable('2021-09-21 12:10:00'));
 
-        // // should be okay again after 3 min
+        $response = $client->request('GET', '/5');
+        static::assertEquals(200, $response->getStatusCode(), 'should be okay again after 10 min');
 
-        // $response = $client->request('GET', '/');
-        // static::assertEquals(200, $response->getStatusCode());
+        ClockMock::reset();
     }
 }

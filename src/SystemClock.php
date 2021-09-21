@@ -3,9 +3,8 @@
 namespace hamburgscleanest\GuzzleAdvancedThrottle;
 
 use DateTimeImmutable;
-use hamburgscleanest\GuzzleAdvancedThrottle\Interfaces\Clock;
 
-class SystemClock implements Clock
+class SystemClock
 {
     use TimeTravel;
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "22762a2b3bc976d4957a52f0e4086d87",
+    "content-hash": "d69a8ba9494b1cac56aee27c69be3c97",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -5196,6 +5196,59 @@
                 }
             ],
             "time": "2020-09-28T06:39:44+00:00"
+        },
+        {
+            "name": "slope-it/clock-mock",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/slope-it/clock-mock.git",
+                "reference": "3f1125c6e1d19cda256d07e2a588c3ce5d896020"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/slope-it/clock-mock/zipball/3f1125c6e1d19cda256d07e2a588c3ce5d896020",
+                "reference": "3f1125c6e1d19cda256d07e2a588c3ce5d896020",
+                "shasum": ""
+            },
+            "require": {
+                "ext-uopz": ">=6.1.1",
+                "php": ">=7.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "1.4.3",
+                "phpunit/phpunit": "9.5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SlopeIt\\ClockMock\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrea Sprega",
+                    "email": "andrea.sprega@slope.it",
+                    "role": "Software engineer"
+                }
+            ],
+            "description": "A library for mocking current date and time in tests.",
+            "keywords": [
+                "ClockMock",
+                "clock",
+                "mock",
+                "slope",
+                "slope.it"
+            ],
+            "support": {
+                "issues": "https://github.com/slope-it/clock-mock/issues",
+                "source": "https://github.com/slope-it/clock-mock/tree/0.2.0"
+            },
+            "time": "2021-05-24T20:37:09+00:00"
         },
         {
             "name": "theseer/tokenizer",

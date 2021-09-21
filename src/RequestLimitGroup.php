@@ -39,6 +39,7 @@ class RequestLimitGroup
             $requestLimiter = $this->_requestLimiters->current();
 
             $canRequest = $requestLimiter->canRequest($request, $options);
+
             if ($groupCanRequest && !$canRequest) {
                 $groupCanRequest = false;
                 $this->_retryAfter = $requestLimiter->getRemainingSeconds();
