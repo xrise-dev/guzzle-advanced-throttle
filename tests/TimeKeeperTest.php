@@ -66,7 +66,11 @@ class TimeKeeperTest extends TestCase
     {
         $interval = 60;
         $timeKeeper = new TimeKeeper($interval);
+
+        static::assertFalse($timeKeeper->isExpired());
+
         $timeKeeper->start();
+
         static::assertFalse($timeKeeper->isExpired());
         $timeKeeper->setExpiration(SystemClock::create()->now()->sub(new DateInterval('P1D')));
         static::assertTrue($timeKeeper->isExpired());
@@ -79,7 +83,15 @@ class TimeKeeperTest extends TestCase
         $timeKeeper = new TimeKeeper($interval);
         $timeKeeper->start();
         $timeKeeper->setExpiration(SystemClock::create()->now()->sub(new DateInterval('P1D')));
-        static::assertEquals(60, $timeKeeper->getRemainingSeconds());
+        static::assertEquals($interval, $timeKeeper->getRemainingSeconds());
+    }
+
+    /** @test */
+    public function remaining_time_is_correct_when_not_started(): void
+    {
+        $interval = 60;
+        $timeKeeper = new TimeKeeper($interval);
+        static::assertEquals($interval, $timeKeeper->getRemainingSeconds());
     }
 
     /** @test */

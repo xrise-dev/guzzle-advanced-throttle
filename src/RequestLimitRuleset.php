@@ -38,7 +38,6 @@ class RequestLimitRuleset
 
     public function __construct(array $rules, string $cacheStrategy = 'no-cache', string $storageAdapter = 'array', Repository $config = null)
     {
-        $this->_rules = $rules;
         $this->_setStorageAdapter($storageAdapter, $config);
         $this->_setCacheStrategy($cacheStrategy);
         $this->_setRequestLimitGroup($rules);
