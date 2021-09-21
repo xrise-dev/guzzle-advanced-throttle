@@ -133,15 +133,14 @@ class RequestLimitRulesetTest extends TestCase
     /** @test */
     public function host_for_rules_has_to_be_defined(): void
     {
-        $ruleset = new RequestLimitRuleset([
+        $this->expectException(HostNotDefinedException::class);
+
+        new RequestLimitRuleset([
             [
                 [
                     'max_requests' => 1
                 ]
             ]
         ]);
-
-        $this->expectException(HostNotDefinedException::class);
-        $ruleset->getRequestLimitGroup();
     }
 }

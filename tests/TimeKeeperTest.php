@@ -32,6 +32,15 @@ class TimeKeeperTest extends TestCase
     }
 
     /** @test */
+    public function cannot_be_expired_when_not_started(): void
+    {
+        $interval = 60;
+        $timeKeeper = new TimeKeeper($interval);
+
+        static::assertNull($timeKeeper->getExpiration());
+    }
+
+    /** @test */
     public function expiration_date_can_be_set_manually(): void
     {
         $interval = 60;

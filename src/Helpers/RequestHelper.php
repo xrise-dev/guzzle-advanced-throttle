@@ -2,6 +2,8 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Helpers;
 
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Utils;
 use Psr\Http\Message\RequestInterface;
 
 class RequestHelper
@@ -51,6 +53,24 @@ class RequestHelper
             return '';
         }
 
-        return \http_build_query(\GuzzleHttp\json_decode($json, true), '', '&');
+        return \http_build_query(Utils::jsonDecode($json, true), '', '&');
+    }
+
+    public static function getHostFromRequestAndOptions(RequestInterface $request, array $options = []): string
+    {
+        $requestUri = $request->getUri();
+
+        if (Uri::isAbsolute($requestUri)) {
+            return (string) $requestUri;
+        }
+
+        if (isset($options['base_uri'])) {
+            return $options['base_uri'] .
+                UrlHelper::removeTrailingSlash(
+                    UrlHelper::prependSlash($requestUri)
+                );
+        }
+
+        return (string) $requestUri;
     }
 }

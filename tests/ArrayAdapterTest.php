@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\ArrayAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
+use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
@@ -17,17 +18,18 @@ class ArrayAdapterTest extends TestCase
         $host = 'test';
         $key = 'my_key';
         $requestCount = 12;
-        $expiresAt = SystemClock::create()->now();
-        $remainingSeconds = 120;
+
+        $timeKeeper = new TimeKeeper(120);
+        $timeKeeper->start();
 
         $arrayAdapter = new ArrayAdapter();
-        $arrayAdapter->save($host, $key, $requestCount, $expiresAt, $remainingSeconds);
+        $arrayAdapter->save($host, $key, $requestCount, $timeKeeper);
 
         $requestInfo = $arrayAdapter->get($host, $key);
         static::assertNotNull($requestInfo);
-        static::assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
+        static::assertEquals($requestInfo->remainingSeconds, $timeKeeper->getRemainingSeconds());
         static::assertEquals($requestInfo->requestCount, $requestCount);
-        static::assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
+        static::assertEquals($requestInfo->expiresAt->format('Y-m-d H:i:s'), $timeKeeper->getExpiration()->format('Y-m-d H:i:s'));
     }
 
     /** @test */

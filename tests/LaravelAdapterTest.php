@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters\LaravelAdapter;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
-use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
+use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
@@ -26,17 +26,18 @@ class LaravelAdapterTest extends TestCase
         $host = 'test';
         $key = 'my_key';
         $requestCount = 12;
-        $expiresAt = SystemClock::create()->now();
-        $remainingSeconds = 120;
+
+        $timeKeeper = new TimeKeeper(120);
+        $timeKeeper->start();
 
         $laravelAdapter = new LaravelAdapter($this->_getConfig());
-        $laravelAdapter->save($host, $key, $requestCount, $expiresAt, $remainingSeconds);
+        $laravelAdapter->save($host, $key, $requestCount, $timeKeeper);
 
         $requestInfo = $laravelAdapter->get($host, $key);
         static::assertNotNull($requestInfo);
-        static::assertEquals($requestInfo->remainingSeconds, $remainingSeconds);
+        static::assertEquals($requestInfo->remainingSeconds, $timeKeeper->getRemainingSeconds());
         static::assertEquals($requestInfo->requestCount, $requestCount);
-        static::assertEquals($requestInfo->expiresAt->getTimestamp(), $expiresAt->getTimestamp());
+        static::assertEquals($requestInfo->expiresAt->format('Y-m-d H:i:s'), $timeKeeper->getExpiration()->format('Y-m-d H:i:s'));
     }
 
     private function _getConfig(): Repository

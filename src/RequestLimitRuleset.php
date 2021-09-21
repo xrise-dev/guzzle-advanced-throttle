@@ -32,20 +32,19 @@ class RequestLimitRuleset
         'force-cache' => ForceCache::class
     ];
 
-    private array $_rules;
     private StorageInterface $_storage;
     private CacheStrategy $_cacheStrategy;
-    private Repository|null $_config;
+    private RequestLimitGroup $_requestLimitGroup;
 
     public function __construct(array $rules, string $cacheStrategy = 'no-cache', string $storageAdapter = 'array', Repository $config = null)
     {
         $this->_rules = $rules;
-        $this->_config = $config;
-        $this->_setStorageAdapter($storageAdapter);
+        $this->_setStorageAdapter($storageAdapter, $config);
         $this->_setCacheStrategy($cacheStrategy);
+        $this->_setRequestLimitGroup($rules);
     }
 
-    private function _setStorageAdapter(string $adapterName): void
+    private function _setStorageAdapter(string $adapterName, ?Repository $config): void
     {
         $adapterClassName = self::STORAGE_MAP[$adapterName] ?? $adapterName;
 
@@ -53,7 +52,7 @@ class RequestLimitRuleset
             throw new UnknownStorageAdapterException($adapterClassName, \array_values(self::STORAGE_MAP));
         }
 
-        $this->_storage = new $adapterClassName($this->_config);
+        $this->_storage = new $adapterClassName($config);
     }
 
     private function _setCacheStrategy(string $cacheStrategy): void
@@ -77,17 +76,20 @@ class RequestLimitRuleset
         return $this->_cacheStrategy->request($request, $handler);
     }
 
-    public function getRequestLimitGroup(): RequestLimitGroup
+    private function _setRequestLimitGroup(array $ruleGroup): void
     {
-        $requestLimitGroup = new RequestLimitGroup();
-        foreach ($this->_rules as $host => $rules) {
+        $this->_requestLimitGroup = new RequestLimitGroup();
+        foreach ($ruleGroup as $host => $rules) {
             if (!\is_string($host)) {
                 throw new HostNotDefinedException();
             }
 
-            $requestLimitGroup->addRules($host, $rules, $this->_storage);
+            $this->_requestLimitGroup->addRules($host, $rules, $this->_storage);
         }
+    }
 
-        return $requestLimitGroup;
+    public function getRequestLimitGroup(): RequestLimitGroup
+    {
+        return $this->_requestLimitGroup;
     }
 }

@@ -2,11 +2,11 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
-use DateTimeImmutable;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\CachedResponse;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
 use hamburgscleanest\GuzzleAdvancedThrottle\SystemClock;
+use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use Psr\Http\Message\ResponseInterface;
 use Illuminate\Config\Repository;
 
@@ -29,9 +29,19 @@ class ArrayAdapter extends BaseAdapter
         $this->_allowEmptyValues = $config->get('cache.allow_empty', $this->_allowEmptyValues);
     }
 
-    public function save(string $host, string $key, int $requestCount, DateTimeImmutable $expiresAt, int $remainingSeconds): void
+    public function save(string $host, string $key, int $requestCount, TimeKeeper $timeKeeper): void
     {
-        $this->_storage[$host][$key] = RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds);
+        $expiration = $timeKeeper->getExpiration();
+        if ($expiration === null) {
+            unset($this->_storage[$host][$key]);
+            return;
+        }
+
+        $this->_storage[$host][$key] = RequestInfo::create(
+            $requestCount,
+            $expiration->getTimestamp(),
+            $timeKeeper->getRemainingSeconds()
+        );
     }
 
     public function get(string $host, string $key): ?RequestInfo
@@ -59,14 +69,9 @@ class ArrayAdapter extends BaseAdapter
                 return $cachedResponse ? $cachedResponse->getResponse() : null;
             }
 
-            $this->_invalidate($host, $path, $key);
+            unset($this->_storage[self::STORAGE_KEY][$host][$path][$key]);
         }
 
         return null;
-    }
-
-    private function _invalidate(string $host, string $path, string $key): void
-    {
-        unset($this->_storage[self::STORAGE_KEY][$host][$path][$key]);
     }
 }

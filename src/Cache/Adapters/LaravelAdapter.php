@@ -2,12 +2,12 @@
 
 namespace hamburgscleanest\GuzzleAdvancedThrottle\Cache\Adapters;
 
-use DateTimeImmutable;
 use GuzzleHttp\Psr7\Response;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\CachedResponse;
 use hamburgscleanest\GuzzleAdvancedThrottle\Cache\Helpers\CacheConfigHelper;
 use hamburgscleanest\GuzzleAdvancedThrottle\Exceptions\LaravelCacheConfigNotSetException;
 use hamburgscleanest\GuzzleAdvancedThrottle\RequestInfo;
+use hamburgscleanest\GuzzleAdvancedThrottle\TimeKeeper;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Config\Repository;
 use Psr\Http\Message\ResponseInterface;
@@ -28,11 +28,24 @@ class LaravelAdapter extends BaseAdapter
         $this->_allowEmptyValues = $cacheRepository->get('allow_empty', $this->_allowEmptyValues);
     }
 
-    public function save(string $host, string $key, int $requestCount, DateTimeImmutable $expiresAt, int $remainingSeconds): void
+    public function save(string $host, string $key, int $requestCount, TimeKeeper $timeKeeper): void
     {
+        $expiration = $timeKeeper->getExpiration();
+        if ($expiration === null) {
+            $this->_cacheManager->unset($this->_buildKey($host, $key));
+
+            return;
+        }
+
+        $remainingSeconds = $timeKeeper->getRemainingSeconds();
+
         $this->_cacheManager->put(
             $this->_buildKey($host, $key),
-            RequestInfo::create($requestCount, $expiresAt->getTimestamp(), $remainingSeconds),
+            RequestInfo::create(
+                $requestCount,
+                $expiration->getTimestamp(),
+                $remainingSeconds
+            ),
             $remainingSeconds
         );
     }

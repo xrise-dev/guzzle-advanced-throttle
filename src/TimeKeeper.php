@@ -31,10 +31,10 @@ class TimeKeeper
         return $this;
     }
 
-    private function _getTimeDiff(): int
+    private function _getTimeDiff(): ?int
     {
         if ($this->_expiresAt === null) {
-            return 0;
+            return null;
         }
 
         return $this->_expiresAt->getTimestamp() - SystemClock::create()->now()->getTimestamp();
@@ -48,12 +48,17 @@ class TimeKeeper
 
         $diff = $this->_getTimeDiff();
 
-        return $diff >= 0 ? $diff : $this->_expirationIntervalSeconds;
+        return $diff !== null && $diff >= 0 ? $diff : $this->_expirationIntervalSeconds;
     }
 
     public function isExpired(): bool
     {
-        return $this->_getTimeDiff() <= 0;
+        $diff = $this->_getTimeDiff();
+        if ($diff === null) {
+            return false;
+        }
+
+        return $diff <= 0;
     }
 
     public function reset(): void

@@ -23,7 +23,8 @@ class ThrottleMiddlewareTest extends TestCase
         $ruleset = new RequestLimitRuleset([
             $host => [
                 [
-                    'max_requests' => 1
+                    'max_requests' => 1,
+                    'request_interval' => 60
                 ]
             ]
         ]);
@@ -45,7 +46,8 @@ class ThrottleMiddlewareTest extends TestCase
         $ruleset = new RequestLimitRuleset([
             $host => [
                 [
-                    'max_requests' => 1
+                    'max_requests' => 1,
+                    'request_interval' => 60
                 ]
             ]
         ]);
@@ -66,7 +68,8 @@ class ThrottleMiddlewareTest extends TestCase
         $ruleset = new RequestLimitRuleset([
             'www.{subdomain}.test.com' => [
                 [
-                    'max_requests' => 1
+                    'max_requests' => 1,
+                    'request_interval' => 60
                 ]
             ]
         ]);
@@ -77,8 +80,8 @@ class ThrottleMiddlewareTest extends TestCase
         $response = $client->request('GET', '/');
 
         static::assertEquals(200, $response->getStatusCode());
-        $this->expectException(TooManyRequestsHttpException::class);
 
+        $this->expectException(TooManyRequestsHttpException::class);
         $client->request('GET', '/');
     }
 
@@ -90,24 +93,27 @@ class ThrottleMiddlewareTest extends TestCase
         /** @var \Mockery\MockInterface */
         $mockClock = m::mock('overload:' . SystemClock::class);
         $mockClock->shouldReceive('create')->andReturn($testClock);
-        $mockClock->shouldReceive('fromTimestamp')->andReturn($testClock);
+        $mockClock->shouldReceive('fromTimestamp')->andReturnUsing(function (int $timestamp) {
+            return TestClock::fromTimestamp($timestamp);
+        });
 
         $host = 'www.test.de';
         $ruleset = new RequestLimitRuleset([
             $host => [
                 [
                     'max_requests' => 1,
-                    'request_interval' => 1
+                    'request_interval' => 60
                 ],
                 [
                     'max_requests' => 2,
-                    'request_interval' => 2
+                    'request_interval' => 120
                 ]
             ]
         ]);
         $throttle = new ThrottleMiddleware($ruleset);
         $stack = new MockHandler(
             [
+                new Response(200),
                 new Response(200),
                 new Response(200),
                 new Response(200),
@@ -126,25 +132,25 @@ class ThrottleMiddlewareTest extends TestCase
         $this->expectException(TooManyRequestsHttpException::class);
         $client->request('GET', '/');
 
-        // -----------------------------------
-        $testClock->advanceMinutes(1);
+        // // -----------------------------------
+        // $testClock->advanceMinutes(1);
 
-        // 2nd rule 2 in 2 min
+        // // 2nd rule 2 in 2 min
 
-        // 1st req -> ok (2 in total)
-        $response = $client->request('GET', '/');
-        static::assertEquals(200, $response->getStatusCode());
+        // // 1st req -> ok (2 in total)
+        // $response = $client->request('GET', '/');
+        // static::assertEquals(200, $response->getStatusCode());
 
-        // 2nd req -> fail (3rd in 2 min)
-        $this->expectException(TooManyRequestsHttpException::class);
-        $client->request('GET', '/');
+        // // 2nd req -> fail (3rd in 2 min)
+        // $this->expectException(TooManyRequestsHttpException::class);
+        // $client->request('GET', '/');
 
-        // ---------------------------------------
-        $testClock->advanceMinutes(1);
+        // // ---------------------------------------
+        // $testClock->advanceMinutes(1);
 
-        // should be okay again after 3 min
+        // // should be okay again after 3 min
 
-        $response = $client->request('GET', '/');
-        static::assertEquals(200, $response->getStatusCode());
+        // $response = $client->request('GET', '/');
+        // static::assertEquals(200, $response->getStatusCode());
     }
 }
