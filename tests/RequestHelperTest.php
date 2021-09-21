@@ -62,6 +62,18 @@ class RequestHelperTest extends TestCase
                 )
             )
         );
+
+        static::assertEquals(
+            'POST_<empty>',
+            RequestHelper::getStorageKey(
+                new Request(
+                    'POST',
+                    'https://www.test.com/path',
+                    ['Content-Type' => 'application/json'],
+                    ''
+                )
+            )
+        );
     }
 
     /** @test */

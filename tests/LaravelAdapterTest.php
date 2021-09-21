@@ -38,6 +38,15 @@ class LaravelAdapterTest extends TestCase
         static::assertEquals($requestInfo->remainingSeconds, $timeKeeper->getRemainingSeconds());
         static::assertEquals($requestInfo->requestCount, $requestCount);
         static::assertEquals($requestInfo->expiresAt->format('Y-m-d H:i:s'), $timeKeeper->getExpiration()->format('Y-m-d H:i:s'));
+
+        // invalidates data when timeKeeper was reset
+        $timeKeeper->reset();
+
+        $laravelAdapter->save($host, $key, $requestCount, $timeKeeper);
+
+        $requestInfo = $laravelAdapter->get($host, $key);
+
+        static::assertNull($requestInfo);
     }
 
     private function _getConfig(): Repository

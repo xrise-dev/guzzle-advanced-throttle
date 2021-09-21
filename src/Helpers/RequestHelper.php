@@ -50,7 +50,7 @@ class RequestHelper
     private static function _decodeJSON(string $json): string
     {
         if (empty($json)) {
-            return '';
+            return '<empty>';
         }
 
         return \http_build_query(Utils::jsonDecode($json, true), '', '&');
