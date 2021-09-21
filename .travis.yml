@@ -3,6 +3,9 @@ language: php
 php:
 - '8.0'
 - 'nightly'
+env:
+  global:
+    - XDEBUG_MODE=coverage
 matrix:
   allow_failures:
   - php: nightly
@@ -11,12 +14,12 @@ services:
 - redis
 - memcached
 before_install:
-  - pecl install uopz 
-  - printf "\n" | pecl install memcached
+- printf "\n" | pecl install memcached
+- pecl install uopz 
 install:
 - composer update
 script:
-  ./vendor/bin/phpunit --coverage-clover=coverage.clover
-after_script:
-- if [ "$TRAVIS_PHP_VERSION" == "8.0" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-- if [ "$TRAVIS_PHP_VERSION" == "8.0" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+- ./vendor/bin/phpunit --coverage-clover=coverage.clover
+after_success:
+- if [ "$TRAVIS_PHP_VERSION" == "8.0" ]; then composer global require scrutinizer/ocular; fi
+- if [ "$TRAVIS_PHP_VERSION" == "8.0" ]; then composer global exec -v -- "ocular code-coverage:upload --format=php-clover coverage.clover"; fi
